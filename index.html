@@ -1,1 +1,45 @@
-Hello WOrld
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PDF Generator</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      max-width: 700px; 
+      margin: 40px auto; 
+      padding: 0 16px;
+    }
+    label { display: block; margin-top: 12px; }
+    input, textarea { 
+      width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; 
+    }
+    button { margin-top: 16px; padding: 10px 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Generate PDF</h1>
+
+  <form id="pdfForm">
+    <label>
+      Name
+      <input name="name" required />
+    </label>
+
+    <label>
+      Title
+      <input name="title" />
+    </label>
+
+    <label>
+      Message
+      <textarea name="message" rows="4"></textarea>
+    </label>
+
+    <button type="submit">Generate PDF</button>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>
