@@ -11,8 +11,10 @@
     button { margin-top: 15px; }
   </style>
 
-  <!-- Google Places API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIeIkiezrTyIvNqOjAq5ymh1fUQ65xk3M&libraries=places"></script>
+  <!-- Google Maps API with async/defer -->
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=DEIN_API_KEY&libraries=places&callback=initAutocomplete">
+  </script>
 </head>
 <body>
   <h1>AU PDF Generator</h1>
@@ -45,9 +47,9 @@
   </form>
 
   <script>
-    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Worker URL anpassen
+    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Update your Worker URL
 
-    // ===== Datum max auf heute =====
+    // ===== Date input: max today =====
     const today = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[type="date"]').forEach(input => {
@@ -55,22 +57,23 @@
       });
     });
 
-    // ===== Google Places Autocomplete =====
+    // ===== Google Place Autocomplete (new way) =====
+    let autocomplete;
     function initAutocomplete() {
       const input = document.getElementById('address');
       if (!input) return;
 
-      const autocomplete = new google.maps.places.Autocomplete(input, {
-        types: ['address'],
-        componentRestrictions: { country: 'de' }
+      autocomplete = new google.maps.places.Autocomplete(input, {
+        fields: ["formatted_address"],
+        types: ["address"],
+        componentRestrictions: { country: "de" }
       });
 
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
-        input.value = place.formatted_address; // Setzt Input korrekt
+        input.value = place.formatted_address || "";
       });
     }
-    document.addEventListener('DOMContentLoaded', initAutocomplete);
 
     // ===== PDF Button =====
     const form = document.getElementById("pdfForm");
