@@ -14,7 +14,7 @@
       --text-muted: #6b7280;
       --border-color: #e5e7eb;
       --radius: 8px;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
     * { box-sizing: border-box; }
@@ -31,7 +31,6 @@
       padding: 20px;
     }
 
-    /* Animation */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -44,7 +43,7 @@
       box-shadow: var(--shadow);
       width: 100%;
       max-width: 650px;
-      animation: fadeIn 0.6s ease-out;
+      animation: fadeIn 0.5s ease-out;
     }
 
     h1 {
@@ -63,28 +62,77 @@
     }
 
     .full-width { grid-column: span 2; }
-    .three-quarter { grid-column: span 1.5; } /* Für Straße */
-    .one-quarter { grid-column: span 0.5; }   /* Für Hausnummer */
+    .three-quarter { grid-column: span 1.5; }
+    .one-quarter { grid-column: span 0.5; }
 
-    /* Labels & Inputs */
+    /* Labels */
     label {
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-muted);
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
-    input, select {
+    /* Standard Inputs */
+    input {
       width: 100%;
-      padding: 10px;
+      padding: 11px;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 0.95rem;
       transition: all 0.2s;
       background: #f9fafb;
+      color: var(--text-main);
     }
 
+    /* === Custom Select Styling === */
+    select {
+      width: 100%;
+      padding: 11px;
+      padding-right: 40px; /* Platz für den Pfeil */
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      background-color: #f9fafb;
+      color: var(--text-main);
+      cursor: pointer;
+      appearance: none; /* Entfernt Standard-Browser-Pfeil */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      /* Custom SVG Pfeil */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3F%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      transition: all 0.2s;
+    }
+
+    /* === Modern Date Picker Styling === */
+    input[type="date"] {
+      appearance: none;
+      -webkit-appearance: none;
+      color: var(--text-main);
+      font-family: inherit;
+      padding-right: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    /* Kalender-Icon anpassen (Webkit/Chrome) */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.5;
+      transition: 0.2s;
+      /* Optional: Man könnte das Icon hier vergrößern */
+      transform: scale(1.1);
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator:hover {
+      opacity: 1;
+      color: var(--primary);
+    }
+
+    /* Focus States */
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
@@ -95,118 +143,114 @@
     /* Section Divider */
     .section-title {
       grid-column: span 2;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-main);
-      border-bottom: 2px solid var(--bg-color);
-      padding-bottom: 5px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
       margin-top: 25px;
       margin-bottom: 15px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
-    /* Wrapper für Icons im Input (Lupe) */
-    .input-icon-wrapper {
-      position: relative;
-      width: 100%;
-    }
-    
-    .input-icon-wrapper input {
-      padding-right: 35px; /* Platz für Icon */
-    }
-
+    /* Address Search */
+    .input-icon-wrapper { position: relative; width: 100%; }
+    .input-icon-wrapper input { padding-right: 40px; }
     .search-icon {
       position: absolute;
       right: 12px;
       top: 50%;
-      transform: translateY(-50%); /* Exakte vertikale Zentrierung */
+      transform: translateY(-50%);
       color: #9ca3af;
       pointer-events: none;
     }
 
-    /* Address Suggestions */
     #address-suggestions {
       position: absolute;
-      top: 100%;
+      top: 105%;
       left: 0;
       right: 0;
       background: white;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
       z-index: 50;
-      max-height: 200px;
+      max-height: 220px;
       overflow-y: auto;
-      margin-top: 5px;
       opacity: 0;
       transform: translateY(-10px);
       transition: all 0.2s ease;
       pointer-events: none;
     }
-
-    #address-suggestions.active {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
+    #address-suggestions.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    
     .suggestion-item {
-      padding: 10px 15px;
+      padding: 12px 15px;
       cursor: pointer;
       border-bottom: 1px solid #f3f4f6;
       font-size: 0.9rem;
       display: flex;
       align-items: center;
+      transition: background 0.1s;
     }
-    .suggestion-item:hover { background-color: #eff6ff; color: var(--primary); }
-    .suggestion-icon { margin-right: 10px; font-size: 1.2em; }
+    .suggestion-item:hover { background-color: #eff6ff; }
+    .suggestion-icon { margin-right: 12px; font-size: 1.1em; color: var(--primary); }
 
-    /* Date Input Group with "Today" Button */
+    /* Date Groups with Button */
     .date-group {
       display: flex;
-      gap: 5px;
+      gap: 8px;
+    }
+    .date-group input {
+      flex: 1; /* Input nimmt den meisten Platz */
     }
     
     .today-btn {
-      padding: 0 10px;
+      padding: 0 12px;
       font-size: 0.8rem;
+      font-weight: 600;
       background-color: #e5e7eb;
-      color: #374151;
+      color: #4b5563;
       border: 1px solid #d1d5db;
       border-radius: var(--radius);
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.2s;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
     }
-    .today-btn:hover { background-color: #d1d5db; }
+    .today-btn:hover { background-color: #d1d5db; color: #1f2937; }
 
-    /* Main Submit Button */
+    /* Submit Button */
     button[type="submit"] {
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
       font-weight: bold;
       border-radius: var(--radius);
       cursor: pointer;
-      margin-top: 20px;
-      transition: background 0.2s, transform 0.1s;
+      margin-top: 25px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
     }
-    button[type="submit"]:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    button[type="submit"]:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
+    }
     button[type="submit"]:active { transform: translateY(0); }
 
     /* Spinner */
     .spinner {
       display: none;
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
       border: 2px solid #ffffff;
       border-top: 2px solid transparent;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 0.8s linear infinite;
       margin-right: 8px;
       vertical-align: middle;
     }
@@ -255,7 +299,8 @@
 
       <div class="section-title">📍 Anschrift</div>
       
-      <div class="full-width" style="position: relative;"> <label>Automatische Adress-Suche</label>
+      <div class="full-width" style="position: relative;">
+        <label>Adress-Suche (Autofill)</label>
         <div class="input-icon-wrapper">
           <input id="address-search" placeholder="Straße und Hausnummer eingeben..." autocomplete="off">
           <span class="search-icon">🔍</span>
@@ -280,7 +325,8 @@
         <label>Stadt</label>
         <input id="city" name="city" required>
       </div>
-      <div style="display:none;"> <input id="country" name="country" value="Deutschland">
+      <div style="display:none;">
+        <input id="country" name="country" value="Deutschland">
       </div>
 
       <div class="section-title">📅 Diagnose & Zeitraum</div>
@@ -304,7 +350,8 @@
         <label>Voraussichtlich bis</label>
         <div class="date-group">
             <input name="auTo" type="date" id="dateTo">
-            </div>
+            <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
+        </div>
       </div>
       
       <div class="full-width">
@@ -326,22 +373,21 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Helper: Set input to today
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       document.getElementById(elementId).value = today;
     }
 
-    // Set max date for inputs to today
+    // Max Date auf heute setzen (nur für "confirmedOn" und "auFrom" sinnvoll, "auTo" darf Zukunft sein)
     const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('input[type="date"]').forEach(input => {
-        // Optional: Max Date auf heute setzen (außer "bis")
-        if(input.name !== 'auTo') input.setAttribute('max', todayStr);
-      });
+        // Hier setzen wir nur max Date für Geburtsdatum und Festgestellt am, 
+        // AU bis darf natürlich in der Zukunft liegen.
+        document.querySelector('input[name="birthDate"]').setAttribute('max', todayStr);
+        document.querySelector('input[name="confirmedOn"]').setAttribute('max', todayStr);
     });
 
-    // ===== Modern Autocomplete Logic =====
+    // ===== Autocomplete Logic =====
     const searchInput = document.getElementById('address-search');
     const suggestionBox = document.getElementById('address-suggestions');
     let timeout;
@@ -383,8 +429,8 @@
               div.innerHTML = `
                 <span class="suggestion-icon">📍</span>
                 <div>
-                  <div style="font-weight:600;">${mainText}</div>
-                  <div style="font-size:0.8em; color:#6b7280;">${subText}</div>
+                  <div style="font-weight:600; color:#1f2937;">${mainText}</div>
+                  <div style="font-size:0.85em; color:#6b7280;">${subText}</div>
                 </div>
               `;
               
@@ -409,9 +455,7 @@
       }, 300);
     });
 
-    // Close on click outside
     document.addEventListener('click', e => {
-      // Wenn Klick nicht innerhalb des Wrappers war
       if (!e.target.closest('.full-width')) {
         suggestionBox.classList.remove('active');
       }
