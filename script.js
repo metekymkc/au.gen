@@ -3,7 +3,7 @@ const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
 const form = document.getElementById("pdfForm");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault(); // Verhindert Seitenreload
 
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
@@ -31,6 +31,7 @@ form.addEventListener("submit", async (e) => {
     URL.revokeObjectURL(url);
 
   } catch (err) {
-    alert("Error generating PDF: " + err.message);
+    alert("Fehler beim Generieren der PDF: " + err.message);
+    console.error(err);
   }
 });
