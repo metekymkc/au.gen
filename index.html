@@ -2,106 +2,332 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>AU PDF Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AU Generator Pro</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    form { display: flex; flex-direction: column; max-width: 500px; }
-    label { margin-bottom: 10px; }
-    input, select, button { padding: 5px; font-size: 14px; width: 100%; }
-    button { margin-top: 15px; }
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: #e5e7eb;
+      --radius: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
 
-    /* Autocomplete Styles */
-    .address-container { position: relative; }
-    #address-suggestions {
-      border: 1px solid #ccc;
-      max-height: 150px;
-      overflow-y: auto;
-      position: absolute;
-      background: white;
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Main Container Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
       width: 100%;
-      z-index: 1000;
+      max-width: 650px;
+      animation: fadeIn 0.6s ease-out;
     }
-    #address-suggestions div {
-      padding: 5px;
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Grid System for Compactness */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    /* Labels & Inputs */
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background: #f9fafb;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* Sections */
+    .section-title {
+      grid-column: span 2;
+      font-size: 1rem;
+      color: var(--text-main);
+      border-bottom: 2px solid var(--bg-color);
+      padding-bottom: 5px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    /* Address Autocomplete Styling */
+    .address-wrapper {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      top: 38px; /* Adjusted to sit in input */
+      color: #9ca3af;
+      pointer-events: none;
+    }
+
+    #address-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      z-index: 50;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 5px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      pointer-events: none; /* Deaktiviert Klicks wenn unsichtbar */
+    }
+
+    #address-suggestions.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .suggestion-item {
+      padding: 10px 15px;
       cursor: pointer;
-      font-size: 13px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
     }
-    #address-suggestions div:hover {
-      background-color: #eee;
+
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover { background-color: #eff6ff; color: var(--primary); }
+    
+    .suggestion-icon {
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
+
+    /* Button */
+    button[type="submit"] {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: var(--radius);
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .btn-content { vertical-align: middle; }
+
+    /* Readonly inputs look different */
+    input[readonly] {
+      background-color: #e5e7eb;
+      color: #6b7280;
+      cursor: not-allowed;
     }
   </style>
 </head>
 <body>
-  <h1>AU PDF Generator</h1>
-  <form id="pdfForm">
-    <label>Vorname<input name="firstName" required></label>
-    <label>Nachname<input name="lastName" required></label>
 
-    <fieldset>
-      <legend>Adresse</legend>
-      <label>Adress-Suche (Autofill)
-        <div class="address-container">
-          <input id="address-search" placeholder="Straße eingeben..." autocomplete="off">
-          <div id="address-suggestions"></div>
-        </div>
-      </label>
+  <div class="container">
+    <h1>📄 AU Generator</h1>
+    <form id="pdfForm" class="form-grid">
+      
+      <div>
+        <label>Vorname</label>
+        <input name="firstName" placeholder="Max" required>
+      </div>
+      <div>
+        <label>Nachname</label>
+        <input name="lastName" placeholder="Mustermann" required>
+      </div>
 
-      <label>Straße<input id="street" name="street" required></label>
-      <label>Hausnummer<input id="house_number" name="house_number" required></label>
-      <label>Postleitzahl<input id="postcode" name="postcode" required></label>
-      <label>Stadt<input id="city" name="city" required></label>
-      <label>Land<input id="country" name="country" value="Deutschland" readonly required></label>
-    </fieldset>
+      <div class="section-title">Anschrift & Adresse</div>
+      
+      <div class="full-width address-wrapper">
+        <label>Automatische Adress-Suche</label>
+        <input id="address-search" placeholder="Straße und Hausnummer eingeben..." autocomplete="off">
+        <span class="search-icon">🔍</span>
+        <div id="address-suggestions"></div>
+      </div>
 
-    <label>Krankenkasse
-      <select name="insurance" required>
-        <option value="">Bitte wählen</option>
-        <option value="AOK">AOK</option>
-        <option value="TK">Techniker Krankenkasse</option>
-        <option value="Barmer">Barmer</option>
-        <option value="DAK">DAK</option>
-      </select>
-    </label>
+      <div style="grid-column: span 1.5;"> <label>Straße</label>
+        <input id="street" name="street" required>
+      </div>
+      <div style="grid-column: span 0.5;">
+        <label>Nr.</label>
+        <input id="house_number" name="house_number" required>
+      </div>
 
-    <label>Geburtsdatum<input name="birthDate" type="date" required></label>
-    <label>Versicherternnummer<input name="insuranceNumber"></label>
-    <label>Datum der AU Erstellung<input name="auDate" type="date"></label>
-    <label>Arbeitsunfähig seit<input name="auFrom" type="date"></label>
-    <label>Voraussichtlich arbeitsunfähig bis<input name="auTo" type="date"></label>
-    <label>Festgestellt am<input name="confirmedOn" type="date"></label>
-    <label>Art der Bescheinigung
-      <select name="certificateType">
-        <option value="first">Erstbescheinigung</option>
-        <option value="followup">Folgebescheinigung</option>
-      </select>
-    </label>
+      <div>
+        <label>PLZ</label>
+        <input id="postcode" name="postcode" required>
+      </div>
+      <div>
+        <label>Stadt</label>
+        <input id="city" name="city" required>
+      </div>
+      <div class="full-width" style="display:none;"> <input id="country" name="country" value="Deutschland">
+      </div>
 
-    <button type="submit">PDF generieren</button>
-  </form>
+      <div class="section-title">Versicherungsdaten</div>
+
+      <div>
+        <label>Krankenkasse</label>
+        <select name="insurance" required>
+          <option value="">Bitte wählen...</option>
+          <option value="AOK">AOK</option>
+          <option value="TK">Techniker Krankenkasse</option>
+          <option value="Barmer">Barmer</option>
+          <option value="DAK">DAK</option>
+          <option value="IKK">IKK</option>
+        </select>
+      </div>
+      <div>
+        <label>Versichertennummer</label>
+        <input name="insuranceNumber" placeholder="Z.B. A123456789">
+      </div>
+
+      <div class="section-title">Diagnose & Zeitraum</div>
+
+      <div>
+        <label>Geburtsdatum</label>
+        <input name="birthDate" type="date" required>
+      </div>
+      <div>
+        <label>Festgestellt am</label>
+        <input name="confirmedOn" type="date">
+      </div>
+
+      <div>
+        <label>Arbeitsunfähig seit</label>
+        <input name="auFrom" type="date">
+      </div>
+      <div>
+        <label>Voraussichtlich bis</label>
+        <input name="auTo" type="date">
+      </div>
+      
+      <div class="full-width">
+         <label>Art der Bescheinigung</label>
+         <select name="certificateType">
+           <option value="first">Erstbescheinigung</option>
+           <option value="followup">Folgebescheinigung</option>
+         </select>
+      </div>
+
+      <button type="submit" class="full-width" id="submitBtn">
+        <span class="spinner" id="spinner"></span>
+        <span class="btn-content">PDF Generieren & Downloaden</span>
+      </button>
+
+    </form>
+  </div>
 
   <script>
-    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Ggf. anpassen
+    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Datum maximal heute setzen
+    // Set max date to today
     const today = new Date().toISOString().split("T")[0];
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('input[type="date"]').forEach(input => {
-        input.setAttribute('max', today);
-      });
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      input.setAttribute('max', today);
     });
 
-    // ===== Autocomplete OpenStreetMap (Optimiert) =====
+    // ===== Modern Autocomplete Logic =====
     const searchInput = document.getElementById('address-search');
     const suggestionBox = document.getElementById('address-suggestions');
-
     let timeout;
+
     searchInput.addEventListener('input', () => {
       clearTimeout(timeout);
-      const query = searchInput.value;
-      if (!query) { suggestionBox.innerHTML = ''; return; }
+      const query = searchInput.value.trim();
+      
+      if (query.length < 3) { 
+        suggestionBox.classList.remove('active'); 
+        return; 
+      }
 
       timeout = setTimeout(async () => {
-        // 'accept-language=de' erzwingt deutsche Namen (München statt Munich)
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
         
         try {
@@ -109,59 +335,76 @@
           const data = await res.json();
           suggestionBox.innerHTML = '';
 
-          data.forEach(place => {
-            const addr = place.address;
+          if (data.length > 0) {
+            suggestionBox.classList.add('active');
             
-            // Nur relevante Felder extrahieren
-            const road = addr.road || addr.pedestrian || addr.cycleway || '';
-            const number = addr.house_number || '';
-            const zip = addr.postcode || '';
-            const city = addr.city || addr.town || addr.village || '';
-            
-            // Überspringen, wenn keine Straße vorhanden ist (z.B. nur Stadt gefunden)
-            if (!road) return;
-
-            // Kompakte Anzeige für die Vorschlagsliste
-            const displayText = `${road} ${number}, ${zip} ${city}`.trim().replace(/^,|,$/g, '');
-
-            const div = document.createElement('div');
-            div.textContent = displayText;
-            
-            div.addEventListener('click', () => {
-              // Felder direkt befüllen
-              document.getElementById('street').value = road;
-              document.getElementById('house_number').value = number;
-              document.getElementById('postcode').value = zip;
-              document.getElementById('city').value = city;
+            data.forEach(place => {
+              const addr = place.address;
+              const road = addr.road || addr.pedestrian || '';
+              const number = addr.house_number || '';
+              const zip = addr.postcode || '';
+              const city = addr.city || addr.town || addr.village || '';
               
-              // Suchfeld updaten & Liste leeren
-              searchInput.value = displayText;
-              suggestionBox.innerHTML = '';
-            });
+              if (!road) return;
 
-            suggestionBox.appendChild(div);
-          });
+              // Display Format
+              const mainText = `${road} ${number}`;
+              const subText = `${zip} ${city}`;
+
+              const div = document.createElement('div');
+              div.className = 'suggestion-item';
+              div.innerHTML = `
+                <span class="suggestion-icon">📍</span>
+                <div>
+                  <div style="font-weight:600;">${mainText}</div>
+                  <div style="font-size:0.8em; color:#6b7280;">${subText}</div>
+                </div>
+              `;
+              
+              div.addEventListener('click', () => {
+                document.getElementById('street').value = road;
+                document.getElementById('house_number').value = number;
+                document.getElementById('postcode').value = zip;
+                document.getElementById('city').value = city;
+                
+                searchInput.value = `${mainText}, ${subText}`;
+                suggestionBox.classList.remove('active');
+              });
+
+              suggestionBox.appendChild(div);
+            });
+          } else {
+            suggestionBox.classList.remove('active');
+          }
         } catch (e) {
-          console.error("OSM Fehler", e);
+          console.error(e);
         }
       }, 300);
     });
 
-    // Schließen der Vorschläge beim Klick außerhalb
+    // Close on click outside
     document.addEventListener('click', e => {
-      if (!e.target.closest('.address-container')) suggestionBox.innerHTML = '';
+      if (!e.target.closest('.address-wrapper')) {
+        suggestionBox.classList.remove('active');
+      }
     });
 
-    // ===== PDF Button & Submit =====
+    // ===== Submit Logic with Animation =====
     const form = document.getElementById("pdfForm");
+    const btn = document.getElementById("submitBtn");
+    const spinner = document.getElementById("spinner");
+    const btnContent = document.querySelector(".btn-content");
+
     form.addEventListener("submit", async e => {
       e.preventDefault();
       
+      // Loading State
+      btn.disabled = true;
+      spinner.style.display = "inline-block";
+      btnContent.textContent = "Generiere...";
+      
       const fd = new FormData(form);
       const data = Object.fromEntries(fd.entries());
-
-      // HINWEIS: Wir formatieren hier nichts mehr um (kein 'str.' Ersatz etc.).
-      // Das übernimmt jetzt der Worker, um saubere Daten zu garantieren.
 
       try {
         const resp = await fetch(WORKER_URL, {
@@ -172,13 +415,9 @@
 
         if (!resp.ok) {
            const errText = await resp.text();
-           // Falls der Worker einen JSON Fehler schickt, versuchen wir den zu parsen
-           try {
-             const errJson = JSON.parse(errText);
-             throw new Error(errJson.error || errText);
-           } catch {
-             throw new Error(`Server error: ${resp.status} ${errText}`);
-           }
+           let errMsg = errText;
+           try { errMsg = JSON.parse(errText).error; } catch {}
+           throw new Error(errMsg);
         }
 
         const blob = await resp.blob();
@@ -192,8 +431,12 @@
         URL.revokeObjectURL(url);
 
       } catch (err) {
-        alert("Fehler beim Erstellen der PDF:\n" + err.message);
-        console.error(err);
+        alert("Fehler: " + err.message);
+      } finally {
+        // Reset Button
+        btn.disabled = false;
+        spinner.style.display = "none";
+        btnContent.textContent = "PDF Generieren & Downloaden";
       }
     });
   </script>
