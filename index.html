@@ -1,183 +1,114 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <title>AU PDF Generator</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    form { display: flex; flex-direction: column; max-width: 500px; }
-    label { margin-bottom: 10px; }
-    input, select, button { padding: 5px; font-size: 14px; width: 100%; }
-    button { margin-top: 15px; }
-
-    /* Autocomplete */
-    .address-container { position: relative; }
-    #address-suggestions {
-      border: 1px solid #ccc;
-      max-height: 150px;
-      overflow-y: auto;
-      position: absolute;
-      background: white;
-      width: 100%;
-      z-index: 1000;
-    }
-    #address-suggestions div {
-      padding: 5px;
-      cursor: pointer;
-    }
-    #address-suggestions div:hover {
-      background-color: #eee;
-    }
-  </style>
-</head>
-<body>
-  <h1>AU PDF Generator</h1>
-  <form id="pdfForm">
-    <label>Vorname<input name="firstName" required></label>
-    <label>Nachname<input name="lastName" required></label>
-
-    <fieldset>
-      <legend>Adresse</legend>
-      <label>Suchfeld
-        <div class="address-container">
-          <input id="address-search" placeholder="Adresse eingeben" autocomplete="off">
-          <div id="address-suggestions"></div>
-        </div>
-      </label>
-
-      <label>Straße<input id="street" name="street" required></label>
-      <label>Hausnummer<input id="house_number" name="house_number" required></label>
-      <label>Postleitzahl<input id="postcode" name="postcode" required></label>
-      <label>Stadt<input id="city" name="city" required></label>
-      <label>Land<input id="country" name="country" value="Deutschland" required></label>
-    </fieldset>
-
-    <label>Krankenkasse
-      <select name="insurance" required>
-        <option value="">Bitte wählen</option>
-        <option value="AOK">AOK</option>
-        <option value="TK">Techniker Krankenkasse</option>
-        <option value="Barmer">Barmer</option>
-        <option value="DAK">DAK</option>
-      </select>
-    </label>
-
-    <label>Geburtsdatum<input name="birthDate" type="date" required></label>
-    <label>Versicherternnummer<input name="insuranceNumber"></label>
-    <label>Datum der AU Erstellung<input name="auDate" type="date"></label>
-    <label>Arbeitsunfähig seit<input name="auFrom" type="date"></label>
-    <label>Voraussichtlich arbeitsunfähig bis<input name="auTo" type="date"></label>
-    <label>Festgestellt am<input name="confirmedOn" type="date"></label>
-    <label>Art der Bescheinigung
-      <select name="certificateType">
-        <option value="first">Erstbescheinigung</option>
-        <option value="followup">Folgebescheinigung</option>
-      </select>
-    </label>
-
-    <button type="submit">PDF generieren</button>
-  </form>
-
-  <script>
-    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
-    const today = new Date().toISOString().split("T")[0];
-
-    // Datum maximal heute
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('input[type="date"]').forEach(input => {
-        input.setAttribute('max', today);
-      });
+<script>
+  const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Anpassen falls nötig
+  
+  // Datum maximal heute setzen
+  const today = new Date().toISOString().split("T")[0];
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      input.setAttribute('max', today);
     });
+  });
 
-    // ===== Autocomplete OpenStreetMap =====
-    const searchInput = document.getElementById('address-search');
-    const suggestionBox = document.getElementById('address-suggestions');
+  // ===== Autocomplete OpenStreetMap (Optimiert) =====
+  const searchInput = document.getElementById('address-search');
+  const suggestionBox = document.getElementById('address-suggestions');
 
-    let timeout;
-    searchInput.addEventListener('input', () => {
-      clearTimeout(timeout);
-      const query = searchInput.value;
-      if (!query) { suggestionBox.innerHTML = ''; return; }
+  let timeout;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(timeout);
+    const query = searchInput.value;
+    if (!query) { suggestionBox.innerHTML = ''; return; }
 
-      timeout = setTimeout(async () => {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE`;
+    timeout = setTimeout(async () => {
+      // WICHTIG: &accept-language=de erzwingt deutsche Namen (München statt Munich)
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
+      
+      try {
         const res = await fetch(url);
         const data = await res.json();
         suggestionBox.innerHTML = '';
 
         data.forEach(place => {
-          const div = document.createElement('div');
           const addr = place.address;
 
-          const streetFull = addr.road || addr.pedestrian || addr.cycleway || '';
+          // Wir bauen uns die Anzeige selbst zusammen, damit sie kurz ist
+          const road = addr.road || addr.pedestrian || addr.cycleway || '';
           const number = addr.house_number || '';
-          const postcode = addr.postcode || '';
+          const zip = addr.postcode || '';
           const city = addr.city || addr.town || addr.village || '';
-          const country = 'Deutschland';
-          const formatted = [streetFull, number].filter(p=>p).join(' ') + ', ' +
-                            [postcode, city].filter(p=>p).join(' ') + ', ' + country;
+          
+          // Wenn keine Straße gefunden wurde, überspringen wir das Ergebnis oft besser
+          if (!road) return;
 
-          div.textContent = formatted;
+          // Das ist der Text, den der User im Vorschlag sieht
+          // Format: Musterstraße 12, 80331 München
+          const displayText = `${road} ${number}, ${zip} ${city}`.trim().replace(/,$/, '');
+
+          const div = document.createElement('div');
+          div.textContent = displayText; // Kurze, saubere Anzeige
+          div.style.cursor = "pointer";
+          div.style.padding = "5px";
+
           div.addEventListener('click', () => {
-            // Unterfelder ausfüllen
-            document.getElementById('street').value = streetFull;
+            // Formularfelder befüllen
+            document.getElementById('street').value = road;
             document.getElementById('house_number').value = number;
-            document.getElementById('postcode').value = postcode;
+            document.getElementById('postcode').value = zip;
             document.getElementById('city').value = city;
-            document.getElementById('country').value = country;
+            document.getElementById('country').value = "Deutschland";
 
-            searchInput.value = formatted;
+            // Suchfeld leeren oder mit der Auswahl füllen (Geschmackssache)
+            searchInput.value = displayText; 
             suggestionBox.innerHTML = '';
           });
 
           suggestionBox.appendChild(div);
         });
-      }, 300);
-    });
-
-    document.addEventListener('click', e => {
-      if (!e.target.closest('fieldset')) suggestionBox.innerHTML = '';
-    });
-
-    // ===== PDF Button =====
-    const form = document.getElementById("pdfForm");
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      const data = Object.fromEntries(fd.entries());
-
-      // ===== Adresse für PDF formatieren =====
-      let pdfStreet = data.street.replace(/straße|Strasse|strasse/gi, 'str.');
-      const pdfNumber = data.house_number;
-      const pdfPostcode = data.postcode;
-      const pdfCity = data.city;
-      const pdfCountry = 'D';
-      data.addressForPDF = [pdfStreet, pdfNumber, pdfCountry, pdfPostcode, pdfCity].filter(p=>p).join(' ');
-
-      try {
-        const resp = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
-
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "generated.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-
-      } catch (err) {
-        alert("Fehler beim Generieren der PDF: " + err.message);
-        console.error(err);
+      } catch (e) {
+        console.error("OSM Fehler", e);
       }
-    });
-  </script>
-</body>
-</html>
+    }, 300);
+  });
+
+  // Schließen der Vorschläge beim Klick woanders hin
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.address-container')) suggestionBox.innerHTML = '';
+  });
+
+  // ===== PDF Generierung =====
+  const form = document.getElementById("pdfForm");
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const data = Object.fromEntries(fd.entries());
+
+    // HIER KEINE FORMATIERUNG MEHR! 
+    // Wir schicken die Daten so wie sie sind an den Worker.
+
+    try {
+      const resp = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (!resp.ok) {
+         const errText = await resp.text();
+         throw new Error(`Server error: ${resp.status} ${errText}`);
+      }
+
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "au_bescheinigung.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+    } catch (err) {
+      alert("Fehler: " + err.message);
+    }
+  });
+</script>
