@@ -9,7 +9,8 @@
     label { margin-bottom: 10px; }
     input, select, button { padding: 5px; font-size: 14px; width: 100%; }
     button { margin-top: 15px; }
-    /* Dropdown für Adressvorschläge */
+
+    /* Autocomplete */
     .address-container { position: relative; }
     #address-suggestions {
       border: 1px solid #ccc;
@@ -35,12 +36,21 @@
     <label>Vorname<input name="firstName" required></label>
     <label>Nachname<input name="lastName" required></label>
 
-    <label>Adresse
-      <div class="address-container">
-        <input id="address" name="address" placeholder="Straße, PLZ, Stadt" autocomplete="off">
-        <div id="address-suggestions"></div>
-      </div>
-    </label>
+    <fieldset>
+      <legend>Adresse</legend>
+      <label>Suchfeld
+        <div class="address-container">
+          <input id="address-search" placeholder="Adresse eingeben" autocomplete="off">
+          <div id="address-suggestions"></div>
+        </div>
+      </label>
+
+      <label>Straße<input id="street" name="street" required></label>
+      <label>Hausnummer<input id="house_number" name="house_number" required></label>
+      <label>Postleitzahl<input id="postcode" name="postcode" required></label>
+      <label>Stadt<input id="city" name="city" required></label>
+      <label>Land<input id="country" name="country" value="Deutschland" required></label>
+    </fieldset>
 
     <label>Krankenkasse
       <select name="insurance" required>
@@ -70,27 +80,25 @@
 
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
-
-    // ===== Datum maximal heute =====
     const today = new Date().toISOString().split("T")[0];
+
+    // Datum maximal heute
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[type="date"]').forEach(input => {
         input.setAttribute('max', today);
       });
     });
 
-    // ===== OpenStreetMap / Nominatim Autocomplete (volle Adresse anzeigen) =====
-    const addressInput = document.getElementById('address');
+    // ===== Autocomplete OpenStreetMap =====
+    const searchInput = document.getElementById('address-search');
     const suggestionBox = document.getElementById('address-suggestions');
 
     let timeout;
-    addressInput.addEventListener('input', () => {
+    searchInput.addEventListener('input', () => {
       clearTimeout(timeout);
-      const query = addressInput.value;
-      if (!query) {
-        suggestionBox.innerHTML = '';
-        return;
-      }
+      const query = searchInput.value;
+      if (!query) { suggestionBox.innerHTML = ''; return; }
+
       timeout = setTimeout(async () => {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE`;
         const res = await fetch(url);
@@ -101,20 +109,24 @@
           const div = document.createElement('div');
           const addr = place.address;
 
-          const street = addr.road || addr.pedestrian || addr.cycleway || '';
+          const streetFull = addr.road || addr.pedestrian || addr.cycleway || '';
           const number = addr.house_number || '';
           const postcode = addr.postcode || '';
           const city = addr.city || addr.town || addr.village || '';
           const country = 'Deutschland';
-
-          // Vollformat Vorschlag: Straße Hausnummer, PLZ Stadt, Deutschland
-          const formatted = [street, number].filter(p => p).join(' ') + 
-                            (postcode || city ? `, ${[postcode, city].filter(p => p).join(' ')}` : '') + 
-                            `, ${country}`;
+          const formatted = [streetFull, number].filter(p=>p).join(' ') + ', ' +
+                            [postcode, city].filter(p=>p).join(' ') + ', ' + country;
 
           div.textContent = formatted;
           div.addEventListener('click', () => {
-            addressInput.value = formatted;
+            // Unterfelder ausfüllen
+            document.getElementById('street').value = streetFull;
+            document.getElementById('house_number').value = number;
+            document.getElementById('postcode').value = postcode;
+            document.getElementById('city').value = city;
+            document.getElementById('country').value = country;
+
+            searchInput.value = formatted;
             suggestionBox.innerHTML = '';
           });
 
@@ -123,45 +135,24 @@
       }, 300);
     });
 
-    // Klick außerhalb schließt Vorschläge
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.address-container')) {
-        suggestionBox.innerHTML = '';
-      }
+    document.addEventListener('click', e => {
+      if (!e.target.closest('fieldset')) suggestionBox.innerHTML = '';
     });
 
     // ===== PDF Button =====
     const form = document.getElementById("pdfForm");
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
-      if (!addressInput.value) {
-        alert("Bitte Adresse eingeben oder auswählen!");
-        return;
-      }
-
       const fd = new FormData(form);
       const data = Object.fromEntries(fd.entries());
 
       // ===== Adresse für PDF formatieren =====
-      // Wir nehmen die normale Adresse, zerlegen und bauen Kurzform:
-      let pdfStreet = '';
-      let pdfNumber = '';
-      let pdfPostcode = '';
-      let pdfCity = '';
-      const addrParts = data.address.split(',');
-      if (addrParts.length >= 2) {
-        // Annahme: erste Teil = Straße + Nummer, zweite = PLZ Stadt
-        const first = addrParts[0].trim().split(' ');
-        pdfStreet = first.slice(0, -1).join(' '); // alles außer letzte = Straße
-        pdfNumber = first.slice(-1)[0] || '';
-        const second = addrParts[1].trim().split(' ');
-        pdfPostcode = second[0] || '';
-        pdfCity = second.slice(1).join(' ') || '';
-      }
-
-      // Straße abkürzen, str. klein
-      if (pdfStreet) pdfStreet = pdfStreet.replace(/straße|Strasse|strasse/gi, 'str.');
-      data.addressForPDF = [pdfStreet, pdfNumber, 'D', pdfPostcode, pdfCity].filter(p => p).join(' ');
+      let pdfStreet = data.street.replace(/straße|Strasse|strasse/gi, 'str.');
+      const pdfNumber = data.house_number;
+      const pdfPostcode = data.postcode;
+      const pdfCity = data.city;
+      const pdfCountry = 'D';
+      data.addressForPDF = [pdfStreet, pdfNumber, pdfCountry, pdfPostcode, pdfCity].filter(p=>p).join(' ');
 
       try {
         const resp = await fetch(WORKER_URL, {
@@ -170,10 +161,7 @@
           body: JSON.stringify(data)
         });
 
-        if (!resp.ok) {
-          const text = await resp.text();
-          throw new Error(`Server error: ${resp.status} ${text}`);
-        }
+        if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
 
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
