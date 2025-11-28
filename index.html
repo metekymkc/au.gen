@@ -1,91 +1,82 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PDF Generator</title>
+  <meta charset="UTF-8">
+  <title>AU PDF Generator</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      max-width: 700px; 
-      margin: 40px auto; 
-      padding: 0 16px;
-    }
-    label { display: block; margin-top: 12px; }
-    input, textarea { 
-      width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; 
-    }
-    button { margin-top: 16px; padding: 10px 16px; cursor: pointer; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    form { display: flex; flex-direction: column; max-width: 500px; }
+    label { margin-bottom: 10px; }
+    input, select, button { padding: 5px; font-size: 14px; width: 100%; }
+    button { margin-top: 15px; }
   </style>
 </head>
 <body>
-  <h1>Generate PDF</h1>
-
+  <h1>AU PDF Generator</h1>
   <form id="pdfForm">
-  <label>
-    Vorname
-    <input name="firstName" required />
-  </label>
+    <label>Vorname<input name="firstName" required></label>
+    <label>Nachname<input name="lastName" required></label>
+    <label>Adresse<input name="address" placeholder="Straße, PLZ, Stadt"></label>
+    <label>Krankenkasse
+      <select name="insurance" required>
+        <option value="">Bitte wählen</option>
+        <option value="AOK">AOK</option>
+        <option value="TK">Techniker Krankenkasse</option>
+        <option value="Barmer">Barmer</option>
+        <option value="DAK">DAK</option>
+      </select>
+    </label>
+    <label>Geburtsdatum<input name="birthDate" type="date" required></label>
+    <label>Versicherternnummer<input name="insuranceNumber"></label>
+    <label>Datum der AU Erstellung<input name="auDate" type="date"></label>
+    <label>Arbeitsunfähig seit<input name="auFrom" type="date"></label>
+    <label>Voraussichtlich arbeitsunfähig bis<input name="auTo" type="date"></label>
+    <label>Festgestellt am<input name="confirmedOn" type="date"></label>
+    <label>Art der Bescheinigung
+      <select name="certificateType">
+        <option value="first">Erstbescheinigung</option>
+        <option value="followup">Folgebescheinigung</option>
+      </select>
+    </label>
+    <button type="submit">PDF generieren</button>
+  </form>
 
-  <label>
-    Nachname
-    <input name="lastName" required />
-  </label>
+  <script>
+    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
+    const form = document.getElementById("pdfForm");
 
-  <label>
-    Adresse
-    <input name="address" id="addressInput" placeholder="Straße, PLZ, Stadt" />
-  </label>
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const data = Object.fromEntries(fd.entries());
 
-  <label>
-    Krankenkasse
-    <select name="insurance" required>
-      <option value="">Bitte wählen</option>
-      <option value="AOK">AOK</option>
-      <option value="TK">Techniker Krankenkasse</option>
-      <option value="Barmer">Barmer</option>
-      <option value="DAK">DAK</option>
-      <!-- hier weitere hinzufügen -->
-    </select>
-  </label>
+      try {
+        const resp = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
 
-  <label>
-    Geburtsdatum
-    <input name="birthDate" type="date" required />
-  </label>
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`Server error: ${resp.status} ${text}`);
+        }
 
-  <label>
-    Versicherternnummer
-    <input name="insuranceNumber" />
-  </label>
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "generated.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
 
-  <label>
-    Datum der AU Erstellung
-    <input name="auDate" type="date" />
-  </label>
-
-  <label>
-    Arbeitsunfähig seit
-    <input name="auFrom" type="date" />
-  </label>
-
-  <label>
-    Voraussichtlich arbeitsunfähig bis
-    <input name="auTo" type="date" />
-  </label>
-
-  <label>
-    Festgestellt am
-    <input name="confirmedOn" type="date" />
-  </label>
-
-  <label>
-  Art der Bescheinigung
-  <select name="certificateType">
-    <option value="first">Erstbescheinigung</option>
-    <option value="followup">Folgebescheinigung</option>
-  </select>
-</label>
-
-  <button type="submit">PDF generieren</button>
-</form>
+      } catch (err) {
+        alert("Fehler beim Generieren der PDF: " + err.message);
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
