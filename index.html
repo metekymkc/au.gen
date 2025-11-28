@@ -71,7 +71,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
 
-    // ===== Datum max heute =====
+    // ===== Datum maximal heute =====
     const today = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[type="date"]').forEach(input => {
@@ -79,7 +79,7 @@
       });
     });
 
-    // ===== OpenStreetMap / Nominatim Autocomplete mit Formatierung =====
+    // ===== OpenStreetMap / Nominatim Autocomplete mit gewünschtem Format =====
     const addressInput = document.getElementById('address');
     const suggestionBox = document.getElementById('address-suggestions');
 
@@ -99,19 +99,21 @@
 
         data.forEach(place => {
           const div = document.createElement('div');
-
           const addr = place.address;
-          let street = addr.road || '';
+
+          // Straße / Hausnummer
+          let street = addr.road || addr.pedestrian || addr.cycleway || '';
+          if (street) street = street.replace(/straße|Strasse|Strasse|strasse/gi, 'Str.');
           let number = addr.house_number || '';
+
+          // PLZ & Stadt
           let postcode = addr.postcode || '';
           let city = addr.city || addr.town || addr.village || '';
+
           const country = 'D';
 
-          // Straße abkürzen
-          street = street.replace(/straße|Strasse|Strasse|strasse/gi, 'Str.');
-
-          const formatted = `${street} ${number} ${country} ${postcode} ${city}`.replace(/\s+/g,' ').trim();
-
+          // Endformat: Straße Str. Nr. D PLZ Stadt
+          const formatted = [street, number, country, postcode, city].filter(p => p).join(' ').trim();
           div.textContent = formatted;
 
           div.addEventListener('click', () => {
