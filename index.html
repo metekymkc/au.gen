@@ -9,14 +9,15 @@
     label { margin-bottom: 10px; }
     input, select, button { padding: 5px; font-size: 14px; width: 100%; }
     button { margin-top: 15px; }
-    /* Dropdown für Vorschläge */
+    /* Dropdown für Adressvorschläge */
+    .address-container { position: relative; }
     #address-suggestions {
       border: 1px solid #ccc;
       max-height: 150px;
       overflow-y: auto;
       position: absolute;
       background: white;
-      width: 480px;
+      width: 100%;
       z-index: 1000;
     }
     #address-suggestions div {
@@ -26,7 +27,6 @@
     #address-suggestions div:hover {
       background-color: #eee;
     }
-    .address-container { position: relative; }
   </style>
 </head>
 <body>
@@ -108,11 +108,17 @@
       }, 300); // debounce 300ms
     });
 
+    // Klick außerhalb schließt Vorschläge
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.address-container')) {
+        suggestionBox.innerHTML = '';
+      }
+    });
+
     // ===== PDF Button =====
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       if (!addressInput.value) {
         alert("Bitte Adresse eingeben oder auswählen!");
         return;
@@ -146,13 +152,6 @@
       } catch (err) {
         alert("Fehler beim Generieren der PDF: " + err.message);
         console.error(err);
-      }
-    });
-
-    // Klick außerhalb der Vorschläge schließt die Box
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.address-container')) {
-        suggestionBox.innerHTML = '';
       }
     });
   </script>
