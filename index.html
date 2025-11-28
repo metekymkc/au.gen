@@ -10,13 +10,16 @@
     input, select, button { padding: 5px; font-size: 14px; width: 100%; }
     button { margin-top: 15px; }
   </style>
+
+  <!-- Google Places API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIeIkiezrTyIvNqOjAq5ymh1fUQ65xk3M&libraries=places"></script>
 </head>
 <body>
   <h1>AU PDF Generator</h1>
   <form id="pdfForm">
     <label>Vorname<input name="firstName" required></label>
     <label>Nachname<input name="lastName" required></label>
-    <label>Adresse<input name="address" placeholder="Straße, PLZ, Stadt"></label>
+    <label>Adresse<input id="address" name="address" placeholder="Straße, PLZ, Stadt" required></label>
     <label>Krankenkasse
       <select name="insurance" required>
         <option value="">Bitte wählen</option>
@@ -41,6 +44,67 @@
     <button type="submit">PDF generieren</button>
   </form>
 
-  <script src="script.js"></script>
+  <script>
+    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Worker URL anpassen
+
+    // ===== Datum max auf heute =====
+    const today = new Date().toISOString().split("T")[0];
+    document.querySelectorAll('input[type="date"]').forEach(input => {
+      input.setAttribute('max', today);
+    });
+
+    // ===== Google Places Autocomplete =====
+    function initAutocomplete() {
+      const input = document.getElementById('address');
+      const autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['address'],
+        componentRestrictions: { country: 'de' }
+      });
+
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        // Optional: Du kannst hier Lat/Lng speichern, wenn nötig
+        console.log("Adresse gewählt:", place.formatted_address);
+      });
+    }
+
+    window.onload = initAutocomplete;
+
+    // ===== PDF Button =====
+    const form = document.getElementById("pdfForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const data = Object.fromEntries(fd.entries());
+
+      try {
+        const resp = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`Server error: ${resp.status} ${text}`);
+        }
+
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "generated.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+      } catch (err) {
+        alert("Fehler beim Generieren der PDF: " + err.message);
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 </html>
