@@ -1,183 +1,129 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>AU PDF Generator</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    form { display: flex; flex-direction: column; max-width: 500px; }
-    label { margin-bottom: 10px; }
-    input, select, button { padding: 5px; font-size: 14px; width: 100%; }
-    button { margin-top: 15px; }
-
-    /* Autocomplete */
-    .address-container { position: relative; }
-    #address-suggestions {
-      border: 1px solid #ccc;
-      max-height: 150px;
-      overflow-y: auto;
-      position: absolute;
-      background: white;
-      width: 100%;
-      z-index: 1000;
-    }
-    #address-suggestions div {
-      padding: 5px;
-      cursor: pointer;
-    }
-    #address-suggestions div:hover {
-      background-color: #eee;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>AU Generator</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+  label { display: block; margin-top: 10px; }
+  input, select { padding: 5px; width: 300px; }
+  #autocomplete-list { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; background: #fff; position: absolute; z-index: 1000; }
+  #autocomplete-list div { padding: 5px; cursor: pointer; }
+  #autocomplete-list div:hover { background: #eee; }
+  button { margin-top: 20px; padding: 10px 20px; }
+</style>
 </head>
 <body>
-  <h1>AU PDF Generator</h1>
-  <form id="pdfForm">
-    <label>Vorname<input name="firstName" required></label>
-    <label>Nachname<input name="lastName" required></label>
+<h1>AU PDF Generator</h1>
+<form id="auForm">
+  <label>Vorname: <input type="text" name="firstName" required></label>
+  <label>Nachname: <input type="text" name="lastName" required></label>
 
-    <fieldset>
-      <legend>Adresse</legend>
-      <label>Suchfeld
-        <div class="address-container">
-          <input id="address-search" placeholder="Adresse eingeben" autocomplete="off">
-          <div id="address-suggestions"></div>
-        </div>
-      </label>
+  <h3>Adresse</h3>
+  <label>Straße: <input type="text" id="street" name="street" required></label>
+  <label>Hausnummer: <input type="text" id="houseNumber" name="houseNumber" required></label>
+  <label>PLZ: <input type="text" id="zip" name="zip" required></label>
+  <label>Stadt: <input type="text" id="city" name="city" required></label>
+  <label>Land: <input type="text" id="countryCode" name="countryCode" value="D" required></label>
 
-      <label>Straße<input id="street" name="street" required></label>
-      <label>Hausnummer<input id="house_number" name="house_number" required></label>
-      <label>Postleitzahl<input id="postcode" name="postcode" required></label>
-      <label>Stadt<input id="city" name="city" required></label>
-      <label>Land<input id="country" name="country" value="Deutschland" required></label>
-    </fieldset>
+  <label>Krankenkasse:
+    <select name="insurance" required>
+      <option value="AOK">AOK</option>
+      <option value="TK">TK</option>
+      <option value="Barmer">Barmer</option>
+    </select>
+  </label>
 
-    <label>Krankenkasse
-      <select name="insurance" required>
-        <option value="">Bitte wählen</option>
-        <option value="AOK">AOK</option>
-        <option value="TK">Techniker Krankenkasse</option>
-        <option value="Barmer">Barmer</option>
-        <option value="DAK">DAK</option>
-      </select>
-    </label>
+  <label>Geburtsdatum: <input type="date" name="birthDate" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Versichertennummer: <input type="text" name="insuranceNumber" required></label>
 
-    <label>Geburtsdatum<input name="birthDate" type="date" required></label>
-    <label>Versicherternnummer<input name="insuranceNumber"></label>
-    <label>Datum der AU Erstellung<input name="auDate" type="date"></label>
-    <label>Arbeitsunfähig seit<input name="auFrom" type="date"></label>
-    <label>Voraussichtlich arbeitsunfähig bis<input name="auTo" type="date"></label>
-    <label>Festgestellt am<input name="confirmedOn" type="date"></label>
-    <label>Art der Bescheinigung
-      <select name="certificateType">
-        <option value="first">Erstbescheinigung</option>
-        <option value="followup">Folgebescheinigung</option>
-      </select>
-    </label>
+  <h3>AU Daten</h3>
+  <label>Datum AU erstellt: <input type="date" name="auDate" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Arbeitsunfähig seit: <input type="date" name="auFrom" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Voraussichtlich arbeitsunfähig bis: <input type="date" name="auTo" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Festgestellt am: <input type="date" name="confirmedOn" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
 
-    <button type="submit">PDF generieren</button>
-  </form>
+  <label>Bescheinigung:
+    <select name="certificateType" required>
+      <option value="first">Erstbescheinigung</option>
+      <option value="followup">Folgebescheinigung</option>
+    </select>
+  </label>
 
-  <script>
-    const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
-    const today = new Date().toISOString().split("T")[0];
+  <button type="submit">PDF generieren</button>
+</form>
 
-    // Datum maximal heute
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('input[type="date"]').forEach(input => {
-        input.setAttribute('max', today);
-      });
-    });
+<script>
+const streetInput = document.getElementById('street');
+const houseInput = document.getElementById('houseNumber');
+const zipInput = document.getElementById('zip');
+const cityInput = document.getElementById('city');
+const countryInput = document.getElementById('countryCode');
 
-    // ===== Autocomplete OpenStreetMap =====
-    const searchInput = document.getElementById('address-search');
-    const suggestionBox = document.getElementById('address-suggestions');
+let currentFocus;
 
-    let timeout;
-    searchInput.addEventListener('input', () => {
-      clearTimeout(timeout);
-      const query = searchInput.value;
-      if (!query) { suggestionBox.innerHTML = ''; return; }
+streetInput.addEventListener('input', async function() {
+  const val = this.value;
+  closeAllLists();
+  if (!val) return false;
 
-      timeout = setTimeout(async () => {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE`;
-        const res = await fetch(url);
-        const data = await res.json();
-        suggestionBox.innerHTML = '';
+  const listContainer = document.createElement("div");
+  listContainer.setAttribute("id", "autocomplete-list");
+  this.parentNode.appendChild(listContainer);
 
-        data.forEach(place => {
-          const div = document.createElement('div');
-          const addr = place.address;
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(val)}`);
+  const data = await res.json();
 
-          const streetFull = addr.road || addr.pedestrian || addr.cycleway || '';
-          const number = addr.house_number || '';
-          const postcode = addr.postcode || '';
-          const city = addr.city || addr.town || addr.village || '';
-          const country = 'Deutschland';
-          const formatted = [streetFull, number].filter(p=>p).join(' ') + ', ' +
-                            [postcode, city].filter(p=>p).join(' ') + ', ' + country;
-
-          div.textContent = formatted;
-          div.addEventListener('click', () => {
-            // Unterfelder ausfüllen
-            document.getElementById('street').value = streetFull;
-            document.getElementById('house_number').value = number;
-            document.getElementById('postcode').value = postcode;
-            document.getElementById('city').value = city;
-            document.getElementById('country').value = country;
-
-            searchInput.value = formatted;
-            suggestionBox.innerHTML = '';
-          });
-
-          suggestionBox.appendChild(div);
-        });
-      }, 300);
-    });
-
-    document.addEventListener('click', e => {
-      if (!e.target.closest('fieldset')) suggestionBox.innerHTML = '';
-    });
-
-    // ===== PDF Button =====
-    const form = document.getElementById("pdfForm");
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const fd = new FormData(form);
-      const data = Object.fromEntries(fd.entries());
-
-      // ===== Adresse für PDF formatieren =====
-      let pdfStreet = data.street.replace(/straße|Strasse|strasse/gi, 'str.');
-      const pdfNumber = data.house_number;
-      const pdfPostcode = data.postcode;
-      const pdfCity = data.city;
-      const pdfCountry = 'D';
-      data.addressForPDF = [pdfStreet, pdfNumber, pdfCountry, pdfPostcode, pdfCity].filter(p=>p).join(' ');
-
-      try {
-        const resp = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
-
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "generated.pdf";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-
-      } catch (err) {
-        alert("Fehler beim Generieren der PDF: " + err.message);
-        console.error(err);
+  data.forEach(item => {
+    const div = document.createElement("div");
+    div.innerHTML = item.display_name;
+    div.addEventListener("click", function() {
+      if(item.address) {
+        streetInput.value = item.address.road || '';
+        houseInput.value = item.address.house_number || '';
+        zipInput.value = item.address.postcode || '';
+        cityInput.value = item.address.city || item.address.town || item.address.village || '';
+        countryInput.value = item.address.country_code ? item.address.country_code.toUpperCase() : 'D';
       }
+      closeAllLists();
     });
-  </script>
+    listContainer.appendChild(div);
+  });
+});
+
+function closeAllLists() {
+  const lists = document.getElementsByClassName("autocomplete-items");
+  for (let i = 0; i < lists.length; i++) {
+    lists[i].parentNode.removeChild(lists[i]);
+  }
+  const oldList = document.getElementById("autocomplete-list");
+  if (oldList) oldList.parentNode.removeChild(oldList);
+}
+
+document.getElementById('auForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const jsonData = {};
+  formData.forEach((value, key) => jsonData[key] = value);
+
+  const res = await fetch('https://pdf-worker.metekymkc.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(jsonData)
+  });
+
+  if (res.ok) {
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'AU.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  } else {
+    alert("PDF konnte nicht erstellt werden.");
+  }
+});
+</script>
 </body>
 </html>
