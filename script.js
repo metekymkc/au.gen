@@ -3,8 +3,7 @@ const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
 const form = document.getElementById("pdfForm");
 
 form.addEventListener("submit", async (e) => {
-  e.preventDefault(); // Verhindert Seitenreload
-
+  e.preventDefault();
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
 
