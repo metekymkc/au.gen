@@ -79,7 +79,7 @@
       });
     });
 
-    // ===== OpenStreetMap / Nominatim Autocomplete =====
+    // ===== OpenStreetMap / Nominatim Autocomplete mit Formatierung =====
     const addressInput = document.getElementById('address');
     const suggestionBox = document.getElementById('address-suggestions');
 
@@ -96,16 +96,32 @@
         const res = await fetch(url);
         const data = await res.json();
         suggestionBox.innerHTML = '';
+
         data.forEach(place => {
           const div = document.createElement('div');
-          div.textContent = place.display_name;
+
+          const addr = place.address;
+          let street = addr.road || '';
+          let number = addr.house_number || '';
+          let postcode = addr.postcode || '';
+          let city = addr.city || addr.town || addr.village || '';
+          const country = 'D';
+
+          // Straße abkürzen
+          street = street.replace(/straße|Strasse|Strasse|strasse/gi, 'Str.');
+
+          const formatted = `${street} ${number} ${country} ${postcode} ${city}`.replace(/\s+/g,' ').trim();
+
+          div.textContent = formatted;
+
           div.addEventListener('click', () => {
-            addressInput.value = place.display_name;
+            addressInput.value = formatted;
             suggestionBox.innerHTML = '';
           });
+
           suggestionBox.appendChild(div);
         });
-      }, 300); // debounce 300ms
+      }, 300);
     });
 
     // Klick außerhalb schließt Vorschläge
