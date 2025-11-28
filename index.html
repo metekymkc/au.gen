@@ -34,14 +34,14 @@
     </select>
   </label>
 
-  <label>Geburtsdatum: <input type="date" name="birthDate" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Geburtsdatum: <input type="date" name="birthDate" required></label>
   <label>Versichertennummer: <input type="text" name="insuranceNumber" required></label>
 
   <h3>AU Daten</h3>
-  <label>Datum AU erstellt: <input type="date" name="auDate" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
-  <label>Arbeitsunfähig seit: <input type="date" name="auFrom" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
-  <label>Voraussichtlich arbeitsunfähig bis: <input type="date" name="auTo" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
-  <label>Festgestellt am: <input type="date" name="confirmedOn" max="<?= new Date().toISOString().split('T')[0] ?>" required></label>
+  <label>Datum AU erstellt: <input type="date" name="auDate" required></label>
+  <label>Arbeitsunfähig seit: <input type="date" name="auFrom" required></label>
+  <label>Voraussichtlich arbeitsunfähig bis: <input type="date" name="auTo" required></label>
+  <label>Festgestellt am: <input type="date" name="confirmedOn" required></label>
 
   <label>Bescheinigung:
     <select name="certificateType" required>
@@ -60,22 +60,21 @@ const zipInput = document.getElementById('zip');
 const cityInput = document.getElementById('city');
 const countryInput = document.getElementById('countryCode');
 
-let currentFocus;
-
 streetInput.addEventListener('input', async function() {
   const val = this.value;
   closeAllLists();
-  if (!val) return false;
+  if (!val) return;
 
   const listContainer = document.createElement("div");
   listContainer.setAttribute("id", "autocomplete-list");
   this.parentNode.appendChild(listContainer);
 
-  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(val)}`);
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=${encodeURIComponent(val)}`);
   const data = await res.json();
 
   data.forEach(item => {
     const div = document.createElement("div");
+    // Full address for user selection
     div.innerHTML = item.display_name;
     div.addEventListener("click", function() {
       if(item.address) {
@@ -92,10 +91,6 @@ streetInput.addEventListener('input', async function() {
 });
 
 function closeAllLists() {
-  const lists = document.getElementsByClassName("autocomplete-items");
-  for (let i = 0; i < lists.length; i++) {
-    lists[i].parentNode.removeChild(lists[i]);
-  }
   const oldList = document.getElementById("autocomplete-list");
   if (oldList) oldList.parentNode.removeChild(oldList);
 }
