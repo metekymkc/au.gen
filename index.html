@@ -4,21 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AU Generator Pro</title>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
-
   <style>
     :root {
       --primary: #2563eb;
+      --primary-hover: #1d4ed8;
       --bg-color: #f3f4f6;
       --card-bg: #ffffff;
-      --input-bg: #f9fafb; /* Leichter Hintergrund für Inputs */
-      --text-main: #111827;
+      --text-main: #1f2937;
       --text-muted: #6b7280;
-      --border-color: #d1d5db;
+      --border-color: #e5e7eb;
       --radius: 8px;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
     * { box-sizing: border-box; }
@@ -35,19 +31,20 @@
       padding: 20px;
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(15px); }
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .container {
       background: var(--card-bg);
-      padding: 2.5rem;
+      padding: 2rem;
       border-radius: 12px;
       box-shadow: var(--shadow);
       width: 100%;
-      max-width: 700px;
-      animation: slideUp 0.4s ease-out;
+      max-width: 650px;
+      animation: fadeIn 0.6s ease-out;
     }
 
     h1 {
@@ -55,142 +52,120 @@
       margin-top: 0;
       color: var(--primary);
       font-size: 1.8rem;
-      margin-bottom: 2rem;
-      font-weight: 700;
+      margin-bottom: 1.5rem;
     }
 
     /* Grid Layout */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
+      gap: 15px;
     }
 
     .full-width { grid-column: span 2; }
-    .three-quarter { grid-column: span 1.5; }
-    .one-quarter { grid-column: span 0.5; }
+    .three-quarter { grid-column: span 1.5; } 
+    .one-quarter { grid-column: span 0.5; }   
 
-    /* Labels */
+    /* Labels & Inputs */
     label {
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
-      color: #374151;
+      color: var(--text-muted);
       margin-bottom: 5px;
     }
 
-    /* --- INPUTS & SELECTS --- */
     input, select {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: var(--radius);
       font-size: 0.95rem;
-      font-family: inherit;
-      color: var(--text-main);
-      background-color: var(--input-bg); /* Hintergrund geändert */
       transition: all 0.2s;
-      height: 42px;
+      background: #f9fafb;
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
-      background-color: #fff; /* Bei Fokus weiß */
+      background: #fff;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    /* Select Arrow Fix */
+    /* --- CUSTOM DROPDOWN STYLE --- */
     select {
       appearance: none;
       -webkit-appearance: none;
+      -moz-appearance: none;
       cursor: pointer;
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
-      background-position: right 10px center;
+      background-position: right 20px center; /* Pfeil etwas nach links verschoben */
       background-size: 16px;
-      padding-right: 35px;
+      padding-right: 45px;
     }
 
-    /* --- DIGITAL FONT FÜR DATUM (Diagnose) --- */
-    .digital-font + input, /* Wenn Flatpickr aktiv ist, ist das Input ein Sibling */
-    input.digital-font {
-        font-family: 'Courier New', Courier, monospace; /* Digitaler Look */
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-    /* Flatpickr erstellt ein zweites Input-Feld (altInput), wir müssen dieses stylen */
-    .flatpickr-input[readonly] {
-        /* Standardmäßig erbt es, aber wir erzwingen es hier für die digitalen Felder */
-    }
-    /* Spezifische Klasse für die "digitalen" Inputs, die von Flatpickr generiert werden */
-    .digital-input-active {
-        font-family: 'Courier New', Courier, monospace !important;
-        font-weight: 600;
-        letter-spacing: -0.5px;
-    }
-
-
-    /* --- FLATPICKR COMPACT & CLEAN STYLE --- */
-    .flatpickr-calendar {
-        font-family: 'Segoe UI', sans-serif !important;
-        width: 260px !important; /* Kompakter */
-        padding: 5px !important;
-    }
-    .flatpickr-days { width: 260px !important; }
-    .dayContainer { width: 260px !important; min-width: 260px !important; max-width: 260px !important; }
-    .flatpickr-day {
-        height: 32px !important;
-        line-height: 32px !important;
-        margin: 1px !important;
-    }
-    .flatpickr-current-month { padding-top: 10px !important; font-size: 100% !important; }
-    .flatpickr-day.selected {
-        background: var(--primary) !important;
-        border-color: var(--primary) !important;
-    }
 
     /* Section Divider */
     .section-title {
       grid-column: span 2;
       font-size: 1rem;
-      /* text-transform removed (nicht kapitalisiert) */
-      color: #111827; /* Schwarz */
-      border-bottom: 2px solid #e5e7eb;
+      color: var(--text-main);
+      border-bottom: 2px solid var(--bg-color);
       padding-bottom: 5px;
-      margin-top: 30px;
+      margin-top: 25px;
       margin-bottom: 15px;
-      font-weight: 700;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* Address Search */
-    .input-icon-wrapper { position: relative; width: 100%; }
-    .input-icon-wrapper input { padding-right: 40px; }
+    /* Wrapper für Icons im Input (Lupe) */
+    .input-icon-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    
+    .input-icon-wrapper input {
+      padding-right: 35px; 
+    }
+
     .search-icon {
       position: absolute;
       right: 12px;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%); 
       color: #9ca3af;
       pointer-events: none;
     }
 
+    /* Address Suggestions */
     #address-suggestions {
       position: absolute;
-      top: 105%;
+      top: 100%;
       left: 0;
       right: 0;
       background: white;
       border: 1px solid var(--border-color);
-      border-radius: 6px;
+      border-radius: var(--radius);
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      z-index: 100;
-      max-height: 250px;
+      z-index: 50;
+      max-height: 200px;
       overflow-y: auto;
-      display: none;
+      margin-top: 5px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      pointer-events: none;
     }
-    #address-suggestions.active { display: block; }
-    
+
+    #address-suggestions.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
     .suggestion-item {
       padding: 10px 15px;
       cursor: pointer;
@@ -198,66 +173,55 @@
       font-size: 0.9rem;
       display: flex;
       align-items: center;
-      background: #fff;
     }
-    .suggestion-item:hover { background-color: #f3f4f6; }
-    .suggestion-icon { margin-right: 10px; font-size: 1.1em; }
+    .suggestion-item:hover { background-color: #eff6ff; color: var(--primary); }
+    .suggestion-icon { margin-right: 10px; font-size: 1.2em; }
 
-    /* Date Group & Today Button */
-    .date-group { display: flex; gap: 8px; }
-    .date-input-wrapper { position: relative; width: 100%; }
+    /* Date Input Group with "Today" Button */
+    .date-group {
+      display: flex;
+      gap: 5px;
+    }
     
-    .calendar-icon {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      width: 18px;
-      height: 18px;
-      opacity: 0.5;
-    }
-
     .today-btn {
-      padding: 0 15px;
+      padding: 0 10px;
       font-size: 0.8rem;
-      font-weight: 600;
       background-color: #e5e7eb;
       color: #374151;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
+      border-radius: var(--radius);
       cursor: pointer;
       white-space: nowrap;
-      height: 42px;
-      transition: all 0.2s;
+      transition: background 0.2s;
     }
-    .today-btn:hover { background-color: #d1d5db; color: #000; }
+    .today-btn:hover { background-color: #d1d5db; }
 
+    /* Main Submit Button */
     button[type="submit"] {
       background-color: var(--primary);
       color: white;
       border: none;
       padding: 12px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: var(--radius);
       cursor: pointer;
-      margin-top: 30px;
-      transition: background 0.2s;
-      height: 50px;
+      margin-top: 20px;
+      transition: background 0.2s, transform 0.1s;
     }
-    button[type="submit"]:hover { background-color: #1d4ed8; }
-    button[type="submit"]:disabled { opacity: 0.7; cursor: not-allowed; }
+    button[type="submit"]:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    button[type="submit"]:active { transform: translateY(0); }
 
+    /* Spinner */
     .spinner {
       display: none;
-      width: 18px;
-      height: 18px;
-      border: 3px solid #ffffff;
-      border-top: 3px solid transparent;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-top: 2px solid transparent;
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-right: 10px;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
       vertical-align: middle;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -271,7 +235,7 @@
     <h1>📄 AU Generator</h1>
     <form id="pdfForm" class="form-grid">
       
-      <div class="section-title">Person & Versicherung</div>
+      <div class="section-title">👤 Patient & Versicherung</div>
 
       <div>
         <label>Vorname</label>
@@ -284,10 +248,7 @@
 
       <div>
         <label>Geburtsdatum</label>
-        <div class="date-input-wrapper">
-            <input name="birthDate" class="datepicker" placeholder="TT.MM.JJJJ" required>
-            <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-        </div>
+        <input name="birthDate" type="date" required>
       </div>
       <div>
         <label>Versichertennummer</label>
@@ -306,10 +267,9 @@
         </select>
       </div>
 
-      <div class="section-title">Anschrift</div>
+      <div class="section-title">📍 Anschrift</div>
       
-      <div class="full-width" style="position: relative;">
-        <label>Adress-Suche (Autofill)</label>
+      <div class="full-width" style="position: relative;"> <label>Automatische Adress-Suche</label>
         <div class="input-icon-wrapper">
           <input id="address-search" placeholder="Straße und Hausnummer eingeben..." autocomplete="off">
           <span class="search-icon">🔍</span>
@@ -334,19 +294,15 @@
         <label>Stadt</label>
         <input id="city" name="city" required>
       </div>
-      <div style="display:none;">
-        <input id="country" name="country" value="Deutschland">
+      <div style="display:none;"> <input id="country" name="country" value="Deutschland">
       </div>
 
-      <div class="section-title">Diagnose & Zeitraum</div>
+      <div class="section-title">📅 Diagnose & Zeitraum</div>
 
       <div class="full-width">
         <label>Festgestellt am</label>
         <div class="date-group">
-            <div class="date-input-wrapper">
-                <input name="confirmedOn" class="datepicker digital-font" id="dateConfirmed" placeholder="TT.MM.JJJJ">
-                <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </div>
+            <input name="confirmedOn" type="date" id="dateConfirmed">
             <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
         </div>
       </div>
@@ -354,20 +310,14 @@
       <div>
         <label>Arbeitsunfähig seit</label>
         <div class="date-group">
-            <div class="date-input-wrapper">
-                <input name="auFrom" class="datepicker digital-font" id="dateFrom" placeholder="TT.MM.JJJJ">
-                <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </div>
+            <input name="auFrom" type="date" id="dateFrom">
             <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
         </div>
       </div>
       <div>
         <label>Voraussichtlich bis</label>
         <div class="date-group">
-            <div class="date-input-wrapper">
-                <input name="auTo" class="datepicker digital-font" id="dateTo" placeholder="TT.MM.JJJJ">
-                <svg class="calendar-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </div>
+            <input name="auTo" type="date" id="dateTo">
             <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
         </div>
       </div>
@@ -388,52 +338,32 @@
     </form>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
-
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // 1. Flatpickr Initialisierung
-    const dateConfig = {
-        locale: "de",
-        dateFormat: "Y-m-d",
-        altInput: true,
-        altFormat: "d.m.Y",
-        allowInput: true,
-        disableMobile: "true",
-        // Hook um die digitale Font-Klasse auf das sichtbare Input zu übertragen
-        onReady: function(selectedDates, dateStr, instance) {
-            if(instance.element.classList.contains('digital-font')) {
-                instance.altInput.classList.add('digital-input-active');
-            }
-        }
-    };
-
-    flatpickr(".datepicker", dateConfig);
-
-    // FIX: HEUTE BUTTON
+    // Helper: Set input to today
     function setToday(elementId) {
-      // Wir holen das Element. Da Flatpickr das Original versteckt, ist der Zugriff über ID korrekt,
-      // da die ID am versteckten Original hängt, an dem auch die Flatpickr-Instanz hängt.
-      const el = document.getElementById(elementId);
-      if (el && el._flatpickr) {
-        el._flatpickr.setDate(new Date(), true);
-      } else {
-        console.error("Flatpickr nicht gefunden für ID:", elementId);
-      }
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById(elementId).value = today;
     }
 
-    // Max Date setzen
+    // Set max date for inputs to today
+    const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
-        const today = new Date();
-        const birthEl = document.querySelector('input[name="birthDate"]');
-        if(birthEl && birthEl._flatpickr) birthEl._flatpickr.set('maxDate', today);
-        const confirmEl = document.querySelector('input[name="confirmedOn"]');
-        if(confirmEl && confirmEl._flatpickr) confirmEl._flatpickr.set('maxDate', today);
+      document.querySelectorAll('input[type="date"]').forEach(input => {
+        // Optional: Max Date auf heute setzen (außer "bis")
+        if(input.name !== 'auTo') input.setAttribute('max', todayStr);
+      });
+
+      // --- NEU: Dropdowns direkt nach Auswahl "entfokussieren" ---
+      document.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', () => {
+          select.blur(); // Entfernt den Fokus (blauen Rand) sofort
+        });
+      });
     });
 
-    // 2. Autocomplete Logic
+    // ===== Modern Autocomplete Logic =====
     const searchInput = document.getElementById('address-search');
     const suggestionBox = document.getElementById('address-suggestions');
     let timeout;
@@ -441,49 +371,75 @@
     searchInput.addEventListener('input', () => {
       clearTimeout(timeout);
       const query = searchInput.value.trim();
-      if (query.length < 3) { suggestionBox.classList.remove('active'); return; }
+      
+      if (query.length < 3) { 
+        suggestionBox.classList.remove('active'); 
+        return; 
+      }
 
       timeout = setTimeout(async () => {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
+        
         try {
           const res = await fetch(url);
           const data = await res.json();
           suggestionBox.innerHTML = '';
+
           if (data.length > 0) {
             suggestionBox.classList.add('active');
+            
             data.forEach(place => {
               const addr = place.address;
               const road = addr.road || addr.pedestrian || '';
               const number = addr.house_number || '';
               const zip = addr.postcode || '';
               const city = addr.city || addr.town || addr.village || '';
+              
               if (!road) return;
+
               const mainText = `${road} ${number}`;
               const subText = `${zip} ${city}`;
-              
+
               const div = document.createElement('div');
               div.className = 'suggestion-item';
-              div.innerHTML = `<span class="suggestion-icon">📍</span><div><div style="font-weight:600;">${mainText}</div><div style="font-size:0.85em; color:#6b7280;">${subText}</div></div>`;
+              div.innerHTML = `
+                <span class="suggestion-icon">📍</span>
+                <div>
+                  <div style="font-weight:600;">${mainText}</div>
+                  <div style="font-size:0.8em; color:#6b7280;">${subText}</div>
+                </div>
+              `;
+              
               div.addEventListener('click', () => {
                 document.getElementById('street').value = road;
                 document.getElementById('house_number').value = number;
                 document.getElementById('postcode').value = zip;
                 document.getElementById('city').value = city;
+                
                 searchInput.value = `${mainText}, ${subText}`;
                 suggestionBox.classList.remove('active');
               });
+
               suggestionBox.appendChild(div);
             });
-          } else { suggestionBox.classList.remove('active'); }
-        } catch (e) { console.error(e); }
+          } else {
+            suggestionBox.classList.remove('active');
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }, 300);
     });
 
+    // Close on click outside
     document.addEventListener('click', e => {
-      if (!e.target.closest('.full-width')) suggestionBox.classList.remove('active');
+      // Wenn Klick nicht innerhalb des Wrappers war
+      if (!e.target.closest('.full-width')) {
+        suggestionBox.classList.remove('active');
+      }
     });
 
-    // 3. Submit Logic
+    // ===== Submit Logic =====
     const form = document.getElementById("pdfForm");
     const btn = document.getElementById("submitBtn");
     const spinner = document.getElementById("spinner");
@@ -491,6 +447,7 @@
 
     form.addEventListener("submit", async e => {
       e.preventDefault();
+      
       btn.disabled = true;
       spinner.style.display = "inline-block";
       btnContent.textContent = "Generiere...";
@@ -521,6 +478,7 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+
       } catch (err) {
         alert("Fehler: " + err.message);
       } finally {
