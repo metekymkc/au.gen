@@ -49,13 +49,17 @@
 
     // ===== Datum max auf heute =====
     const today = new Date().toISOString().split("T")[0];
-    document.querySelectorAll('input[type="date"]').forEach(input => {
-      input.setAttribute('max', today);
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[type="date"]').forEach(input => {
+        input.setAttribute('max', today);
+      });
     });
 
     // ===== Google Places Autocomplete =====
     function initAutocomplete() {
       const input = document.getElementById('address');
+      if (!input) return;
+
       const autocomplete = new google.maps.places.Autocomplete(input, {
         types: ['address'],
         componentRestrictions: { country: 'de' }
@@ -63,12 +67,11 @@
 
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
-        // Optional: Du kannst hier Lat/Lng speichern, wenn nötig
         console.log("Adresse gewählt:", place.formatted_address);
       });
     }
 
-    window.onload = initAutocomplete;
+    document.addEventListener('DOMContentLoaded', initAutocomplete);
 
     // ===== PDF Button =====
     const form = document.getElementById("pdfForm");
