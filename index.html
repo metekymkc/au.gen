@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <title>AU Generator</title>
 <style>
-  body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
-  label { display: block; margin-top: 10px; }
-  input, select { padding: 5px; width: 300px; }
-  #autocomplete-list { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; background: #fff; position: absolute; z-index: 1000; }
-  #autocomplete-list div { padding: 5px; cursor: pointer; }
-  #autocomplete-list div:hover { background: #eee; }
-  button { margin-top: 20px; padding: 10px 20px; }
+body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+label { display: block; margin-top: 10px; }
+input, select { padding: 5px; width: 300px; }
+#autocomplete-list { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; background: #fff; position: absolute; z-index: 1000; }
+#autocomplete-list div { padding: 5px; cursor: pointer; }
+#autocomplete-list div:hover { background: #eee; }
+button { margin-top: 20px; padding: 10px 20px; }
 </style>
 </head>
 <body>
@@ -74,16 +74,14 @@ streetInput.addEventListener('input', async function() {
 
   data.forEach(item => {
     const div = document.createElement("div");
-    // Full address for user selection
     div.innerHTML = item.display_name;
     div.addEventListener("click", function() {
-      if(item.address) {
-        streetInput.value = item.address.road || '';
-        houseInput.value = item.address.house_number || '';
-        zipInput.value = item.address.postcode || '';
-        cityInput.value = item.address.city || item.address.town || item.address.village || '';
-        countryInput.value = item.address.country_code ? item.address.country_code.toUpperCase() : 'D';
-      }
+      const addr = item.address || {};
+      streetInput.value = addr.road || '';
+      houseInput.value = addr.house_number || '';
+      zipInput.value = addr.postcode || '';
+      cityInput.value = addr.city || addr.town || addr.village || '';
+      countryInput.value = addr.country_code ? addr.country_code.toUpperCase() : 'D';
       closeAllLists();
     });
     listContainer.appendChild(div);
@@ -98,8 +96,18 @@ function closeAllLists() {
 document.getElementById('auForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const formData = new FormData(this);
+
+  // PDF Address Format
+  const street = formData.get('street').replace(/straße$/i,'str.');
+  const houseNumber = formData.get('houseNumber').replace(/([a-z])/g, l => l.toUpperCase());
+  const zip = formData.get('zip');
+  const city = formData.get('city');
+  const countryCode = formData.get('countryCode') || 'D';
+  const addressForPDF = `${street} ${houseNumber}, ${zip} ${city}, ${countryCode}`;
+
   const jsonData = {};
-  formData.forEach((value, key) => jsonData[key] = value);
+  formData.forEach((v,k)=>jsonData[k]=v);
+  jsonData.addressForPDF = addressForPDF;
 
   const res = await fetch('https://pdf-worker.metekymkc.workers.dev/', {
     method: 'POST',
