@@ -79,7 +79,7 @@
       });
     });
 
-    // ===== OpenStreetMap / Nominatim Autocomplete mit gewünschtem Format =====
+    // ===== OpenStreetMap / Nominatim Autocomplete (volle Adresse anzeigen) =====
     const addressInput = document.getElementById('address');
     const suggestionBox = document.getElementById('address-suggestions');
 
@@ -101,21 +101,18 @@
           const div = document.createElement('div');
           const addr = place.address;
 
-          // Straße / Hausnummer
-          let street = addr.road || addr.pedestrian || addr.cycleway || '';
-          if (street) street = street.replace(/straße|Strasse|Strasse|strasse/gi, 'Str.');
-          let number = addr.house_number || '';
+          const street = addr.road || addr.pedestrian || addr.cycleway || '';
+          const number = addr.house_number || '';
+          const postcode = addr.postcode || '';
+          const city = addr.city || addr.town || addr.village || '';
+          const country = 'Deutschland';
 
-          // PLZ & Stadt
-          let postcode = addr.postcode || '';
-          let city = addr.city || addr.town || addr.village || '';
+          // Vollformat Vorschlag: Straße Hausnummer, PLZ Stadt, Deutschland
+          const formatted = [street, number].filter(p => p).join(' ') + 
+                            (postcode || city ? `, ${[postcode, city].filter(p => p).join(' ')}` : '') + 
+                            `, ${country}`;
 
-          const country = 'D';
-
-          // Endformat: Straße Str. Nr. D PLZ Stadt
-          const formatted = [street, number, country, postcode, city].filter(p => p).join(' ').trim();
           div.textContent = formatted;
-
           div.addEventListener('click', () => {
             addressInput.value = formatted;
             suggestionBox.innerHTML = '';
@@ -144,6 +141,27 @@
 
       const fd = new FormData(form);
       const data = Object.fromEntries(fd.entries());
+
+      // ===== Adresse für PDF formatieren =====
+      // Wir nehmen die normale Adresse, zerlegen und bauen Kurzform:
+      let pdfStreet = '';
+      let pdfNumber = '';
+      let pdfPostcode = '';
+      let pdfCity = '';
+      const addrParts = data.address.split(',');
+      if (addrParts.length >= 2) {
+        // Annahme: erste Teil = Straße + Nummer, zweite = PLZ Stadt
+        const first = addrParts[0].trim().split(' ');
+        pdfStreet = first.slice(0, -1).join(' '); // alles außer letzte = Straße
+        pdfNumber = first.slice(-1)[0] || '';
+        const second = addrParts[1].trim().split(' ');
+        pdfPostcode = second[0] || '';
+        pdfCity = second.slice(1).join(' ') || '';
+      }
+
+      // Straße abkürzen, str. klein
+      if (pdfStreet) pdfStreet = pdfStreet.replace(/straße|Strasse|strasse/gi, 'str.');
+      data.addressForPDF = [pdfStreet, pdfNumber, 'D', pdfPostcode, pdfCity].filter(p => p).join(' ');
 
       try {
         const resp = await fetch(WORKER_URL, {
