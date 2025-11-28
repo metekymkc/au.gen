@@ -1,9 +1,10 @@
-const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
+const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Worker URL anpassen
 
 const form = document.getElementById("pdfForm");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const fd = new FormData(form);
   const data = Object.fromEntries(fd.entries());
 
