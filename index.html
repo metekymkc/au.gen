@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AU Generator Pro</title>
-  <style>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css"> <style>
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --bg-color: #f3f4f6;
       --card-bg: #ffffff;
-      --text-main: #111827; /* Dunklerer Text für bessere Lesbarkeit */
+      --text-main: #111827;
       --text-muted: #6b7280;
       --border-color: #d1d5db;
       --radius: 8px;
-      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     }
 
     * { box-sizing: border-box; }
@@ -43,7 +45,7 @@
       box-shadow: var(--shadow);
       width: 100%;
       max-width: 680px;
-      animation: fadeIn 0.5s ease-out;
+      animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); /* Smoother bounce */
     }
 
     h1 {
@@ -74,14 +76,14 @@
       margin-bottom: 6px;
     }
 
-    /* --- INPUTS & SELECTS STYLE --- */
+    /* Input & Select Styling */
     input, select {
       width: 100%;
-      padding: 12px 14px; /* Mehr Padding für modernen Look */
+      padding: 12px 14px;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 0.95rem;
-      font-family: inherit; /* Wichtig: Erbt Schriftart vom Body */
+      font-family: inherit;
       color: var(--text-main);
       background-color: #fff;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -93,14 +95,11 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* === Custom Select Arrows (Fixed) === */
+    /* Custom Select Arrow */
     select {
-      appearance: none; /* Standard Browser Styling entfernen */
+      appearance: none;
       -webkit-appearance: none;
-      -moz-appearance: none;
       cursor: pointer;
-      background-color: #fff;
-      /* Robuster SVG Pfeil (URL Encoded) */
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23111827%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
@@ -108,27 +107,17 @@
       padding-right: 40px;
     }
 
-    /* === Modern Date Inputs === */
-    input[type="date"] {
+    /* Flatpickr Customization (Damit es zum Design passt) */
+    .flatpickr-input {
+      background-color: #fff !important; /* Kein grauer Hintergrund */
       cursor: pointer;
-      /* Kalender Icon rechts anzeigen (Cross-Browser Trick) */
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%222%22%20ry%3D%222%22%2F%3E%3Cline%20x1%3D%2216%22%20y1%3D%222%22%20x2%3D%2216%22%20y2%3D%226%22%2F%3E%3Cline%20x1%3D%228%22%20y1%3D%222%22%20x2%3D%228%22%20y2%3D%226%22%2F%3E%3Cline%20x1%3D%223%22%20y1%3D%2210%22%20x2%3D%2221%22%20y2%3D%2210%22%2F%3E%3C%2Fsvg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      background-size: 18px;
     }
-    /* Standard Icon ausblenden, damit wir unser eigenes sehen (Webkit) */
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-      cursor: pointer;
-      width: 100%; /* Klickbereich über das ganze Feld */
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
+    
+    /* Overwrite Flatpickr Theme color */
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+        background: var(--primary);
+        border-color: var(--primary);
     }
-    /* Container relativ machen für absolute Positionierung des Klickbereichs */
-    .date-input-wrapper { position: relative; }
 
 
     /* Section Divider */
@@ -171,7 +160,7 @@
       z-index: 100;
       max-height: 250px;
       overflow-y: auto;
-      display: none; /* Standardmäßig aus */
+      display: none;
     }
     #address-suggestions.active { display: block; animation: fadeIn 0.2s; }
     
@@ -190,7 +179,17 @@
     .date-group {
       display: flex;
       gap: 10px;
-      position: relative; /* Für Wrapper */
+    }
+    .date-input-wrapper { flex: 1; position: relative; }
+
+    /* Custom Calendar Icon (Overlay über Flatpickr Input) */
+    .calendar-icon-overlay {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none; /* Klick geht durch zum Input */
+      color: #6b7280;
     }
     
     .today-btn {
@@ -226,9 +225,7 @@
       transform: translateY(-1px);
       box-shadow: 0 8px 10px -2px rgba(37, 99, 235, 0.3);
     }
-    button[type="submit"]:disabled {
-      opacity: 0.7; cursor: not-allowed;
-    }
+    button[type="submit"]:disabled { opacity: 0.7; cursor: not-allowed; }
 
     /* Spinner */
     .spinner {
@@ -267,7 +264,8 @@
       <div>
         <label>Geburtsdatum</label>
         <div class="date-input-wrapper">
-            <input name="birthDate" type="date" required>
+            <input name="birthDate" class="datepicker" placeholder="TT.MM.JJJJ" required>
+            <span class="calendar-icon-overlay">📅</span>
         </div>
       </div>
       <div>
@@ -324,8 +322,9 @@
       <div class="full-width">
         <label>Festgestellt am</label>
         <div class="date-group">
-            <div class="date-input-wrapper" style="flex:1;">
-                <input name="confirmedOn" type="date" id="dateConfirmed">
+            <div class="date-input-wrapper">
+                <input name="confirmedOn" class="datepicker" id="dateConfirmed" placeholder="TT.MM.JJJJ">
+                <span class="calendar-icon-overlay">📅</span>
             </div>
             <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
         </div>
@@ -334,8 +333,9 @@
       <div>
         <label>Arbeitsunfähig seit</label>
         <div class="date-group">
-            <div class="date-input-wrapper" style="flex:1;">
-                <input name="auFrom" type="date" id="dateFrom">
+            <div class="date-input-wrapper">
+                <input name="auFrom" class="datepicker" id="dateFrom" placeholder="TT.MM.JJJJ">
+                <span class="calendar-icon-overlay">📅</span>
             </div>
             <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
         </div>
@@ -343,8 +343,9 @@
       <div>
         <label>Voraussichtlich bis</label>
         <div class="date-group">
-            <div class="date-input-wrapper" style="flex:1;">
-                <input name="auTo" type="date" id="dateTo">
+            <div class="date-input-wrapper">
+                <input name="auTo" class="datepicker" id="dateTo" placeholder="TT.MM.JJJJ">
+                <span class="calendar-icon-overlay">📅</span>
             </div>
             <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
         </div>
@@ -366,26 +367,49 @@
     </form>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/de.js"></script>
+
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Helper
+    // --- 1. Flatpickr initialisieren (Der schöne Kalender) ---
+    // Wir speichern die Instanzen, damit wir sie per "Heute"-Knopf steuern können
+    const dateConfig = {
+        locale: "de",             // Deutsch
+        dateFormat: "Y-m-d",      // Format für den Worker (wichtig!)
+        altInput: true,           // Zeige dem User ein anderes Format an
+        altFormat: "d.m.Y",       // User sieht: 28.11.2025
+        allowInput: true,         // Manuelles Tippen erlaubt
+        disableMobile: "true"     // Erzwingt den schönen Kalender auch auf Handys (optional)
+    };
+
+    // Initialisierung
+    const fpInstances = flatpickr(".datepicker", dateConfig);
+
+    // Hilfsfunktion: Finde die richtige Flatpickr-Instanz anhand der ID und setze Datum
     function setToday(elementId) {
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById(elementId).value = today;
+      const el = document.getElementById(elementId);
+      // Flatpickr speichert die Instanz am Element
+      if (el && el._flatpickr) {
+        el._flatpickr.setDate(new Date(), true); // true = trigger change events
+      }
     }
 
-    // Init Date Limits
-    const todayStr = new Date().toISOString().split("T")[0];
+    // Max Date auf heute setzen (nur für bestimmte Felder)
     document.addEventListener('DOMContentLoaded', () => {
-        const bd = document.querySelector('input[name="birthDate"]');
-        if(bd) bd.setAttribute('max', todayStr);
+        const today = new Date();
+        // Geburtsdatum & Festgestellt am -> max heute
+        // Wir greifen auf die Instanzen zu
+        const birthInput = document.querySelector('input[name="birthDate"]');
+        if(birthInput && birthInput._flatpickr) birthInput._flatpickr.set('maxDate', today);
 
-        const co = document.querySelector('input[name="confirmedOn"]');
-        if(co) co.setAttribute('max', todayStr);
+        const confirmedInput = document.querySelector('input[name="confirmedOn"]');
+        if(confirmedInput && confirmedInput._flatpickr) confirmedInput._flatpickr.set('maxDate', today);
     });
 
-    // ===== Autocomplete Logic =====
+
+    // --- 2. Autocomplete Logic (Bleibt gleich) ---
     const searchInput = document.getElementById('address-search');
     const suggestionBox = document.getElementById('address-suggestions');
     let timeout;
@@ -401,7 +425,6 @@
 
       timeout = setTimeout(async () => {
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
-        
         try {
           const res = await fetch(url);
           const data = await res.json();
@@ -409,58 +432,40 @@
 
           if (data.length > 0) {
             suggestionBox.classList.add('active');
-            
             data.forEach(place => {
               const addr = place.address;
               const road = addr.road || addr.pedestrian || '';
               const number = addr.house_number || '';
               const zip = addr.postcode || '';
               const city = addr.city || addr.town || addr.village || '';
-              
               if (!road) return;
-
               const mainText = `${road} ${number}`;
               const subText = `${zip} ${city}`;
-
+              
               const div = document.createElement('div');
               div.className = 'suggestion-item';
-              div.innerHTML = `
-                <span class="suggestion-icon">📍</span>
-                <div>
-                  <div style="font-weight:600; color:#1f2937;">${mainText}</div>
-                  <div style="font-size:0.85em; color:#6b7280;">${subText}</div>
-                </div>
-              `;
+              div.innerHTML = `<span class="suggestion-icon">📍</span><div><div style="font-weight:600; color:#1f2937;">${mainText}</div><div style="font-size:0.85em; color:#6b7280;">${subText}</div></div>`;
               
               div.addEventListener('click', () => {
                 document.getElementById('street').value = road;
                 document.getElementById('house_number').value = number;
                 document.getElementById('postcode').value = zip;
                 document.getElementById('city').value = city;
-                
                 searchInput.value = `${mainText}, ${subText}`;
                 suggestionBox.classList.remove('active');
               });
-
               suggestionBox.appendChild(div);
             });
-          } else {
-            suggestionBox.classList.remove('active');
-          }
-        } catch (e) {
-          console.error(e);
-        }
+          } else { suggestionBox.classList.remove('active'); }
+        } catch (e) { console.error(e); }
       }, 300);
     });
 
-    // Klick außerhalb schließt Autocomplete
     document.addEventListener('click', e => {
-      if (!e.target.closest('.full-width')) {
-        suggestionBox.classList.remove('active');
-      }
+      if (!e.target.closest('.full-width')) suggestionBox.classList.remove('active');
     });
 
-    // ===== Submit Logic =====
+    // --- 3. Submit Logic ---
     const form = document.getElementById("pdfForm");
     const btn = document.getElementById("submitBtn");
     const spinner = document.getElementById("spinner");
@@ -468,7 +473,6 @@
 
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      
       btn.disabled = true;
       spinner.style.display = "inline-block";
       btnContent.textContent = "Generiere...";
