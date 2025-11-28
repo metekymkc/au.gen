@@ -31,7 +31,7 @@
       padding: 20px;
     }
 
-    /* Main Container Animation */
+    /* Animation */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -55,16 +55,16 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Grid System for Compactness */
+    /* Grid Layout */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 15px;
     }
 
-    .full-width {
-      grid-column: span 2;
-    }
+    .full-width { grid-column: span 2; }
+    .three-quarter { grid-column: span 1.5; } /* Für Straße */
+    .one-quarter { grid-column: span 0.5; }   /* Für Hausnummer */
 
     /* Labels & Inputs */
     label {
@@ -92,31 +92,41 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
-    /* Sections */
+    /* Section Divider */
     .section-title {
       grid-column: span 2;
       font-size: 1rem;
       color: var(--text-main);
       border-bottom: 2px solid var(--bg-color);
       padding-bottom: 5px;
-      margin-top: 20px;
-      margin-bottom: 10px;
+      margin-top: 25px;
+      margin-bottom: 15px;
       font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    /* Address Autocomplete Styling */
-    .address-wrapper {
+    /* Wrapper für Icons im Input (Lupe) */
+    .input-icon-wrapper {
       position: relative;
+      width: 100%;
+    }
+    
+    .input-icon-wrapper input {
+      padding-right: 35px; /* Platz für Icon */
     }
 
     .search-icon {
       position: absolute;
       right: 12px;
-      top: 38px; /* Adjusted to sit in input */
+      top: 50%;
+      transform: translateY(-50%); /* Exakte vertikale Zentrierung */
       color: #9ca3af;
       pointer-events: none;
     }
 
+    /* Address Suggestions */
     #address-suggestions {
       position: absolute;
       top: 100%;
@@ -133,7 +143,7 @@
       opacity: 0;
       transform: translateY(-10px);
       transition: all 0.2s ease;
-      pointer-events: none; /* Deaktiviert Klicks wenn unsichtbar */
+      pointer-events: none;
     }
 
     #address-suggestions.active {
@@ -150,16 +160,29 @@
       display: flex;
       align-items: center;
     }
-
-    .suggestion-item:last-child { border-bottom: none; }
     .suggestion-item:hover { background-color: #eff6ff; color: var(--primary); }
-    
-    .suggestion-icon {
-      margin-right: 10px;
-      font-size: 1.2em;
-    }
+    .suggestion-icon { margin-right: 10px; font-size: 1.2em; }
 
-    /* Button */
+    /* Date Input Group with "Today" Button */
+    .date-group {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .today-btn {
+      padding: 0 10px;
+      font-size: 0.8rem;
+      background-color: #e5e7eb;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: var(--radius);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .today-btn:hover { background-color: #d1d5db; }
+
+    /* Main Submit Button */
     button[type="submit"] {
       background-color: var(--primary);
       color: white;
@@ -172,17 +195,10 @@
       margin-top: 20px;
       transition: background 0.2s, transform 0.1s;
     }
+    button[type="submit"]:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+    button[type="submit"]:active { transform: translateY(0); }
 
-    button[type="submit"]:hover {
-      background-color: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-    
-    button[type="submit"]:active {
-      transform: translateY(0);
-    }
-
-    /* Loading Spinner */
+    /* Spinner */
     .spinner {
       display: none;
       width: 16px;
@@ -194,17 +210,9 @@
       margin-right: 8px;
       vertical-align: middle;
     }
-
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
     .btn-content { vertical-align: middle; }
 
-    /* Readonly inputs look different */
-    input[readonly] {
-      background-color: #e5e7eb;
-      color: #6b7280;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
@@ -213,6 +221,8 @@
     <h1>📄 AU Generator</h1>
     <form id="pdfForm" class="form-grid">
       
+      <div class="section-title">👤 Patient & Versicherung</div>
+
       <div>
         <label>Vorname</label>
         <input name="firstName" placeholder="Max" required>
@@ -222,19 +232,42 @@
         <input name="lastName" placeholder="Mustermann" required>
       </div>
 
-      <div class="section-title">Anschrift & Adresse</div>
+      <div>
+        <label>Geburtsdatum</label>
+        <input name="birthDate" type="date" required>
+      </div>
+      <div>
+        <label>Versichertennummer</label>
+        <input name="insuranceNumber" placeholder="Z.B. A123456789">
+      </div>
+
+      <div class="full-width">
+        <label>Krankenkasse</label>
+        <select name="insurance" required>
+          <option value="">Bitte wählen...</option>
+          <option value="AOK">AOK</option>
+          <option value="TK">Techniker Krankenkasse</option>
+          <option value="Barmer">Barmer</option>
+          <option value="DAK">DAK</option>
+          <option value="IKK">IKK</option>
+        </select>
+      </div>
+
+      <div class="section-title">📍 Anschrift</div>
       
-      <div class="full-width address-wrapper">
-        <label>Automatische Adress-Suche</label>
-        <input id="address-search" placeholder="Straße und Hausnummer eingeben..." autocomplete="off">
-        <span class="search-icon">🔍</span>
+      <div class="full-width" style="position: relative;"> <label>Automatische Adress-Suche</label>
+        <div class="input-icon-wrapper">
+          <input id="address-search" placeholder="Straße und Hausnummer eingeben..." autocomplete="off">
+          <span class="search-icon">🔍</span>
+        </div>
         <div id="address-suggestions"></div>
       </div>
 
-      <div style="grid-column: span 1.5;"> <label>Straße</label>
+      <div class="three-quarter">
+        <label>Straße</label>
         <input id="street" name="street" required>
       </div>
-      <div style="grid-column: span 0.5;">
+      <div class="one-quarter">
         <label>Nr.</label>
         <input id="house_number" name="house_number" required>
       </div>
@@ -247,45 +280,31 @@
         <label>Stadt</label>
         <input id="city" name="city" required>
       </div>
-      <div class="full-width" style="display:none;"> <input id="country" name="country" value="Deutschland">
+      <div style="display:none;"> <input id="country" name="country" value="Deutschland">
       </div>
 
-      <div class="section-title">Versicherungsdaten</div>
+      <div class="section-title">📅 Diagnose & Zeitraum</div>
 
-      <div>
-        <label>Krankenkasse</label>
-        <select name="insurance" required>
-          <option value="">Bitte wählen...</option>
-          <option value="AOK">AOK</option>
-          <option value="TK">Techniker Krankenkasse</option>
-          <option value="Barmer">Barmer</option>
-          <option value="DAK">DAK</option>
-          <option value="IKK">IKK</option>
-        </select>
-      </div>
-      <div>
-        <label>Versichertennummer</label>
-        <input name="insuranceNumber" placeholder="Z.B. A123456789">
-      </div>
-
-      <div class="section-title">Diagnose & Zeitraum</div>
-
-      <div>
-        <label>Geburtsdatum</label>
-        <input name="birthDate" type="date" required>
-      </div>
-      <div>
+      <div class="full-width">
         <label>Festgestellt am</label>
-        <input name="confirmedOn" type="date">
+        <div class="date-group">
+            <input name="confirmedOn" type="date" id="dateConfirmed">
+            <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
+        </div>
       </div>
 
       <div>
         <label>Arbeitsunfähig seit</label>
-        <input name="auFrom" type="date">
+        <div class="date-group">
+            <input name="auFrom" type="date" id="dateFrom">
+            <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
+        </div>
       </div>
       <div>
         <label>Voraussichtlich bis</label>
-        <input name="auTo" type="date">
+        <div class="date-group">
+            <input name="auTo" type="date" id="dateTo">
+            </div>
       </div>
       
       <div class="full-width">
@@ -307,10 +326,19 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Set max date to today
-    const today = new Date().toISOString().split("T")[0];
-    document.querySelectorAll('input[type="date"]').forEach(input => {
-      input.setAttribute('max', today);
+    // Helper: Set input to today
+    function setToday(elementId) {
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById(elementId).value = today;
+    }
+
+    // Set max date for inputs to today
+    const todayStr = new Date().toISOString().split("T")[0];
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('input[type="date"]').forEach(input => {
+        // Optional: Max Date auf heute setzen (außer "bis")
+        if(input.name !== 'auTo') input.setAttribute('max', todayStr);
+      });
     });
 
     // ===== Modern Autocomplete Logic =====
@@ -347,7 +375,6 @@
               
               if (!road) return;
 
-              // Display Format
               const mainText = `${road} ${number}`;
               const subText = `${zip} ${city}`;
 
@@ -384,12 +411,13 @@
 
     // Close on click outside
     document.addEventListener('click', e => {
-      if (!e.target.closest('.address-wrapper')) {
+      // Wenn Klick nicht innerhalb des Wrappers war
+      if (!e.target.closest('.full-width')) {
         suggestionBox.classList.remove('active');
       }
     });
 
-    // ===== Submit Logic with Animation =====
+    // ===== Submit Logic =====
     const form = document.getElementById("pdfForm");
     const btn = document.getElementById("submitBtn");
     const spinner = document.getElementById("spinner");
@@ -398,7 +426,6 @@
     form.addEventListener("submit", async e => {
       e.preventDefault();
       
-      // Loading State
       btn.disabled = true;
       spinner.style.display = "inline-block";
       btnContent.textContent = "Generiere...";
@@ -433,7 +460,6 @@
       } catch (err) {
         alert("Fehler: " + err.message);
       } finally {
-        // Reset Button
         btn.disabled = false;
         spinner.style.display = "none";
         btnContent.textContent = "PDF Generieren & Downloaden";
