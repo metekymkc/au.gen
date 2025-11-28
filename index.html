@@ -19,7 +19,7 @@
   <form id="pdfForm">
     <label>Vorname<input name="firstName" required></label>
     <label>Nachname<input name="lastName" required></label>
-    <label>Adresse<input id="address" name="address" placeholder="Straße, PLZ, Stadt" required></label>
+    <label>Adresse<input id="address" name="address" placeholder="Straße, PLZ, Stadt"></label>
     <label>Krankenkasse
       <select name="insurance" required>
         <option value="">Bitte wählen</option>
@@ -67,10 +67,9 @@
 
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace();
-        console.log("Adresse gewählt:", place.formatted_address);
+        input.value = place.formatted_address; // Setzt Input korrekt
       });
     }
-
     document.addEventListener('DOMContentLoaded', initAutocomplete);
 
     // ===== PDF Button =====
@@ -78,6 +77,13 @@
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const addressInput = document.getElementById('address');
+      if (!addressInput.value) {
+        alert("Bitte Adresse eingeben oder auswählen!");
+        return;
+      }
+
       const fd = new FormData(form);
       const data = Object.fromEntries(fd.entries());
 
