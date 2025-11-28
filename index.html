@@ -10,9 +10,9 @@
       --primary-hover: #1d4ed8;
       --bg-color: #f3f4f6;
       --card-bg: #ffffff;
-      --text-main: #1f2937;
+      --text-main: #111827; /* Dunklerer Text für bessere Lesbarkeit */
       --text-muted: #6b7280;
-      --border-color: #e5e7eb;
+      --border-color: #d1d5db;
       --radius: 8px;
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
@@ -38,11 +38,11 @@
 
     .container {
       background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 12px;
+      padding: 2.5rem;
+      border-radius: 16px;
       box-shadow: var(--shadow);
       width: 100%;
-      max-width: 650px;
+      max-width: 680px;
       animation: fadeIn 0.5s ease-out;
     }
 
@@ -51,14 +51,14 @@
       margin-top: 0;
       color: var(--primary);
       font-size: 1.8rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     /* Grid Layout */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
+      gap: 16px;
     }
 
     .full-width { grid-column: span 2; }
@@ -70,87 +70,80 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 600;
-      color: var(--text-muted);
+      color: #374151;
       margin-bottom: 6px;
     }
 
-    /* Standard Inputs */
-    input {
+    /* --- INPUTS & SELECTS STYLE --- */
+    input, select {
       width: 100%;
-      padding: 11px;
+      padding: 12px 14px; /* Mehr Padding für modernen Look */
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 0.95rem;
-      transition: all 0.2s;
-      background: #f9fafb;
+      font-family: inherit; /* Wichtig: Erbt Schriftart vom Body */
       color: var(--text-main);
+      background-color: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    /* === Custom Select Styling === */
-    select {
-      width: 100%;
-      padding: 11px;
-      padding-right: 40px; /* Platz für den Pfeil */
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      font-size: 0.95rem;
-      background-color: #f9fafb;
-      color: var(--text-main);
-      cursor: pointer;
-      appearance: none; /* Entfernt Standard-Browser-Pfeil */
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      /* Custom SVG Pfeil */
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3F%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px;
-      transition: all 0.2s;
-    }
-
-    /* === Modern Date Picker Styling === */
-    input[type="date"] {
-      appearance: none;
-      -webkit-appearance: none;
-      color: var(--text-main);
-      font-family: inherit;
-      padding-right: 10px;
-      cursor: pointer;
-      position: relative;
-    }
-    
-    /* Kalender-Icon anpassen (Webkit/Chrome) */
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-      opacity: 0.5;
-      transition: 0.2s;
-      /* Optional: Man könnte das Icon hier vergrößern */
-      transform: scale(1.1);
-    }
-    input[type="date"]::-webkit-calendar-picker-indicator:hover {
-      opacity: 1;
-      color: var(--primary);
-    }
-
-    /* Focus States */
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
+
+    /* === Custom Select Arrows (Fixed) === */
+    select {
+      appearance: none; /* Standard Browser Styling entfernen */
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      background-color: #fff;
+      /* Robuster SVG Pfeil (URL Encoded) */
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23111827%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 10px;
+      padding-right: 40px;
+    }
+
+    /* === Modern Date Inputs === */
+    input[type="date"] {
+      cursor: pointer;
+      /* Kalender Icon rechts anzeigen (Cross-Browser Trick) */
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%222%22%20ry%3D%222%22%2F%3E%3Cline%20x1%3D%2216%22%20y1%3D%222%22%20x2%3D%2216%22%20y2%3D%226%22%2F%3E%3Cline%20x1%3D%228%22%20y1%3D%222%22%20x2%3D%228%22%20y2%3D%226%22%2F%3E%3Cline%20x1%3D%223%22%20y1%3D%2210%22%20x2%3D%2221%22%20y2%3D%2210%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 18px;
+    }
+    /* Standard Icon ausblenden, damit wir unser eigenes sehen (Webkit) */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+      cursor: pointer;
+      width: 100%; /* Klickbereich über das ganze Feld */
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    /* Container relativ machen für absolute Positionierung des Klickbereichs */
+    .date-input-wrapper { position: relative; }
+
 
     /* Section Divider */
     .section-title {
       grid-column: span 2;
-      font-size: 0.95rem;
-      color: var(--text-main);
+      font-size: 1.1rem;
+      color: #111827;
       border-bottom: 2px solid #e5e7eb;
       padding-bottom: 8px;
-      margin-top: 25px;
+      margin-top: 30px;
       margin-bottom: 15px;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     /* Address Search */
@@ -158,100 +151,95 @@
     .input-icon-wrapper input { padding-right: 40px; }
     .search-icon {
       position: absolute;
-      right: 12px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: #9ca3af;
       pointer-events: none;
     }
 
+    /* Suggestions Box */
     #address-suggestions {
       position: absolute;
-      top: 105%;
+      top: 110%;
       left: 0;
       right: 0;
       background: white;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      z-index: 50;
-      max-height: 220px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+      max-height: 250px;
       overflow-y: auto;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: all 0.2s ease;
-      pointer-events: none;
+      display: none; /* Standardmäßig aus */
     }
-    #address-suggestions.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    #address-suggestions.active { display: block; animation: fadeIn 0.2s; }
     
     .suggestion-item {
-      padding: 12px 15px;
+      padding: 12px 16px;
       cursor: pointer;
       border-bottom: 1px solid #f3f4f6;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
-      transition: background 0.1s;
     }
     .suggestion-item:hover { background-color: #eff6ff; }
-    .suggestion-icon { margin-right: 12px; font-size: 1.1em; color: var(--primary); }
+    .suggestion-icon { margin-right: 12px; font-size: 1.2em; }
 
     /* Date Groups with Button */
     .date-group {
       display: flex;
-      gap: 8px;
-    }
-    .date-group input {
-      flex: 1; /* Input nimmt den meisten Platz */
+      gap: 10px;
+      position: relative; /* Für Wrapper */
     }
     
     .today-btn {
-      padding: 0 12px;
-      font-size: 0.8rem;
+      padding: 0 16px;
+      font-size: 0.85rem;
       font-weight: 600;
-      background-color: #e5e7eb;
-      color: #4b5563;
+      background-color: #f3f4f6;
+      color: #374151;
       border: 1px solid #d1d5db;
       border-radius: var(--radius);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
-      display: flex;
-      align-items: center;
     }
-    .today-btn:hover { background-color: #d1d5db; color: #1f2937; }
+    .today-btn:hover { background-color: #e5e7eb; border-color: #9ca3af; }
 
     /* Submit Button */
     button[type="submit"] {
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 14px;
-      font-size: 1rem;
+      padding: 16px;
+      font-size: 1.05rem;
       font-weight: bold;
       border-radius: var(--radius);
       cursor: pointer;
-      margin-top: 25px;
+      margin-top: 30px;
       transition: all 0.2s;
       box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
     }
     button[type="submit"]:hover {
       background-color: var(--primary-hover);
       transform: translateY(-1px);
-      box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 8px 10px -2px rgba(37, 99, 235, 0.3);
     }
-    button[type="submit"]:active { transform: translateY(0); }
+    button[type="submit"]:disabled {
+      opacity: 0.7; cursor: not-allowed;
+    }
 
     /* Spinner */
     .spinner {
       display: none;
       width: 18px;
       height: 18px;
-      border: 2px solid #ffffff;
-      border-top: 2px solid transparent;
+      border: 3px solid #ffffff;
+      border-top: 3px solid transparent;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
-      margin-right: 8px;
+      margin-right: 10px;
       vertical-align: middle;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -278,7 +266,9 @@
 
       <div>
         <label>Geburtsdatum</label>
-        <input name="birthDate" type="date" required>
+        <div class="date-input-wrapper">
+            <input name="birthDate" type="date" required>
+        </div>
       </div>
       <div>
         <label>Versichertennummer</label>
@@ -334,7 +324,9 @@
       <div class="full-width">
         <label>Festgestellt am</label>
         <div class="date-group">
-            <input name="confirmedOn" type="date" id="dateConfirmed">
+            <div class="date-input-wrapper" style="flex:1;">
+                <input name="confirmedOn" type="date" id="dateConfirmed">
+            </div>
             <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
         </div>
       </div>
@@ -342,14 +334,18 @@
       <div>
         <label>Arbeitsunfähig seit</label>
         <div class="date-group">
-            <input name="auFrom" type="date" id="dateFrom">
+            <div class="date-input-wrapper" style="flex:1;">
+                <input name="auFrom" type="date" id="dateFrom">
+            </div>
             <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
         </div>
       </div>
       <div>
         <label>Voraussichtlich bis</label>
         <div class="date-group">
-            <input name="auTo" type="date" id="dateTo">
+            <div class="date-input-wrapper" style="flex:1;">
+                <input name="auTo" type="date" id="dateTo">
+            </div>
             <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
         </div>
       </div>
@@ -373,18 +369,20 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
+    // Helper
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       document.getElementById(elementId).value = today;
     }
 
-    // Max Date auf heute setzen (nur für "confirmedOn" und "auFrom" sinnvoll, "auTo" darf Zukunft sein)
+    // Init Date Limits
     const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
-        // Hier setzen wir nur max Date für Geburtsdatum und Festgestellt am, 
-        // AU bis darf natürlich in der Zukunft liegen.
-        document.querySelector('input[name="birthDate"]').setAttribute('max', todayStr);
-        document.querySelector('input[name="confirmedOn"]').setAttribute('max', todayStr);
+        const bd = document.querySelector('input[name="birthDate"]');
+        if(bd) bd.setAttribute('max', todayStr);
+
+        const co = document.querySelector('input[name="confirmedOn"]');
+        if(co) co.setAttribute('max', todayStr);
     });
 
     // ===== Autocomplete Logic =====
@@ -455,6 +453,7 @@
       }, 300);
     });
 
+    // Klick außerhalb schließt Autocomplete
     document.addEventListener('click', e => {
       if (!e.target.closest('.full-width')) {
         suggestionBox.classList.remove('active');
