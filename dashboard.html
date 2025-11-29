@@ -2,8 +2,8 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
+    <title>Mete's Admin Konsole</title>
     <style>
         :root {
             --bg: #09090b;
@@ -57,6 +57,8 @@
             justify-content: center; align-items: center;
             backdrop-filter: blur(5px); 
             animation: fadeIn 0.2s ease-out;
+            /* Wichtig für Mobile: Erlaubt Scrollen falls Tastatur alles verdeckt */
+            overflow-y: auto; 
         }
         .modal-overlay.active { display: flex; }
 
@@ -65,7 +67,9 @@
             border-radius: var(--radius); 
             border: 1px solid var(--border); 
             width: 90%; max-width: 600px;
-            max-height: 90vh; overflow-y: auto;
+            /* Max-Height angepasst, damit Keyboard nicht abschneidet */
+            max-height: 100%; 
+            overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
         }
@@ -81,6 +85,9 @@
             border: 1px solid rgba(255, 255, 255, 0.08); 
             box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     
             border-radius: 16px;
+            
+            /* FIX 2: Smooth Transition für das Hochschieben */
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         
         .login-box input {
@@ -239,9 +246,9 @@
 <body>
 
     <div id="login-modal" class="modal-overlay active">
-        <div class="login-box">
-            <div style="font-size:2rem; margin-bottom:10px;"></div>
-            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Welcome back, Mete</h3>
+        <div class="login-box" id="loginBox">
+            <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
             
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             
@@ -290,7 +297,7 @@
         let AUTH_KEY = "";
         let allData = [];
 
-        // --- 1. LOGIN MIT FAKE DELAY ---
+        // --- 1. LOGIN MIT FAKE DELAY & MOBILE FIX ---
         async function login() {
             const input = document.getElementById('passwordInput');
             const btn = document.getElementById('loginBtn');
@@ -309,7 +316,7 @@
             spinner.style.display = "block";
             text.textContent = "Verifiziere...";
 
-            // FAKE DELAY: 1.5 Sekunden warten für "Security Feeling"
+            // FAKE DELAY
             await new Promise(r => setTimeout(r, 1500));
 
             // Jetzt Daten laden
@@ -317,6 +324,23 @@
         }
         
         document.getElementById('passwordInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+
+        // --- MOBILE KEYBOARD FIX ---
+        // Schiebt die Login-Box nach oben, wenn das Feld fokussiert wird
+        const pwInput = document.getElementById('passwordInput');
+        const loginBox = document.getElementById('loginBox');
+        
+        // Prüfen ob wir auf Mobile sind
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            pwInput.addEventListener('focus', () => {
+                // Schiebe die Box 25% des Viewports nach oben
+                loginBox.style.transform = "translateY(-25vh)"; 
+            });
+            pwInput.addEventListener('blur', () => {
+                // Zurück zur Mitte
+                loginBox.style.transform = "translateY(0)"; 
+            });
+        }
 
         // --- 2. DATEN LADEN ---
         async function loadData(isLogin = false) {
@@ -328,7 +352,7 @@
 
                 if (listRes.status === 401) {
                     if (isLogin) { 
-                        // Reset Login UI bei Fehler
+                        // Reset Login UI
                         alert("Zugriff verweigert: Falsches Passwort!"); 
                         const input = document.getElementById('passwordInput');
                         const btn = document.getElementById('loginBtn');
@@ -341,11 +365,16 @@
                         btn.disabled = false;
                         spinner.style.display = "none";
                         text.textContent = "Login";
+                        
+                        // Mobile Fix Reset
+                        if (window.matchMedia("(max-width: 768px)").matches) {
+                            loginBox.style.transform = "translateY(-25vh)";
+                        }
                     }
                     return;
                 }
 
-                // Login erfolgreich -> Modal wegfaden
+                // Login erfolgreich
                 const modal = document.getElementById('login-modal');
                 modal.style.opacity = '0';
                 setTimeout(() => {
@@ -360,7 +389,6 @@
 
                 allData = [];
                 
-                // Fetch Details (parallel)
                 const promises = jsonFiles.map(async (file) => {
                     try {
                         const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
