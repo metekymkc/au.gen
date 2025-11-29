@@ -66,22 +66,23 @@
         box-shadow: 0 0 10px var(--primary);
     }
 
-    /* --- STEP WIZARD STYLES (NEU) --- */
+    /* --- STEP WIZARD STYLES (SIMPLER) --- */
     .step-indicators {
         display: flex;
         justify-content: space-between;
         margin-bottom: 35px;
         position: relative;
+        padding: 0 20px; /* Etwas Padding damit Linie nicht übersteht */
     }
     
-    /* Verbindungslinie im Hintergrund (optional, wirkt aber edel) */
+    /* Zarte Verbindungslinie */
     .step-indicators::before {
         content: '';
         position: absolute;
-        top: 15px;
-        left: 0;
-        right: 0;
-        height: 2px;
+        top: 12px; /* Mittig zum kleineren Circle (24px/2) */
+        left: 30px;
+        right: 30px;
+        height: 1px;
         background: #27272a;
         z-index: 0;
     }
@@ -92,53 +93,53 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 80px; /* Feste Breite für Zentrierung */
+        width: 60px; 
     }
 
     .step-circle {
-        width: 32px;
-        height: 32px;
+        width: 24px;  /* Kleiner */
+        height: 24px; /* Kleiner */
         border-radius: 50%;
-        background-color: #27272a;
-        border: 2px solid #3f3f46;
-        color: #71717a;
+        background-color: var(--card-bg); /* Hintergrund der Karte damit Linie verdeckt wird */
+        border: 1px solid #3f3f46; /* Dünnerer Rahmen */
+        color: #52525b;
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        margin-bottom: 8px;
+        font-size: 0.75rem; /* Kleinere Zahl */
+        transition: all 0.3s ease;
+        margin-bottom: 6px;
     }
 
     .step-text {
-        font-size: 0.75rem;
-        color: #71717a;
+        font-size: 0.7rem;
+        color: #52525b;
         font-weight: 500;
         transition: color 0.3s;
     }
 
-    /* Active State */
+    /* Active State (Simpel) */
     .step-item.active .step-circle {
         background-color: var(--primary);
         border-color: var(--primary);
         color: white;
-        box-shadow: 0 0 15px var(--primary-glow);
-        transform: scale(1.1);
+        /* Kein Glow mehr, nur Farbe */
+        transform: scale(1.05);
     }
     .step-item.active .step-text {
         color: var(--text-main);
-        font-weight: 600;
     }
 
     /* Completed State */
     .step-item.completed .step-circle {
-        background-color: #1e1e24;
+        background-color: var(--card-bg);
         border-color: var(--primary);
         color: var(--primary);
     }
     .step-item.completed .step-text {
         color: var(--primary);
+        opacity: 0.7;
     }
 
 
@@ -180,16 +181,18 @@
       margin-bottom: 8px;
     }
     
-    /* Neuer Disclaimer Style (Heller & Lesbarer) */
+    /* DISCLAIMER (Angepasst: Kein Balken, Hidden per Default) */
     .disclaimer-text {
+        display: none; /* Standardmäßig versteckt */
         font-size: 0.8rem;
-        color: #a1a1aa; /* Helleres Grau */
+        color: #a1a1aa; /* Helleres Grau für Lesbarkeit */
         margin-top: 10px;
         line-height: 1.5;
-        background: rgba(39, 39, 42, 0.5); /* Sehr leichter Hintergrund */
+        background: rgba(39, 39, 42, 0.5); 
         padding: 10px 12px;
         border-radius: 8px;
-        border-left: 3px solid var(--primary); /* Blauer Akzentbalken links */
+        /* Kein Border-Left mehr */
+        animation: fadeIn 0.5s ease;
     }
 
     input, select {
@@ -334,7 +337,6 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* --- ARZT CARD STYLES --- */
     .doctor-card {
         background: #27272a;
         border: 1px solid var(--border-color);
@@ -350,11 +352,11 @@
     .doctor-card:hover { border-color: var(--primary); }
     .doctor-card.selected {
         border-color: var(--primary);
-        background: rgba(59, 130, 246, 0.08); /* Sehr dezentes Blau */
+        background: rgba(59, 130, 246, 0.08); 
         box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
     }
     
-    /* Fixed Radio Button Size */
+    /* Fixed Radio Button Size (Normal Size) */
     .doctor-radio { 
         width: 20px; 
         height: 20px; 
@@ -460,8 +462,8 @@
                         <input name="insuranceID" id="insuranceIDInput" placeholder="Code" required>
                     </div>
                 </div>
-                <div class="disclaimer-text">
-                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch basierend auf deiner Auswahl geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie hier, falls nötig.
+                <div class="disclaimer-text" id="insDisclaimer">
+                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie, falls nötig.
                 </div>
               </div>
           </div>
@@ -581,7 +583,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // --- DATENBANKEN ---
+    // --- DATEN ---
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -630,22 +632,17 @@
     
     function showStep(step) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-        // Alle Steps zurücksetzen
         document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active', 'completed'));
         
-        // Aktiven Content zeigen
         document.getElementById(`step-${step}`).classList.add('active');
         
-        // Indikatoren updaten
         for(let i=1; i<=4; i++) {
             const indicator = document.getElementById(`step-ind-${i}`);
             if(i < step) indicator.classList.add('completed');
             if(i === step) indicator.classList.add('active');
         }
         
-        if(step === 4) {
-            loadDoctors();
-        }
+        if(step === 4) loadDoctors();
     }
 
     function nextStep(current) {
@@ -655,7 +652,7 @@
         inputs.forEach(input => {
             if (!input.value) {
                 valid = false;
-                input.style.borderColor = "#ef4444"; // Rot
+                input.style.borderColor = "#ef4444";
                 setTimeout(() => input.style.borderColor = "var(--border-color)", 2000);
             }
         });
@@ -663,8 +660,6 @@
         if(valid) {
             currentStep++;
             showStep(currentStep);
-        } else {
-            // Optional: Kleine Vibration oder Shake Animation
         }
     }
 
@@ -741,14 +736,19 @@
         select.addEventListener('change', () => { select.blur(); });
       });
 
+      // Versicherungs-Logik + Disclaimer Toggle
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
+      const disclaimer = document.getElementById('insDisclaimer');
+
       insSelect.addEventListener('change', () => {
           const selected = insSelect.value;
           if (INSURANCE_CODES[selected]) {
               insInput.value = INSURANCE_CODES[selected];
               insInput.style.borderColor = "var(--primary)";
               setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500);
+              // Disclaimer anzeigen
+              disclaimer.style.display = 'block';
           }
       });
       
