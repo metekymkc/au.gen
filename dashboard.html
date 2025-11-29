@@ -3,83 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mete's Admin Konsole</title>
+    <title>Admin Dashboard</title>
     <style>
         :root {
             --bg: #09090b;
             --card: #18181b;
+            --input: #27272a;
             --text: #f4f4f5;
             --text-muted: #a1a1aa;
-            --accent: #3b82f6;
-            --border: #27272a;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border: #3f3f46;
+            --success: #10b981;
             --danger: #ef4444;
+            --radius: 12px;
         }
-        body {
-            background-color: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px;
-        }
-        .container { max-width: 1000px; margin: 0 auto; }
-        
-        /* Header */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.5px; }
-        .badge { background: #27272a; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; color: var(--accent); }
 
-        /* Login Modal */
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Inter, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
+        .badge { 
+            background: rgba(59, 130, 246, 0.15); color: var(--primary); 
+            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* LOGIN OVERLAY */
         #login-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000;
+            background: rgba(9, 9, 11, 0.95); z-index: 1000;
             display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
         }
         .login-box {
-            background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border);
-            text-align: center; width: 300px;
+            background: var(--card); padding: 40px; border-radius: var(--radius); 
+            border: 1px solid var(--border); text-align: center; width: 350px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         }
         .login-box input {
-            width: 100%; padding: 10px; margin-top: 15px; margin-bottom: 15px;
-            background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 6px;
+            width: 100%; padding: 12px; margin: 20px 0;
+            background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 8px;
+            outline: none; font-size: 1rem;
         }
+        .login-box input:focus { border-color: var(--primary); }
+
+        /* BUTTONS */
         .btn {
-            background: var(--accent); color: white; border: none; padding: 10px 20px;
-            border-radius: 6px; cursor: pointer; font-weight: 600;
+            background: var(--primary); color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            transition: all 0.2s;
         }
-        .btn:hover { opacity: 0.9; }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+        .btn-outline:hover { border-color: var(--text); color: var(--text); }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
 
-        /* Grid Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        @media(max-width: 768px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-        /* Panels */
-        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; overflow: hidden; }
-        .panel h2 { margin-top: 0; font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-
-        /* File List */
-        .file-list { list-style: none; padding: 0; max-height: 500px; overflow-y: auto; }
-        .file-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid #27272a; font-size: 0.9rem;
+        /* FILTER BAR */
+        .controls {
+            display: flex; gap: 15px; margin-bottom: 20px;
         }
-        .file-item:last-child { border: none; }
-        .file-name { color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .file-name:hover { color: var(--accent); }
-        .file-meta { font-size: 0.75rem; color: #52525b; margin-right: 10px; }
-        
-        .icon-pdf { color: #ef4444; }
-        .icon-json { color: #eab308; }
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            color: white; font-size: 0.95rem;
+        }
+        .search-input:focus { border-color: var(--primary); outline: none; }
 
-        .btn-sm { padding: 4px 8px; font-size: 0.75rem; background: #27272a; border: 1px solid var(--border); }
-        .btn-del:hover { background: var(--danger); border-color: var(--danger); }
+        /* TASK GRID */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
 
-        /* Tasks */
-        .task-input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .task-input-group input { flex: 1; background: var(--bg); border: 1px solid var(--border); color: white; padding: 8px; border-radius: 6px; }
+        /* CARD DESIGN */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            border-color: #52525b;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        .user-name { font-weight: 700; color: var(--text); font-size: 1.05rem; }
+        .time-badge { font-size: 0.75rem; color: var(--text-muted); }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .label { color: var(--text-muted); }
+        .value { color: var(--text); text-align: right; font-weight: 500; }
+
+        .card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.2);
+        }
         
-        .task-list { list-style: none; padding: 0; }
-        .task-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #27272a; }
-        .task-item.done span { text-decoration: line-through; color: var(--text-muted); }
-        .checkbox { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
-        .delete-task { margin-left: auto; cursor: pointer; color: #52525b; }
-        .delete-task:hover { color: var(--danger); }
+        .btn-download {
+            flex: 1;
+            background: #27272a;
+            color: white;
+            border: 1px solid var(--border);
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-download:hover { background: var(--primary); border-color: var(--primary); }
+
+        .delete-btn {
+            background: transparent; color: var(--text-muted); border: 1px solid var(--border);
+            width: 40px; display: flex; justify-content: center; align-items: center;
+        }
+        .delete-btn:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: var(--danger); }
+
+        /* Loader */
+        .loader {
+            text-align: center; padding: 40px; color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
 
     </style>
 </head>
@@ -87,186 +171,228 @@
 
     <div id="login-modal">
         <div class="login-box">
-            <h3>Admin Zugang</h3>
-            <input type="password" id="passwordInput" placeholder="Passwort eingeben">
-            <button class="btn" onclick="login()">Login</button>
+            <h3 style="margin-top:0;">🔒 Admin Access</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem;">Bitte Passwort eingeben</p>
+            <input type="password" id="passwordInput" placeholder="Passwort...">
+            <button class="btn" style="width:100%" onclick="login()">Login</button>
         </div>
     </div>
 
     <div class="container">
         <header>
-            <h1>Mete's Dashboard</h1>
-            <div class="badge">SECURE MODE</div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <h1>Aufträge & Tasks</h1>
+                <span class="badge" id="countBadge">0</span>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Aktualisieren</button>
         </header>
 
-        <div class="dashboard-grid">
-            <div class="panel">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2>Generierte Dateien</h2>
-                    <button class="btn btn-sm" onclick="loadFiles()">↻ Refresh</button>
-                </div>
-                <ul class="file-list" id="fileList">
-                    <li style="text-align:center; padding:20px; color:#52525b;">Lade Dateien...</li>
-                </ul>
-            </div>
+        <div class="controls">
+            <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()">
+        </div>
 
-            <div class="panel">
-                <h2>To-Do Liste</h2>
-                <div class="task-input-group">
-                    <input type="text" id="newTaskInput" placeholder="Neue Aufgabe...">
-                    <button class="btn btn-sm" onclick="addTask()">+</button>
-                </div>
-                <ul class="task-list" id="taskList"></ul>
-            </div>
+        <div class="task-grid" id="taskGrid">
+            <div class="loader">Warte auf Login...</div>
         </div>
     </div>
 
     <script>
-        const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Anpassen falls nötig
+        // --- KONFIGURATION ---
+        const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
         let AUTH_KEY = "";
+        let allData = []; // Hier speichern wir alle geladenen Objekte
 
-        // --- LOGIN ---
+        // --- 1. LOGIN ---
         function login() {
-            const input = document.getElementById('passwordInput').value;
-            AUTH_KEY = input;
-            // Testen ob Passwort stimmt indem wir Liste laden
-            loadFiles(true);
+            const input = document.getElementById('passwordInput');
+            AUTH_KEY = input.value;
+            loadData(true);
         }
+        
+        // Enter-Taste Support
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') login();
+        });
 
-        // --- FILES ---
-        async function loadFiles(isLoginAttempt = false) {
+        // --- 2. DATEN LADEN ---
+        async function loadData(isLogin = false) {
+            const grid = document.getElementById('taskGrid');
+            grid.innerHTML = '<div class="loader">Lade Daten aus Cloudflare R2...</div>';
+
             try {
-                const res = await fetch(`${WORKER_URL}/admin/list`, {
+                // A) Liste der Dateien holen
+                const listRes = await fetch(`${WORKER_URL}/admin/list`, {
                     headers: { 'x-admin-auth': AUTH_KEY }
                 });
 
-                if (res.status === 401) {
-                    if(isLoginAttempt) alert("Falsches Passwort!");
+                if (listRes.status === 401) {
+                    if (isLogin) {
+                        alert("Falsches Passwort!");
+                        grid.innerHTML = '<div class="loader">Zugriff verweigert</div>';
+                    }
                     return;
                 }
 
-                // Login erfolgreich
+                // Login erfolgreich -> Modal weg
                 document.getElementById('login-modal').style.display = 'none';
+
+                const listData = await listRes.json();
                 
-                const data = await res.json();
-                const list = document.getElementById('fileList');
-                list.innerHTML = "";
+                // Wir filtern nur die JSON Dateien heraus (da stehen die Infos drin)
+                // Die JSONs haben die Metadaten. Die PDF heißt genauso, nur mit .pdf
+                const jsonFiles = listData.objects
+                    .filter(obj => obj.key.endsWith('.json'))
+                    .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded)); // Neueste zuerst
 
-                // Nur PDFs anzeigen, JSONs filtern wir visuell raus oder zeigen sie anders
-                const files = data.objects.sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded)); // Neueste zuerst
+                allData = [];
 
-                files.forEach(file => {
-                    const isPdf = file.key.endsWith('.pdf');
-                    const icon = isPdf ? '📄' : '📝';
-                    
-                    // Größe formatieren
-                    const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
-                    
-                    // Zeit
-                    const date = new Date(file.uploaded).toLocaleString('de-DE');
-
-                    const li = document.createElement('li');
-                    li.className = 'file-item';
-                    li.innerHTML = `
-                        <a href="#" onclick="downloadFile('${file.key}')" class="file-name">
-                            <span>${icon}</span>
-                            <span>${file.key}</span>
-                        </a>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span class="file-meta">${date} | ${sizeKB}</span>
-                            <button class="btn btn-sm btn-del" onclick="deleteFile('${file.key}')">✕</button>
-                        </div>
-                    `;
-                    list.appendChild(li);
+                // B) Inhalte der JSONs parallel laden (für Details)
+                // Achtung: Bei sehr vielen Dateien könnte man das limitieren. Für < 50 ok.
+                const fetchPromises = jsonFiles.map(async (file) => {
+                    try {
+                        const contentRes = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, {
+                            headers: { 'x-admin-auth': AUTH_KEY }
+                        });
+                        const content = await contentRes.json();
+                        // Wir fügen den Dateinamen (Key) hinzu, damit wir wissen woher es kommt
+                        content._jsonKey = file.key;
+                        content._pdfKey = file.key.replace('.json', '.pdf');
+                        content._uploadDate = file.uploaded;
+                        return content;
+                    } catch (e) {
+                        console.error("Fehler beim Laden von", file.key, e);
+                        return null;
+                    }
                 });
-                
-                // Tasks auch laden wenn Login erfolgreich
-                if(isLoginAttempt) loadTasks();
+
+                // Warten bis alle Details geladen sind
+                const results = await Promise.all(fetchPromises);
+                allData = results.filter(item => item !== null);
+
+                renderCards(allData);
 
             } catch (e) {
                 console.error(e);
+                grid.innerHTML = `<div class="loader" style="color:var(--danger)">Fehler: ${e.message}</div>`;
             }
         }
 
-        async function downloadFile(key) {
-            window.open(`${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`, '_blank');
-        }
+        // --- 3. KARTEN RENDERN ---
+        function renderCards(data) {
+            const grid = document.getElementById('taskGrid');
+            const badge = document.getElementById('countBadge');
+            
+            grid.innerHTML = "";
+            badge.textContent = data.length;
 
-        async function deleteFile(key) {
-            if(!confirm(`Wirklich löschen?\n${key}`)) return;
-            await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(key)}`, {
-                method: 'DELETE',
-                headers: { 'x-admin-auth': AUTH_KEY }
-            });
-            loadFiles(); // Refresh
-        }
+            if (data.length === 0) {
+                grid.innerHTML = '<div class="loader">Keine Einträge gefunden.</div>';
+                return;
+            }
 
-        // --- TASKS ---
-        let tasks = [];
-
-        async function loadTasks() {
-            try {
-                const res = await fetch(`${WORKER_URL}/admin/tasks`, {
-                    headers: { 'x-admin-auth': AUTH_KEY }
-                });
-                tasks = await res.json();
-                renderTasks();
-            } catch(e) { console.log("No tasks yet"); }
-        }
-
-        async function saveTasks() {
-            await fetch(`${WORKER_URL}/admin/tasks`, {
-                method: 'POST',
-                headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(tasks)
-            });
-        }
-
-        function renderTasks() {
-            const list = document.getElementById('taskList');
-            list.innerHTML = "";
-            tasks.forEach((task, index) => {
-                const li = document.createElement('li');
-                li.className = `task-item ${task.done ? 'done' : ''}`;
-                li.innerHTML = `
-                    <input type="checkbox" class="checkbox" ${task.done ? 'checked' : ''} onchange="toggleTask(${index})">
-                    <span>${task.text}</span>
-                    <span class="delete-task" onclick="removeTask(${index})">🗑️</span>
+            data.forEach(item => {
+                // Daten formatieren
+                const dateObj = new Date(item._uploadDate);
+                const dateStr = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit' });
+                
+                // Name zusammensetzen
+                const fullName = `${item.firstName} ${item.lastName}`;
+                
+                // Karte HTML
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="user-name">${fullName}</div>
+                        <div class="time-badge">${dateStr}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="label">Versicherung:</span>
+                            <span class="value">${item.insurance} (${item.insuranceID})</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Stadt:</span>
+                            <span class="value">${item.city}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Diagnose:</span>
+                            <span class="value">${formatDate(item.auFrom)} - ${formatDate(item.auTo)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Arzt:</span>
+                            <span class="value" style="color:${item.doctorTemplate ? 'var(--primary)' : 'var(--text-muted)'}">
+                                ${item.doctorTemplate === 'fadi_template' ? 'Fadi Daadoush' : 'Standard'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-download" onclick="downloadPDF('${item._pdfKey}')">
+                            ⬇ PDF Laden
+                        </button>
+                        <button class="btn btn-sm delete-btn" onclick="deleteEntry('${item._jsonKey}', '${item._pdfKey}')" title="Löschen">
+                            ✕
+                        </button>
+                    </div>
                 `;
-                list.appendChild(li);
+                grid.appendChild(card);
             });
         }
 
-        function addTask() {
-            const input = document.getElementById('newTaskInput');
-            if(!input.value) return;
-            tasks.push({ text: input.value, done: false });
-            input.value = "";
-            renderTasks();
-            saveTasks();
+        // --- 4. ACTIONS ---
+        function filterCards() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allData.filter(item => {
+                const searchStr = `${item.firstName} ${item.lastName} ${item.insurance} ${item.city}`.toLowerCase();
+                return searchStr.includes(query);
+            });
+            renderCards(filtered);
         }
 
-        function toggleTask(index) {
-            tasks[index].done = !tasks[index].done;
-            renderTasks();
-            saveTasks();
+        function downloadPDF(key) {
+            // Öffnet den Download Link
+            const url = `${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`;
+            // Wir müssen den Auth Header mitsenden, das geht bei window.open nicht direkt.
+            // Workaround: Wir nutzen fetch und erzeugen einen Blob URL
+            fetch(url, { headers: { 'x-admin-auth': AUTH_KEY } })
+                .then(res => res.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = key; // Dateiname aus R2 Key
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(err => alert("Download fehlgeschlagen: " + err));
         }
 
-        function removeTask(index) {
-            tasks.splice(index, 1);
-            renderTasks();
-            saveTasks();
+        async function deleteEntry(jsonKey, pdfKey) {
+            if(!confirm("Diesen Eintrag wirklich löschen? (PDF und Daten)")) return;
+
+            try {
+                // Beide Dateien löschen
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(jsonKey)}`, {
+                    method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY }
+                });
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(pdfKey)}`, {
+                    method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY }
+                });
+                
+                // Neu laden
+                loadData();
+            } catch (e) {
+                alert("Fehler beim Löschen");
+            }
         }
-        
-        // Enter Taste für Tasks
-        document.getElementById('newTaskInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') addTask();
-        });
-        
-        // Enter Taste für Login
-        document.getElementById('passwordInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') login();
-        });
+
+        function formatDate(str) {
+            if(!str) return "-";
+            const parts = str.split('-');
+            if(parts.length !== 3) return str;
+            return `${parts[2]}.${parts[1]}.`; // DD.MM.
+        }
 
     </script>
 </body>
