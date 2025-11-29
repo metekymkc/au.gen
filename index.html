@@ -6,7 +6,7 @@
   <title>Mete's AU Generator</title>
   <style>
     :root {
-      /* Dark Theme Palette - Clean & Flat */
+      /* Dark Theme Palette */
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
@@ -31,6 +31,7 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
+      flex-direction: column; /* Wichtig für Footer */
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -46,6 +47,7 @@
       border: 1px solid var(--border-color);
       width: 100%;
       max-width: 700px;
+      margin-bottom: 20px; /* Abstand zum Footer */
     }
 
     h1 {
@@ -53,19 +55,29 @@
       margin-top: 0;
       color: var(--text-main);
       font-size: 1.8rem;
-      margin-bottom: 5px; /* Weniger Abstand, damit Subtitle nah dran ist */
+      margin-bottom: 5px; 
       font-weight: 700;
       letter-spacing: -0.02em;
     }
     
-    /* Untertitel Style */
     .subtitle {
         text-align: center;
-        color: #52525b; /* Dunkleres Grau für "Beta v..." */
+        color: #52525b; 
         font-size: 0.9rem;
         font-weight: 500;
         margin-bottom: 2.5rem;
     }
+
+    /* LEGAL FOOTER STYLE */
+    .legal-footer {
+        max-width: 700px;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #3f3f46; /* Sehr dunkles Grau */
+        line-height: 1.4;
+        margin-top: 10px;
+    }
+    .legal-footer strong { color: #52525b; }
 
     /* STEP WIZARD */
     .step-indicators {
@@ -134,12 +146,10 @@
     }
     .step-item.completed .step-text { color: var(--primary); opacity: 0.7; }
 
-    /* CONTENT & ANIMATION */
     .step-content { display: none; animation: fadeIn 0.4s ease-out; }
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* GRID & LAYOUT */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -177,7 +187,6 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* INPUTS */
     input, select {
       width: 100%;
       padding: 12px 14px;
@@ -200,7 +209,6 @@
     
     input::placeholder { color: #52525b; }
 
-    /* Kalender Icon Fix für Dark Mode */
     input[type="date"]::-webkit-calendar-picker-indicator {
         filter: invert(1); 
         cursor: pointer;
@@ -281,7 +289,6 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
-    /* NAV BUTTONS */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
@@ -358,21 +365,15 @@
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
-    /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
         .container { padding: 1.5rem; }
-        
         .form-grid { grid-template-columns: 1fr; gap: 15px; }
         .full-width, .three-quarter, .one-quarter { grid-column: span 1; }
-        
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
-        
         .date-group { width: 100%; }
-        
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
-        
         h1 { font-size: 1.5rem; }
     }
 
@@ -593,6 +594,11 @@
       </div>
 
     </form>
+  </div>
+
+  <div class="legal-footer">
+      <strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. <br>
+      Die erstellten Dokumente sind keine offiziellen Urkunden und dürfen nicht im Rechtsverkehr (z.B. gegenüber Arbeitgebern, Krankenkassen oder Behörden) verwendet werden. Der Autor übernimmt keine Haftung für Missbrauch. Urkundenfälschung ist strafbar.
   </div>
 
   <script>
