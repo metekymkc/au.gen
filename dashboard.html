@@ -43,20 +43,11 @@
             background: rgba(9, 9, 11, 0.5);
             backdrop-filter: blur(5px);
         }
-        
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .header-right { display: flex; align-items: center; gap: 10px; }
-
         h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
         .badge { 
             background: rgba(59, 130, 246, 0.15); color: var(--primary); 
             padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);
         }
-        
-        /* TABS */
-        .tabs { display: flex; gap: 5px; background: #141417; padding: 4px; border-radius: 10px; border: 1px solid var(--border); margin-left: 20px; }
-        .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 6px 12px; cursor: pointer; border-radius: 6px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
-        .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 
         /* MODALS */
         .modal-overlay {
@@ -79,16 +70,75 @@
             position: relative;
         }
 
-        /* LOGIN BOX */
+        /* Detail Modal Specifics (Screenshot Layout) */
+        .detail-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; background: var(--card); z-index: 10;
+        }
+        .detail-body { padding: 25px; }
+        .detail-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex; gap: 10px;
+            background: #141417;
+            position: sticky; bottom: 0;
+        }
+
+        /* Das Grid für die Daten */
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Spalten */
+            gap: 20px 30px; /* Vertikal 20px, Horizontal 30px Abstand */
+            margin-bottom: 10px;
+        }
+        
+        .section-headline {
+            grid-column: span 2; /* Volle Breite */
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            padding-bottom: 5px;
+        }
+        .section-headline:first-child { margin-top: 0; }
+
+        .data-item {
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px;
+        }
+        
+        .data-label { 
+            font-size: 0.7rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            font-weight: 600;
+        }
+        
+        .data-value { 
+            font-size: 0.95rem; 
+            color: white; 
+            font-weight: 500; 
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        
+        /* Elemente die über die volle Breite gehen sollen (Adresse, User Agent) */
+        .full-row { grid-column: span 2; }
+
+
+        /* Login Box */
         .login-box { 
-            padding: 50px 40px; 
-            text-align: center; 
-            max-width: 380px; 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);    
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     
-            border-radius: 16px;
+            padding: 50px 40px; text-align: center; max-width: 380px; 
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px;
         }
         .login-box input {
             width: 100%; padding: 14px 16px; margin: 25px 0 25px 0;
@@ -97,93 +147,59 @@
             transition: all 0.2s ease; text-align: center;
         }
         .login-box input:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
-
-        /* DETAIL MODAL */
-        .detail-header {
-            padding: 20px 25px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; background: var(--card); z-index: 10;
-        }
-        .detail-body { padding: 25px; }
-        .detail-footer {
-            padding: 20px 25px; border-top: 1px solid var(--border);
-            display: flex; gap: 10px; background: #141417;
-        }
-
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .data-item { display: flex; flex-direction: column; gap: 5px; }
-        .data-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-        .data-value { font-size: 0.95rem; color: var(--text); font-weight: 500; word-break: break-word; }
-        .full-row { grid-column: span 2; }
-        .section-headline {
-            grid-column: span 2; color: var(--primary); font-size: 0.85rem; font-weight: 700;
-            text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px;
-            margin-top: 15px; margin-bottom: 10px;
-        }
-
-        /* SECTIONS & GRID */
-        .view-section { display: none; animation: fadeIn 0.3s ease; }
-        .view-section.active { display: block; }
-        .manager-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
-        .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-        @media(max-width: 900px) { .manager-grid { grid-template-columns: 1fr; } }
-
-        /* CARDS & LISTS */
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
-        .item-list { max-height: 450px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .list-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .item-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; }
-        .item-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
-        .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; }
-        
-        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .login-box input::placeholder { color: #52525b; font-size: 0.9rem; }
 
         /* BUTTONS */
         .btn {
-            background: var(--primary); color: white; border: none; padding: 10px 16px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-            transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            background: var(--primary); color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.2s; width: 100%; /* Buttons im Footer füllen Breite */
         }
         .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-        .btn-outline:hover { border-color: var(--text); color: var(--text); background: rgba(255,255,255,0.05); }
-        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid transparent; width: auto; min-width: 100px;}
         .btn-danger:hover { background: var(--danger); color: white; }
-        .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
-        .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
         
-        /* INPUTS */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
-        input:not([type=file]), select { width: 100%; padding: 10px 12px; background: transparent; border: 1px solid var(--input-border); border-radius: 8px; color: white; outline: none; transition: 0.2s; }
-        input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
-        .search-input { background: var(--card); margin-bottom: 20px; }
-        #uploadSection { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; width: auto; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: auto; }
+        .btn-outline:hover { border-color: var(--text); color: var(--text); background: rgba(255,255,255,0.05); }
+        
+        .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1; }
+        .btn-close:hover { color: white; }
 
-        /* TASK CARD SPECIFIC */
-        .task-card { 
-            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); 
-            overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; 
+        /* FILTER BAR */
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; }
+        .search-input {
+            flex: 1; padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            color: white; font-size: 0.95rem;
         }
-        .task-card:hover { border-color: #52525b; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        
+        .search-input:focus { border-color: var(--primary); outline: none; }
+
+        /* TASK GRID */
+        .task-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;
+        }
+        .card {
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+            transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; position: relative;
+        }
+        .card:hover { border-color: #52525b; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .card-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
         .user-name { font-weight: 700; font-size: 1rem; }
         .time-badge { font-size: 0.75rem; color: var(--text-muted); background: #27272a; padding: 2px 6px; border-radius: 4px; }
-        
         .card-body { padding: 20px; flex: 1; }
         .preview-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; }
         .preview-label { color: var(--text-muted); }
         .preview-value { font-weight: 500; }
         .card-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: rgba(0,0,0,0.2); }
-
+        
         .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-
     </style>
 </head>
 <body>
@@ -193,284 +209,130 @@
             <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
             <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
-            <button class="btn" style="width:100%" id="loginBtn" onclick="login()">Login</button>
+            <button class="btn" id="loginBtn" onclick="login()">Login</button>
         </div>
     </div>
 
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-box">
             <div class="detail-header">
-                <h2 style="margin:0; border:none; color:var(--text);">Auftrag Details</h2>
+                <h2 style="margin:0; font-size:1.1rem; color:white; text-transform:none; border:none; padding:0;">Auftrag Details</h2>
                 <button class="btn-close" onclick="closeModal()">×</button>
             </div>
-            <div class="detail-body" id="modal-content"></div>
+            
+            <div class="detail-body" id="modal-content">
+                </div>
+            
             <div class="detail-footer">
-                <button class="btn" id="modal-download-btn" style="flex:1">PDF Laden</button>
-                <button class="btn btn-danger" id="modal-delete-btn">Löschen</button>
+                <button class="btn" id="modal-download-btn" style="flex:2">PDF Herunterladen</button>
+                <button class="btn btn-danger" id="modal-delete-btn" style="flex:1">Löschen</button>
             </div>
         </div>
     </div>
 
     <div class="container">
         <header>
-            <div class="header-left">
+            <div style="display:flex; align-items:center; gap:15px;">
                 <h1>Aufträge & Tasks</h1>
                 <span class="badge" id="countBadge">0</span>
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('orders')">Aufträge</button>
-                    <button class="tab-btn" onclick="switchTab('config')">Config</button>
-                </div>
             </div>
-            <div class="header-right">
-                <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
-                <button class="btn btn-sm btn-danger" onclick="location.reload()">Logout</button>
-            </div>
+            <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
         </header>
 
-        <div id="view-orders" class="view-section active">
+        <div class="controls">
             <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()">
-            <div id="orderGrid" class="task-grid">
-                <div class="loader">Warte auf Login...</div>
-            </div>
         </div>
 
-        <div id="view-config" class="view-section">
-            <div class="manager-grid">
-                
-                <div class="card">
-                    <h2>Aktive Ärzte</h2>
-                    <div id="doctorList" class="item-list"></div>
-                    <h2 style="margin-top:30px;">Versicherungen</h2>
-                    <div id="insuranceList" class="item-list"></div>
-                </div>
-
-                <div class="card" style="height: fit-content;">
-                    <h2>+ Arzt Hinzufügen</h2>
-                    
-                    <div class="form-group"><label>Praxis Name</label><input id="newDocName" placeholder="z.B. Hausarztpraxis Berlin"></div>
-                    <div class="form-group"><label>Details (Arzt)</label><input id="newDocDetails" placeholder="z.B. Dr. Med. Max Mustermann"></div>
-                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin"></div>
-
-                    <div class="form-group">
-                        <label>Template</label>
-                        <select id="newDocTemplate" onchange="toggleUpload()">
-                            <option value="">Lade Templates...</option>
-                        </select>
-                    </div>
-
-                    <div id="uploadSection">
-                        <label style="color:var(--primary)">Neues PDF hochladen:</label>
-                        <input type="file" id="pdfFile" accept="application/pdf" style="margin-bottom:10px;">
-                        <input id="newTemplateId" placeholder="Neue ID (z.B. berlin_template)">
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px;">Info: Erbt Standard-Koordinaten.</p>
-                    </div>
-
-                    <button class="btn" style="width:100%; margin-top:10px;" onclick="saveNewDoctor()">Speichern</button>
-                </div>
-            </div>
+        <div class="task-grid" id="taskGrid">
+            <div class="loader">Warte auf Login...</div>
         </div>
     </div>
 
     <script>
         const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
         let AUTH_KEY = "";
-        let DB = { doctors: [], insurances: [], templates: {} };
-        let allOrders = [];
+        let allData = [];
+        // Config DB (für dynamische Namen-Auflösung)
+        let CONFIG_DB = { doctors: [] };
 
-        // --- AUTH ---
+        // --- 1. LOGIN ---
         async function login() {
             const input = document.getElementById('passwordInput');
             const btn = document.getElementById('loginBtn');
             if(!input.value) { input.focus(); return; }
-
             AUTH_KEY = input.value;
             input.disabled = true; btn.textContent = "Verifiziere...";
-            await new Promise(r => setTimeout(r, 800)); // Kurzer Fake Delay
+            await new Promise(r => setTimeout(r, 1000));
+            loadData(true);
+        }
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+
+        // --- 2. DATEN LADEN ---
+        async function loadData(isLogin = false) {
+            const grid = document.getElementById('taskGrid');
+            if(!isLogin) grid.innerHTML = '<div class="loader">Lade Daten...</div>';
 
             try {
-                const res = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
-                if(res.status === 401) throw new Error("Falsches Passwort");
+                // Erst Config laden um Arzt-Namen aufzulösen
+                const configRes = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
+                if (configRes.status === 401) {
+                     if (isLogin) { alert("Falsches Passwort!"); location.reload(); } return;
+                }
+                CONFIG_DB = await configRes.json();
+
+                // Dann Liste
+                const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
+                document.getElementById('login-modal').classList.remove('active');
+
+                const listData = await listRes.json();
+                // FILTER: Nur JSONs, keine System-Dateien (database.json, tasks.json)
+                const jsonFiles = listData.objects
+                    .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
+                    .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded));
+
+                allData = [];
                 
-                DB = await res.json();
-                document.getElementById('login-modal').style.display = 'none';
-                
-                initManager();
-                loadOrders();
-            } catch(e) { 
-                alert(e.message);
-                input.disabled = false; btn.textContent = "Login"; input.value = "";
-            }
-        }
-        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
-
-        function loadData() { loadOrders(); } // Alias für Refresh Button
-
-        function switchTab(tab) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${tab}`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // --- MANAGER ---
-        function initManager() {
-            renderDoctors();
-            renderInsurances();
-            updateTemplateSelect();
-        }
-
-        function renderDoctors() {
-            const list = document.getElementById('doctorList');
-            list.innerHTML = "";
-            DB.doctors.forEach((doc, idx) => {
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h4>${doc.name}</h4>
-                            <p>${doc.details}</p>
-                            <span class="tag">📍 ${doc.citySearch}</span>
-                        </div>
-                        <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">✕</button>
-                    </div>`;
-            });
-        }
-        
-        function renderInsurances() {
-            const list = document.getElementById('insuranceList');
-            list.innerHTML = "";
-            // Zeige nur die ersten 10 oder so um Platz zu sparen, oder alle scrollbar
-            DB.insurances.forEach((ins, idx) => {
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info"><h4>${ins.name}</h4><p>Code: ${ins.code}</p></div>
-                        </div>`;
-            });
-        }
-
-        function updateTemplateSelect() {
-            const select = document.getElementById('newDocTemplate');
-            select.innerHTML = '<option value="">Wählen...</option>';
-            Object.keys(DB.templates).forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key; opt.innerText = key; select.appendChild(opt);
-            });
-            const upOpt = document.createElement('option');
-            upOpt.value = "UPLOAD_NEW"; upOpt.innerText = "➕ Neues Template..."; upOpt.style.color = "#3b82f6";
-            select.appendChild(upOpt);
-        }
-
-        function toggleUpload() {
-            const val = document.getElementById('newDocTemplate').value;
-            document.getElementById('uploadSection').style.display = (val === 'UPLOAD_NEW') ? 'block' : 'none';
-        }
-
-        async function saveNewDoctor() {
-            const name = document.getElementById('newDocName').value;
-            const details = document.getElementById('newDocDetails').value;
-            const city = document.getElementById('newDocCity').value.toLowerCase();
-            let templateId = document.getElementById('newDocTemplate').value;
-
-            if(!name || !city || !templateId) return alert("Bitte alle Felder ausfüllen.");
-
-            if(templateId === 'UPLOAD_NEW') {
-                const fileInput = document.getElementById('pdfFile');
-                const newId = document.getElementById('newTemplateId').value.trim();
-                if(!fileInput.files[0] || !newId) return alert("Datei/ID fehlt.");
-                if(DB.templates[newId]) return alert("ID existiert schon.");
-
-                const uploadRes = await fetch(`${WORKER_URL}/admin/template?filename=${newId}.pdf`, {
-                    method: 'PUT', headers: { 'x-admin-auth': AUTH_KEY }, body: fileInput.files[0]
+                const promises = jsonFiles.map(async (file) => {
+                    try {
+                        const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
+                        const content = await res.json();
+                        content._jsonKey = file.key;
+                        content._pdfKey = file.key.replace('.json', '.pdf');
+                        content._uploadDate = file.uploaded;
+                        return content;
+                    } catch (e) { return null; }
                 });
-                if(!uploadRes.ok) return alert("Upload Fehler.");
 
-                const baseCoords = DB.templates['base_template'] ? DB.templates['base_template'].positions : {};
-                DB.templates[newId] = { filename: `${newId}.pdf`, positions: JSON.parse(JSON.stringify(baseCoords)) };
-                templateId = newId;
+                const results = await Promise.all(promises);
+                allData = results.filter(item => item !== null);
+                renderCards(allData);
+
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = `<div class="loader" style="color:var(--danger)">Fehler: ${e.message}</div>`;
             }
-
-            DB.doctors.push({ id: Date.now().toString(), name, details, citySearch: city, templateId });
-            await pushConfig();
-            
-            document.getElementById('newDocName').value = "";
-            document.getElementById('newDocDetails').value = "";
-            document.getElementById('newDocCity').value = "";
-            renderDoctors(); updateTemplateSelect(); toggleUpload();
-            alert("Gespeichert!");
         }
 
-        async function deleteDoctor(idx) {
-            if(!confirm("Wirklich löschen?")) return;
-            DB.doctors.splice(idx, 1);
-            await pushConfig();
-            renderDoctors();
-        }
-
-        async function pushConfig() {
-            await fetch(`${WORKER_URL}/admin/config`, {
-                method: 'POST', headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(DB)
-            });
-        }
-
-        // --- ORDERS ---
-        async function loadOrders() {
-            const grid = document.getElementById('orderGrid');
-            grid.innerHTML = '<div class="loader">Lade...</div>';
-            
-            const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
-            const listData = await listRes.json();
-            
-            // BUGFIX: Wir filtern "database.json" und "tasks.json" raus
-            const jsonFiles = listData.objects
-                .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
-                .sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
-
-            allOrders = [];
-            const promises = jsonFiles.map(async (file) => {
-                try {
-                    const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
-                    const content = await res.json();
-                    // Check for invalid content
-                    if (!content || !content.firstName) return null;
-                    
-                    content._jsonKey = file.key;
-                    content._pdfKey = file.key.replace('.json', '.pdf');
-                    content._uploadDate = file.uploaded;
-                    return content;
-                } catch (e) { return null; }
-            });
-
-            const results = await Promise.all(promises);
-            allOrders = results.filter(i => i !== null);
-            renderOrders(allOrders);
-        }
-
-        function renderOrders(data) {
-            const grid = document.getElementById('orderGrid');
+        // --- 3. KARTEN RENDERN ---
+        function renderCards(data) {
+            const grid = document.getElementById('taskGrid');
             document.getElementById('countBadge').textContent = data.length;
             grid.innerHTML = "";
-            if(data.length === 0) { grid.innerHTML = '<div style="text-align:center;color:gray;grid-column:1/-1">Keine Aufträge</div>'; return; }
+            if (data.length === 0) { grid.innerHTML = '<div class="loader">Keine Einträge gefunden.</div>'; return; }
 
             data.forEach(item => {
-                const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
-                
-                // DYNAMISCHER ARZT NAME FIX
-                // Wir suchen den Namen in der geladenen DB Konfiguration
-                let docName = "Standard";
-                if (item.doctorTemplate) {
-                    const foundDoc = DB.doctors.find(d => d.templateId === item.doctorTemplate);
-                    if (foundDoc) docName = foundDoc.name; // Der echte Name (z.B. Hausarzt Berlin)
-                    else if (item.doctorTemplate === 'fadi_template') docName = "Fadi Daadoush"; // Fallback für alte Daten
-                    else docName = item.doctorTemplate; // Fallback ID
-                }
+                const dateObj = new Date(item._uploadDate);
+                const dateStr = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour:'2-digit', minute:'2-digit' });
+                const fullName = `${item.firstName} ${item.lastName}`;
+                const docName = resolveDoctorName(item.doctorTemplate);
 
                 const card = document.createElement('div');
-                card.className = 'task-card';
-                card.onclick = () => openModal(item);
-                
+                card.className = 'card';
+                card.onclick = (e) => openModal(item);
+
                 card.innerHTML = `
                     <div class="card-header">
-                        <div class="user-name">${item.firstName} ${item.lastName}</div>
+                        <div class="user-name">${fullName}</div>
                         <div class="time-badge">${dateStr}</div>
                     </div>
                     <div class="card-body">
@@ -479,7 +341,7 @@
                         <div class="preview-row"><span class="preview-label">Arzt</span><span class="preview-value" style="color:var(--primary)">${docName}</span></div>
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-sm btn-outline" style="flex:1" onclick="event.stopPropagation(); openModal(allOrders.find(x=>x._jsonKey=='${item._jsonKey}'))">👁️ Details</button>
+                        <button class="btn btn-sm btn-outline" style="flex:1" onclick="event.stopPropagation(); openModal(allData.find(x=>x._jsonKey=='${item._jsonKey}'))">👁️ Details</button>
                         <button class="btn btn-sm btn-outline" style="flex:1" onclick="event.stopPropagation(); downloadPDF('${item._pdfKey}')">⬇ PDF</button>
                     </div>
                 `;
@@ -487,56 +349,113 @@
             });
         }
 
+        // --- 4. MODAL LOGIC (Screenshot Layout) ---
         function openModal(item) {
             const modal = document.getElementById('detail-modal');
             const content = document.getElementById('modal-content');
-            const fmtDate = (d) => d ? d.split('-').reverse().join('.') : '-';
-            
-            // Created Date FIX
-            // Wir schauen ob createdOn existiert, sonst nutzen wir das upload Datum
-            const createdOnDisplay = item.createdOn ? fmtDate(item.createdOn) : new Date(item._uploadDate).toLocaleDateString('de-DE');
+            const btnDownload = document.getElementById('modal-download-btn');
+            const btnDelete = document.getElementById('modal-delete-btn');
+
+            const createdDate = new Date(item._uploadDate);
+            const createdStr = createdDate.toLocaleDateString('de-DE') + ", " + createdDate.toLocaleTimeString('de-DE');
+            const meta = item.meta || {};
+            const docName = resolveDoctorName(item.doctorTemplate);
 
             content.innerHTML = `
                 <div class="data-grid">
+                    
                     <div class="section-headline">Person</div>
                     <div class="data-item"><span class="data-label">Name</span><span class="data-value">${item.firstName} ${item.lastName}</span></div>
-                    <div class="data-item"><span class="data-label">Geboren</span><span class="data-value">${fmtDate(item.birthDate)}</span></div>
+                    <div class="data-item"><span class="data-label">Geboren</span><span class="data-value">${formatDate(item.birthDate)}</span></div>
                     <div class="data-item"><span class="data-label">Versichertennr.</span><span class="data-value">${item.insuranceNumber}</span></div>
-                    <div class="data-item"><span class="data-label">Kennnummer</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
-                    <div class="section-headline">Versicherung & Adresse</div>
-                    <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance} (${item.insuranceID})</span></div>
-                    <div class="data-item"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number}, ${item.city}</span></div>
-                    <div class="section-headline">Diagnose</div>
-                    <div class="data-item"><span class="data-label">Zeitraum</span><span class="data-value">${fmtDate(item.auFrom)} - ${fmtDate(item.auTo)}</span></div>
-                    <div class="data-item"><span class="data-label">Festgestellt</span><span class="data-value">${fmtDate(item.confirmedOn)}</span></div>
-                    <div class="data-item"><span class="data-label">Erstellt am</span><span class="data-value" style="color:var(--primary)">${createdOnDisplay}</span></div>
+                    <div class="data-item"><span class="data-label">Kennnummer (10)</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
+
+                    <div class="section-headline">Adresse</div>
+                    <div class="data-item full-row">
+                        <span class="data-label">Anschrift</span>
+                        <span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span>
+                    </div>
+
+                    <div class="section-headline">Versicherung & Arzt</div>
+                    <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance}</span></div>
+                    <div class="data-item"><span class="data-label">Kassen-Nr.</span><span class="data-value">${item.insuranceID}</span></div>
+                    <div class="data-item full-row"><span class="data-label">Arzt / Template</span><span class="data-value" style="color:var(--primary)">${docName}</span></div>
+
+                    <div class="section-headline">Diagnose & Daten</div>
+                    <div class="data-item"><span class="data-label">Festgestellt</span><span class="data-value">${formatDate(item.confirmedOn)}</span></div>
+                    <div class="data-item"><span class="data-label">Zeitraum</span><span class="data-value">${formatDate(item.auFrom)} bis ${formatDate(item.auTo)}</span></div>
+                    <div class="data-item"><span class="data-label">Typ</span><span class="data-value">${item.certificateType === 'first' ? 'Erstbescheinigung' : 'Folgebescheinigung'}</span></div>
+                    <div class="data-item"><span class="data-label">Ausgestellt am</span><span class="data-value">${formatDate(item.createdOn)}</span></div>
+
+                    <div class="section-headline">System Metadata</div>
+                    <div class="data-item"><span class="data-label">Erstellt am</span><span class="data-value">${createdStr}</span></div>
+                    <div class="data-item"><span class="data-label">IP Adresse</span><span class="data-value">${meta.ip || 'Unbekannt'} (${meta.country || 'DE'})</span></div>
+                    <div class="data-item full-row">
+                        <span class="data-label">User Agent</span>
+                        <span class="data-value" style="font-size:0.75rem; color:var(--text-muted); line-height:1.2">${meta.userAgent || '-'}</span>
+                    </div>
                 </div>
             `;
-            document.getElementById('modal-download-btn').onclick = () => downloadPDF(item._pdfKey);
-            document.getElementById('modal-delete-btn').onclick = () => { if(confirm("Löschen?")) deleteEntry(item._jsonKey, item._pdfKey); };
+
+            btnDownload.onclick = () => downloadPDF(item._pdfKey);
+            btnDelete.onclick = () => {
+                if(confirm("Diesen Eintrag und die PDF unwiderruflich löschen?")) {
+                    deleteEntry(item._jsonKey, item._pdfKey);
+                    closeModal();
+                }
+            };
+
             modal.classList.add('active');
         }
+
         function closeModal() { document.getElementById('detail-modal').classList.remove('active'); }
-        document.getElementById('detail-modal').addEventListener('click', e => { if(e.target.id === 'detail-modal') closeModal(); });
+        document.getElementById('detail-modal').addEventListener('click', (e) => { if(e.target.id === 'detail-modal') closeModal(); });
+
+        // --- HELPER ---
+        function resolveDoctorName(templateId) {
+            if(!templateId) return "Standard";
+            // Suche in der geladenen DB
+            const found = CONFIG_DB.doctors.find(d => d.templateId === templateId);
+            if(found) return found.name;
+            if(templateId === 'fadi_template') return "Fadi Daadoush";
+            return templateId;
+        }
 
         function filterCards() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allOrders.filter(i => (i.firstName + i.lastName + i.city).toLowerCase().includes(query));
+            const filtered = allData.filter(item => {
+                const searchStr = `${item.firstName} ${item.lastName} ${item.insurance} ${item.city}`.toLowerCase();
+                return searchStr.includes(query);
+            });
             renderCards(filtered);
         }
 
         function downloadPDF(key) {
-            fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`, { headers: { 'x-admin-auth': AUTH_KEY } })
-                .then(r => r.blob()).then(blob => {
+            const url = `${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`;
+            fetch(url, { headers: { 'x-admin-auth': AUTH_KEY } })
+                .then(res => res.blob())
+                .then(blob => {
                     const a = document.createElement('a'); a.href = window.URL.createObjectURL(blob);
                     a.download = key; document.body.appendChild(a); a.click(); a.remove();
-                });
+                })
+                .catch(err => alert("Fehler: " + err));
         }
-        async function deleteEntry(json, pdf) {
-            await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(json)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY }});
-            await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(pdf)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY }});
-            closeModal(); loadOrders();
+
+        async function deleteEntry(jsonKey, pdfKey) {
+            try {
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(jsonKey)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY } });
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(pdfKey)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY } });
+                loadData();
+            } catch (e) { alert("Löschen fehlgeschlagen"); }
         }
+
+        function formatDate(str) {
+            if(!str) return "-";
+            const parts = str.split('-');
+            if(parts.length !== 3) return str;
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
+
     </script>
 </body>
 </html>
