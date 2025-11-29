@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mete's Admin Konsole</title>
+    <title>Admin Dashboard</title>
     <style>
         :root {
             --bg: #09090b;
@@ -58,13 +58,13 @@
 
         /* CARDS & LISTS */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
-        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center; }
 
         .item-list { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .list-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .item-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; }
         .item-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
-        .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; }
+        .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; margin-right: 5px; border: 1px solid var(--border); }
 
         /* FORM ELEMENTS */
         .form-group { margin-bottom: 15px; }
@@ -92,7 +92,7 @@
         .btn-outline:hover { border-color: var(--text); color: var(--text); background: rgba(255,255,255,0.05); }
         .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
         .btn-danger:hover { background: var(--danger); color: white; }
-        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
         .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
         .btn-close:hover { color: white; }
 
@@ -101,21 +101,42 @@
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; }
 
-        /* LOGIN BOX */
-        .login-box { padding: 50px 40px; text-align: center; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px; }
+        /* FROSTED LOGIN BOX */
+        .login-box { 
+            padding: 50px 40px; text-align: center; max-width: 380px; 
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px;
+        }
         .login-box input { margin: 25px 0; text-align: center; background: transparent; }
 
-        /* DETAIL MODAL STYLES (High End) */
+        /* --- DETAIL MODAL STYLES (SCREENSHOT MATCH) --- */
         .detail-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 10; }
         .detail-body { padding: 25px; }
         .detail-footer { padding: 20px 25px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: #141417; position: sticky; bottom: 0; }
         
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; margin-bottom: 10px; }
         .data-item { display: flex; flex-direction: column; gap: 4px; }
-        .data-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        .data-value { font-size: 0.95rem; font-weight: 500; word-break: break-word; }
+        
+        /* Label Styles wie im Screenshot */
+        .data-label { font-size: 0.7rem; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        /* Value Styles wie im Screenshot */
+        .data-value { font-size: 0.95rem; color: white; font-weight: 500; word-break: break-word; line-height: 1.4; }
+        
         .full-row { grid-column: span 2; }
-        .section-headline { grid-column: span 2; color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(59,130,246,0.1); padding-bottom: 5px; margin-top: 20px; margin-bottom: 5px; }
+        
+        /* Blaue Überschriften */
+        .section-headline { 
+            grid-column: span 2; 
+            color: var(--primary); 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            /* margin-top: 25px; */
+            padding-bottom: 5px; 
+            margin-bottom: 5px;
+            margin-top: 20px;
+        }
         .section-headline:first-child { margin-top: 0; }
 
         .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
@@ -128,8 +149,8 @@
 
     <div id="login-modal" class="modal-overlay active">
         <div class="login-box">
-            <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
-            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
+            <div style="font-size:2rem; margin-bottom:10px;"></div>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Welcome back, Metehan</h3>
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             <button class="btn" style="width:100%" id="loginBtn" onclick="login()">Login</button>
         </div>
@@ -143,7 +164,7 @@
             </div>
             <div class="detail-body" id="modal-content"></div>
             <div class="detail-footer">
-                <button class="btn" id="modal-download-btn" style="flex:1">PDF Laden</button>
+                <button class="btn" id="modal-download-btn" style="flex:1">PDF Herunterladen</button>
                 <button class="btn btn-danger" id="modal-delete-btn">Löschen</button>
             </div>
         </div>
@@ -189,7 +210,7 @@
                     
                     <div class="form-group"><label>Praxis Name</label><input id="newDocName" placeholder="z.B. Hausarztpraxis Berlin"></div>
                     <div class="form-group"><label>Details (Arzt Name)</label><input id="newDocDetails" placeholder="z.B. Dr. Med. Max Mustermann"></div>
-                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin"></div>
+                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin (Kleinschreibung!)"></div>
 
                     <div class="form-group">
                         <label>Template (PDF)</label>
@@ -243,7 +264,7 @@
                 loadOrders(); 
             } catch(e) { 
                 alert(e.message);
-                input.disabled = false; btn.disabled = false; btn.textContent = "Login"; input.value = "";
+                input.disabled = false; btn.textContent = "Login"; input.value = "";
             }
         }
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
@@ -257,7 +278,7 @@
             event.target.classList.add('active');
         }
 
-        // --- MANAGER ---
+        // --- MANAGER (Updated with Template ID) ---
         function initManager() {
             renderDoctors();
             renderInsurances();
@@ -268,12 +289,14 @@
             const list = document.getElementById('doctorList');
             list.innerHTML = "";
             DB.doctors.forEach((doc, idx) => {
+                // HIER HABE ICH DAS TEMPLATE HINZUGEFÜGT (📄 ID)
                 list.innerHTML += `
                     <div class="list-item">
                         <div class="item-info">
                             <h4>${doc.name}</h4>
                             <p>${doc.details}</p>
                             <span class="tag">📍 ${doc.citySearch}</span>
+                            <span class="tag" style="background:#27272a; color:#a1a1aa;">📄 ${doc.templateId}</span>
                         </div>
                         <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">✕</button>
                     </div>
@@ -284,7 +307,7 @@
         function renderInsurances() {
             const list = document.getElementById('insuranceList');
             list.innerHTML = "";
-            DB.insurances.slice(0, 20).forEach((ins) => { // Limit for performance in view
+            DB.insurances.slice(0, 20).forEach((ins) => { 
                 list.innerHTML += `
                     <div class="list-item">
                         <div class="item-info"><h4>${ins.name}</h4><p>${ins.code}</p></div>
@@ -366,7 +389,6 @@
             const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
             const listData = await listRes.json();
             
-            // Filter: Nur JSONs, keine Systemdateien, keine "undefined" ohne Namen
             const jsonFiles = listData.objects
                 .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
                 .sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
@@ -376,9 +398,7 @@
                 try {
                     const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
                     const content = await res.json();
-                    // Validierung: Nur anzeigen wenn echte Daten drin sind
                     if (!content || !content.firstName) return null;
-                    
                     content._jsonKey = file.key;
                     content._pdfKey = file.key.replace('.json', '.pdf');
                     content._uploadDate = file.uploaded;
@@ -393,16 +413,16 @@
 
         function renderOrders(data) {
             const grid = document.getElementById('orderGrid');
+            document.getElementById('countBadge').textContent = data.length;
             grid.innerHTML = "";
             if(data.length === 0) { grid.innerHTML = '<div style="text-align:center;color:gray;grid-column:1/-1">Keine Aufträge</div>'; return; }
 
             data.forEach(item => {
                 const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
                 
-                // Arzt Name auflösen
+                // Arzt Name Auflösen
                 let docName = "Standard";
                 if (item.doctorTemplate) {
-                    // Versuch, den Namen aus der geladenen DB zu finden
                     const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
                     if(found) docName = found.name;
                     else if(item.doctorTemplate === 'fadi_template') docName = "Fadi Daadoush";
@@ -434,16 +454,8 @@
         function openModal(item) {
             const modal = document.getElementById('detail-modal');
             const content = document.getElementById('modal-content');
+            
             const fmtDate = (d) => d ? d.split('-').reverse().join('.') : '-';
-            
-            // Arzt Name auflösen
-            let docName = "Standard";
-            if (item.doctorTemplate) {
-                const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
-                if(found) docName = found.name;
-                else if(item.doctorTemplate === 'fadi_template') docName = "Fadi Daadoush";
-            }
-            
             const created = item.createdOn ? fmtDate(item.createdOn) : new Date(item._uploadDate).toLocaleDateString('de-DE');
             const meta = item.meta || {};
 
@@ -453,31 +465,37 @@
                     <div class="data-item"><span class="data-label">Name</span><span class="data-value">${item.firstName} ${item.lastName}</span></div>
                     <div class="data-item"><span class="data-label">Geboren</span><span class="data-value">${fmtDate(item.birthDate)}</span></div>
                     <div class="data-item"><span class="data-label">Versichertennr.</span><span class="data-value">${item.insuranceNumber}</span></div>
-                    <div class="data-item"><span class="data-label">Kennnummer</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
+                    <div class="data-item"><span class="data-label">Kennnummer (10)</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
 
-                    <div class="section-headline">Versicherung & Arzt</div>
+                    <div class="section-headline">Adresse</div>
+                    <div class="data-item full-row">
+                        <span class="data-label">Anschrift</span>
+                        <span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span>
+                    </div>
+
+                    <div class="section-headline">Versicherung</div>
                     <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance}</span></div>
                     <div class="data-item"><span class="data-label">Kassen-Nr.</span><span class="data-value">${item.insuranceID}</span></div>
-                    <div class="data-item full-row"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number}, ${item.postcode} ${item.city}</span></div>
-                    <div class="data-item full-row"><span class="data-label">Arzt</span><span class="data-value" style="color:var(--primary)">${docName}</span></div>
 
-                    <div class="section-headline">Diagnose</div>
-                    <div class="data-item"><span class="data-label">Zeitraum</span><span class="data-value">${fmtDate(item.auFrom)} - ${fmtDate(item.auTo)}</span></div>
+                    <div class="section-headline">Diagnose & Daten</div>
                     <div class="data-item"><span class="data-label">Festgestellt</span><span class="data-value">${fmtDate(item.confirmedOn)}</span></div>
-                    <div class="data-item"><span class="data-label">Erstellt am</span><span class="data-value" style="color:var(--primary)">${created}</span></div>
+                    <div class="data-item"><span class="data-label">Zeitraum</span><span class="data-value">${fmtDate(item.auFrom)} bis ${fmtDate(item.auTo)}</span></div>
                     <div class="data-item"><span class="data-label">Typ</span><span class="data-value">${item.certificateType === 'first' ? 'Erstbescheinigung' : 'Folgebescheinigung'}</span></div>
+                    <div class="data-item"><span class="data-label">Ausgestellt am</span><span class="data-value">${fmtDate(item.createdOn)}</span></div>
 
-                    <div class="section-headline full-row">System</div>
-                    <div class="data-item"><span class="data-label">Upload Zeit</span><span class="data-value">${new Date(item._uploadDate).toLocaleString('de-DE')}</span></div>
-                    <div class="data-item"><span class="data-label">IP</span><span class="data-value">${meta.ip || '-'} (${meta.country || 'DE'})</span></div>
+                    <div class="section-headline full-row">System Metadata</div>
+                    <div class="data-item"><span class="data-label">Erstellt am (Server)</span><span class="data-value">${new Date(item._uploadDate).toLocaleString('de-DE')}</span></div>
+                    <div class="data-item"><span class="data-label">IP Adresse</span><span class="data-value">${meta.ip || 'Unbekannt'} (${meta.country || '?'})</span></div>
+                    <div class="data-item full-row">
+                        <span class="data-label">User Agent</span>
+                        <span class="data-value" style="font-size:0.75rem; color:var(--text-muted); line-height:1.2">${meta.userAgent || '-'}</span>
+                    </div>
                 </div>
             `;
-
             document.getElementById('modal-download-btn').onclick = () => downloadPDF(item._pdfKey);
             document.getElementById('modal-delete-btn').onclick = () => { if(confirm("Löschen?")) deleteEntry(item._jsonKey, item._pdfKey); };
             modal.classList.add('active');
         }
-
         function closeModal() { document.getElementById('detail-modal').classList.remove('active'); }
         document.getElementById('detail-modal').addEventListener('click', e => { if(e.target.id === 'detail-modal') closeModal(); });
 
