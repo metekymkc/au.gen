@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mete's AU Generator</title>
   <style>
+    /* --- FONTS --- */
+    @font-face {
+        font-family: 'ArcadeClassic';
+        /* Pfad zur Datei im Repo */
+        src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
     :root {
       /* Dark Theme Palette */
       --bg-color: #09090b;       
@@ -50,24 +59,30 @@
       margin-bottom: 20px;
     }
 
+    /* --- TITEL STYLING (ARCADE) --- */
     h1 {
       text-align: center;
       margin-top: 0;
       color: var(--text-main);
-      font-size: 1.8rem;
+      /* Neue Schriftart */
+      font-family: 'ArcadeClassic', sans-serif; 
+      font-size: 2.2rem; /* Etwas größer, da Arcade Fonts oft klein wirken */
       margin-bottom: 5px; 
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-weight: normal; /* Arcade Fonts sind meist bold by default */
+      letter-spacing: 0.05em; /* Etwas Luft für den Retro-Look */
+      text-transform: uppercase;
     }
     
     .subtitle {
         text-align: center;
         color: #52525b; 
-        font-size: 0.9rem;
+        font-family: 'Inter', sans-serif; /* Untertitel bleibt clean */
+        font-size: 0.8rem;
         font-weight: 500;
         margin-bottom: 2.5rem;
     }
 
+    /* LEGAL FOOTER */
     .legal-footer {
         max-width: 700px;
         text-align: center;
@@ -188,10 +203,10 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* INPUTS */
+    /* INPUTS & SELECTS */
     input, select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 0 14px; /* Padding nur links/rechts, Höhe regelt vertikal */
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 0.95rem;
@@ -199,7 +214,8 @@
       color: var(--text-main);
       background-color: var(--input-bg);
       transition: all 0.2s ease;
-      height: 48px;
+      height: 48px; /* Fixe Höhe Desktop */
+      line-height: 48px; /* Text vertikal zentriert */
     }
 
     input:focus, select:focus {
@@ -211,36 +227,16 @@
     
     input::placeholder { color: #52525b; }
 
-    /* Fix für Datumsgruppe (Mobile & Desktop) */
-    .date-group {
-        display: flex;
-        gap: 10px;
-        width: 100%;
+    /* iOS Date Input Fix */
+    input[type="date"] {
+        /* Wichtig für iOS: */
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        /* Icon Farbe invertieren */
+        color-scheme: dark; 
     }
     
-    /* Input im Date-Group nimmt den restlichen Platz */
-    .date-group input {
-        flex: 1; /* Nimmt maximalen Platz */
-        width: 0; /* Erlaubt Schrumpfen, wichtig für Flexbox */
-        min-width: 0;
-    }
-
-    /* Heute Button fest */
-    .today-btn {
-        flex-shrink: 0; /* Darf nicht kleiner werden */
-        padding: 0 16px;
-        font-size: 0.85rem;
-        background-color: #27272a;
-        color: var(--text-muted);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s;
-        height: 48px;
-    }
-    .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
-
     input[type="date"]::-webkit-calendar-picker-indicator {
         filter: invert(1); 
         cursor: pointer;
@@ -304,6 +300,22 @@
       transition: all 0.1s;
     }
     .suggestion-item:hover { background-color: #27272a; color: var(--text-main); padding-left: 20px; }
+
+    .date-group { display: flex; gap: 10px; }
+    
+    .today-btn {
+      padding: 0 16px;
+      font-size: 0.85rem;
+      background-color: #27272a;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      height: 48px;
+    }
+    .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
     .nav-buttons {
         display: flex;
@@ -383,15 +395,23 @@
         
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
-        /* Mobile Inputs kleiner */
+        /* Mobile: Kompaktere Felder */
         input, select {
             height: 42px; 
+            line-height: normal; /* Wichtig für iOS Date Input */
             padding: 10px 12px;
             font-size: 0.9rem;
+            max-height: 42px; /* Zwingt iOS in die Knie */
         }
         
-        /* Button passend dazu */
+        /* Heute Button passend */
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
+        
+        /* Date Group Flex Fix */
+        .date-group {
+            width: 100%;
+            align-items: center;
+        }
         
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
@@ -647,7 +667,7 @@
         "AOK RLP/Saarland (Saarland)": "73",
         "AOK Bremen/Bremerhaven": "03",
         "AOK Sachsen-Anhalt": "88",
-        "IKK classic": "71",
+        "IKK classic": "71", 
         "Knappschaft": "16",
         "BMW BKK": "71",
         "Audi BKK": "71",
@@ -850,7 +870,7 @@
         });
     }
 
-    // ===== Submit Logic (Fixed Filename) =====
+    // ===== Submit Logic =====
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async e => {
       e.preventDefault();
@@ -884,7 +904,7 @@
         const a = document.createElement("a");
         a.href = url;
         
-        // DATEINAME: Direkt hier generieren, das ist am sichersten
+        // DATEINAME: Direkt hier generieren
         const clean = (s) => (s || "Unbekannt").trim().replace(/ /g, "_");
         const fName = clean(data.firstName);
         const lName = clean(data.lastName);
