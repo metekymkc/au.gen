@@ -8,7 +8,6 @@
     /* --- FONTS --- */
     @font-face {
         font-family: 'ArcadeClassic';
-        /* Pfad muss stimmen! */
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
         font-weight: normal;
         font-style: normal;
@@ -33,19 +32,24 @@
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
-    /* --- GLOBAL RESET & BACKGROUND FIX --- */
+    /* --- BACKGROUND FIX (NUCLEAR OPTION) --- */
     * { box-sizing: border-box; }
 
     html {
-        background-color: var(--bg-color);
+        background-color: #09090b !important; /* Zwingend Schwarz */
+        background-image: none !important;
         height: 100%;
-        margin: 0; padding: 0;
+        width: 100%;
+        margin: 0; 
+        padding: 0;
     }
 
     body {
       font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color); /* Solides Schwarz */
-      background-image: none;            /* Keine Verläufe */
+      
+      background-color: #09090b !important; /* Zwingend Schwarz */
+      background-image: none !important;    /* Keine Verläufe! */
+      
       color: var(--text-main);
       
       display: flex;
@@ -53,10 +57,13 @@
       justify-content: center;
       align-items: center;
       
-      min-height: 100vh;
+      min-height: 100vh; /* Mindestens Bildschirmhöhe */
       width: 100%;
       margin: 0; 
       padding: 20px;
+      
+      /* Verhindert horizontales Scrollen */
+      overflow-x: hidden; 
     }
 
     .container {
@@ -68,6 +75,8 @@
       width: 100%;
       max-width: 700px;
       margin-bottom: 20px;
+      position: relative; /* Stellt sicher, dass es über dem BG liegt */
+      z-index: 1;
     }
 
     /* --- TITEL STYLING --- */
@@ -96,7 +105,7 @@
     #loading-overlay {
         position: fixed;
         inset: 0;
-        background: var(--bg-color);
+        background: #09090b; /* Hardcoded Black */
         z-index: 9999;
         display: flex;
         justify-content: center;
@@ -229,6 +238,9 @@
       transition: all 0.2s ease;
       height: 48px;
       line-height: 48px;
+      /* Reset for iOS styles */
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     input:focus, select:focus {
@@ -240,13 +252,13 @@
     
     input::placeholder { color: #52525b; }
 
-    /* --- DATE INPUT FIXES --- */
+    /* --- DATE INPUT STYLING (MOBILE FIX) --- */
     input[type="date"] {
-        -webkit-appearance: none;
-        appearance: none;
         display: block;
         color-scheme: dark; 
         text-align: left; 
+        /* iOS Height Enforcement */
+        min-height: 48px;
     }
     
     input[type="date"]::-webkit-calendar-picker-indicator {
@@ -262,9 +274,6 @@
     }
 
     select {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
       cursor: pointer;
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
@@ -403,6 +412,7 @@
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
+    /* LEGAL FOOTER */
     .legal-footer {
         max-width: 700px;
         text-align: center;
@@ -414,6 +424,7 @@
     }
     .legal-footer strong { color: #52525b; }
 
+
     /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
@@ -421,22 +432,33 @@
         
         .form-grid { grid-template-columns: 1fr; gap: 15px; }
         .full-width, .three-quarter, .one-quarter { grid-column: span 1; }
+        
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
+        /* Mobile Inputs */
         input, select {
             height: 42px; 
+            min-height: 42px;
             line-height: normal;
             padding: 10px 12px;
             font-size: 0.9rem;
-            max-height: 42px; 
         }
         
-        /* FIX FÜR iOS DATUM */
-        input[name="birthDate"] { text-align: left; padding-left: 12px; }
-        input[name="birthDate"]::-webkit-date-and-time-value { text-align: left; }
+        /* FIX FÜR iOS DATUM ALIGNMENT */
+        input[name="birthDate"] {
+            text-align: left;
+            padding-left: 12px;
+        }
+        input[name="birthDate"]::-webkit-date-and-time-value {
+            text-align: left;
+        }
 
-        .date-group input[type="date"] { text-align: center; }
-        .date-group input[type="date"]::-webkit-date-and-time-value { text-align: center; }
+        .date-group input[type="date"] {
+            text-align: center;
+        }
+        .date-group input[type="date"]::-webkit-date-and-time-value {
+            text-align: center;
+        }
         
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
         .date-group { width: 100%; align-items: center; display:flex; }
@@ -622,13 +644,11 @@
 
       <div id="step-4" class="step-content">
           <div class="step-title">4. Behandelnder Arzt auswählen</div>
-          
           <div id="doctor-list-container">
               <p style="color:var(--text-muted); text-align:center;">Bitte erst Stadt eingeben...</p>
           </div>
-          
           <input type="hidden" name="doctorTemplate" id="selectedDoctorTemplate" value="">
-
+          
           <div class="nav-buttons">
               <button type="button" class="nav-btn" onclick="prevStep(4)">Zurück</button>
               <button type="submit" class="nav-btn primary-btn" id="submitBtn">
@@ -643,36 +663,28 @@
 
   <div class="legal-footer">
       <strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. <br>
-      Die erstellten Dokumente sind keine offiziellen Urkunden und dürfen nicht im Rechtsverkehr (z.B. gegenüber Arbeitgebern, Krankenkassen oder Behörden) verwendet werden. Der Autor übernimmt keine Haftung für Missbrauch. Urkundenfälschung ist strafbar.
+      Die erstellten Dokumente sind keine offiziellen Urkunden und dürfen nicht im Rechtsverkehr verwendet werden. Urkundenfälschung ist strafbar.
   </div>
 
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
-    
-    // Globale Daten (werden dynamisch geladen)
     let INSURANCE_CODES = {};
     let DOCTORS_DB = [];
 
-    // --- INIT APP (Daten laden) ---
     async function initApp() {
         try {
             const res = await fetch(`${WORKER_URL}/public/data`);
             const data = await res.json();
-            
-            // 1. Ärzte
             DOCTORS_DB = data.doctors;
             
-            // 2. Versicherungen
             const select = document.getElementById('insuranceSelect');
             select.innerHTML = '<option value="">Bitte wählen...</option>';
-            
             const groups = {};
             data.insurances.forEach(ins => {
                 if(!groups[ins.group]) groups[ins.group] = [];
                 groups[ins.group].push(ins);
                 INSURANCE_CODES[ins.name] = ins.code;
             });
-
             for (const [groupName, items] of Object.entries(groups)) {
                 const optgroup = document.createElement('optgroup');
                 optgroup.label = groupName;
@@ -684,14 +696,9 @@
                 });
                 select.appendChild(optgroup);
             }
-
-            // Lade-Overlay entfernen
             document.getElementById('loading-overlay').style.opacity = '0';
             setTimeout(() => document.getElementById('loading-overlay').remove(), 500);
-
-        } catch (e) {
-            alert("Fehler beim Laden: " + e);
-        }
+        } catch (e) { alert("Fehler beim Laden der Konfiguration: " + e); }
     }
 
     // --- STEP LOGIC ---
@@ -728,9 +735,7 @@
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
         const hiddenInput = document.getElementById('selectedDoctorTemplate');
-        
-        container.innerHTML = ""; 
-        hiddenInput.value = ""; 
+        container.innerHTML = ""; hiddenInput.value = ""; 
 
         const matches = DOCTORS_DB.filter(doc => cityInput.includes(doc.citySearch));
 
@@ -738,16 +743,10 @@
             matches.forEach((doc, index) => {
                 const card = document.createElement('div');
                 card.className = 'doctor-card';
-                if (index === 0) {
-                    card.classList.add('selected');
-                    hiddenInput.value = doc.templateId; // Achtung: templateId, nicht templateName
-                }
+                if (index === 0) { card.classList.add('selected'); hiddenInput.value = doc.templateId; }
                 card.innerHTML = `
                     <input type="radio" name="docSelection" class="doctor-radio" ${index===0 ? 'checked' : ''}>
-                    <div class="doctor-info">
-                        <h4>${doc.name}</h4>
-                        <p>${doc.details}</p>
-                    </div>
+                    <div class="doctor-info"><h4>${doc.name}</h4><p>${doc.details}</p></div>
                 `;
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
@@ -769,7 +768,7 @@
         }
     }
 
-    // --- GLOBAL INIT ---
+    // --- GLOBAL INIT & REGELN ---
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
@@ -778,7 +777,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
-
+      
       const today = new Date();
       const todayStr = today.toISOString().split("T")[0];
       const maxDate = new Date();
@@ -793,14 +792,11 @@
       const createdInput = document.getElementById('dateCreated');
       if (createdInput) createdInput.value = todayStr;
 
-      document.querySelectorAll('select').forEach(select => {
-        select.addEventListener('change', () => { select.blur(); });
-      });
+      document.querySelectorAll('select').forEach(select => { select.addEventListener('change', () => { select.blur(); }); });
 
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       const disclaimer = document.getElementById('insDisclaimer');
-
       insSelect.addEventListener('change', () => {
           const selected = insSelect.value;
           if (INSURANCE_CODES[selected]) {
@@ -810,11 +806,10 @@
               disclaimer.style.display = 'block';
           }
       });
-      
       initAutocomplete();
     });
 
-    // ===== Autocomplete =====
+    // ===== Autocomplete Logic =====
     function initAutocomplete() {
         const searchInput = document.getElementById('address-search');
         const suggestionBox = document.getElementById('address-suggestions');
@@ -864,7 +859,6 @@
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      
       const allInputs = form.querySelectorAll('input[required], select[required]');
       for (let input of allInputs) {
           if (!input.value) {
@@ -877,47 +871,27 @@
               }
           }
       }
-
+      
       const auFromInput = document.getElementById('dateFrom');
       const auToInput = document.getElementById('dateTo');
       if (auFromInput.value && auToInput.value) {
           const start = new Date(auFromInput.value);
           const end = new Date(auToInput.value);
-          if (end < start) {
-              showStep(3); alert("Fehler: 'Bis' vor 'Von'.");
-              auToInput.style.borderColor = "#ef4444"; return;
-          }
+          if (end < start) { showStep(3); alert("Fehler: 'Bis' vor 'Von'."); auToInput.style.borderColor = "#ef4444"; return; }
           const diffDays = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)); 
-          if (diffDays > 21) {
-              showStep(3); alert(`Maximal 21 Tage erlaubt (Du hast ${diffDays}).`);
-              auToInput.style.borderColor = "#ef4444"; return;
-          }
+          if (diffDays > 21) { showStep(3); alert(`Maximal 21 Tage erlaubt.`); auToInput.style.borderColor = "#ef4444"; return; }
       }
 
       const btn = document.getElementById("submitBtn");
       const spinner = document.getElementById("spinner");
       const btnContent = document.querySelector(".btn-content");
-      btn.disabled = true;
-      spinner.style.display = "inline-block";
-      btnContent.textContent = "Generiere...";
-      
+      btn.disabled = true; spinner.style.display = "inline-block"; btnContent.textContent = "Generiere...";
       const fd = new FormData(form);
       const data = Object.fromEntries(fd.entries());
 
       try {
-        const resp = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-
-        if (!resp.ok) {
-           const errText = await resp.text();
-           let errMsg = errText;
-           try { errMsg = JSON.parse(errText).error; } catch {}
-           throw new Error(errMsg);
-        }
-
+        const resp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+        if (!resp.ok) { const errText = await resp.text(); let errMsg = errText; try { errMsg = JSON.parse(errText).error; } catch {} throw new Error(errMsg); }
         const blob = await resp.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -927,17 +901,9 @@
         const lName = clean(data.lastName);
         const dateStr = data.createdOn || new Date().toISOString().split('T')[0];
         a.download = `${fName}_${lName}_AU_${dateStr}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       } catch (err) { alert("Fehler: " + err.message); } 
-      finally {
-        btn.disabled = false;
-        spinner.style.display = "none";
-        btnContent.textContent = "PDF Generieren & Downloaden";
-      }
+      finally { btn.disabled = false; spinner.style.display = "none"; btnContent.textContent = "PDF Generieren & Downloaden"; }
     });
   </script>
 </body>
