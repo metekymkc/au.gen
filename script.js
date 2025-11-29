@@ -1,4 +1,4 @@
-const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; // Worker URL anpassen
+const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev"; 
 
 const form = document.getElementById("pdfForm");
 
