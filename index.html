@@ -31,7 +31,7 @@
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
-      flex-direction: column; /* Wichtig für Footer */
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -47,7 +47,7 @@
       border: 1px solid var(--border-color);
       width: 100%;
       max-width: 700px;
-      margin-bottom: 20px; /* Abstand zum Footer */
+      margin-bottom: 20px;
     }
 
     h1 {
@@ -68,14 +68,15 @@
         margin-bottom: 2.5rem;
     }
 
-    /* LEGAL FOOTER STYLE */
+    /* LEGAL FOOTER */
     .legal-footer {
         max-width: 700px;
         text-align: center;
         font-size: 0.75rem;
-        color: #3f3f46; /* Sehr dunkles Grau */
+        color: #3f3f46;
         line-height: 1.4;
         margin-top: 10px;
+        padding: 0 10px;
     }
     .legal-footer strong { color: #52525b; }
 
@@ -150,6 +151,7 @@
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
+    /* FORM GRID */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -187,6 +189,7 @@
         animation: fadeIn 0.5s ease;
     }
 
+    /* INPUTS */
     input, select {
       width: 100%;
       padding: 12px 14px;
@@ -353,28 +356,38 @@
         border-color: var(--primary);
         background: rgba(59, 130, 246, 0.08); 
     }
-    
-    .doctor-radio { 
-        width: 20px; 
-        height: 20px; 
-        accent-color: var(--primary); 
-        cursor: pointer;
-        flex-shrink: 0;
-    }
-    
+    .doctor-radio { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
+    /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
         .container { padding: 1.5rem; }
+        
         .form-grid { grid-template-columns: 1fr; gap: 15px; }
         .full-width, .three-quarter, .one-quarter { grid-column: span 1; }
+        
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
+        
+        /* Mobile: Kompaktere Felder für Datums-Eingabe */
+        input, select {
+            height: 42px; /* Weniger hoch */
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+        
         .date-group { width: 100%; }
-        .step-text { font-size: 0.65rem; }
-        .step-indicators { padding: 0; }
+        .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
+        
+        /* Steps kompakter */
+        .step-text { display: none; } /* Text ausblenden, nur Zahlen */
+        .step-indicators { padding: 0; margin-bottom: 25px; }
+        .step-circle { margin-bottom: 0; }
+        .step-item { width: auto; }
+        
         h1 { font-size: 1.5rem; }
+        .subtitle { margin-bottom: 1.5rem; }
     }
 
     ::-webkit-scrollbar { width: 8px; }
@@ -465,7 +478,7 @@
                               <option value="Techniker Krankenkasse">Techniker Krankenkasse (TK)</option>
                               <option value="BARMER">BARMER</option>
                               <option value="DAK-Gesundheit">DAK-Gesundheit</option>
-                              <option value="KKH">KKH</option>
+                              <option value="IKK classic">IKK classic</option> <option value="KKH">KKH</option>
                               <option value="hkk">hkk</option>
                               <option value="Knappschaft">Knappschaft</option>
                               <option value="BMW BKK">BMW BKK</option>
@@ -623,6 +636,7 @@
         "AOK RLP/Saarland (Saarland)": "73",
         "AOK Bremen/Bremerhaven": "03",
         "AOK Sachsen-Anhalt": "88",
+        "IKK classic": "71", /* NEU */
         "Knappschaft": "16",
         "BMW BKK": "71",
         "Audi BKK": "71",
