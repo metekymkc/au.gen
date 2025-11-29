@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Mete's Admin Konsole</title>
     <style>
         :root {
             --bg: #09090b;
@@ -55,7 +55,7 @@
             background: var(--overlay); z-index: 1000;
             display: none;
             justify-content: center; align-items: center;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(5px); /* Blur the background behind the modal */
             animation: fadeIn 0.2s ease-out;
         }
         .modal-overlay.active { display: flex; }
@@ -68,6 +68,47 @@
             max-height: 90vh; overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
+        }
+
+        /* --- LOGIN BOX (GLASSMORPHISM STYLE) --- */
+        .login-box { 
+            padding: 50px 40px; 
+            text-align: center; 
+            max-width: 380px; 
+            
+            /* Der "Glass" Effekt */
+            background: rgba(255, 255, 255, 0.03); /* Fast transparent */
+            backdrop-filter: blur(20px);            /* Starker Blur */
+            -webkit-backdrop-filter: blur(20px);    /* Safari Support */
+            
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Sehr feiner Rahmen */
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     /* Tiefer Schatten */
+            border-radius: 16px;
+        }
+        
+        .login-box input {
+            width: 100%; 
+            padding: 14px 16px; 
+            margin: 25px 0 25px 0;
+            background: transparent; /* Transparent */
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            color: white; 
+            border-radius: 8px;
+            outline: none; 
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            text-align: center; /* Passwort zentriert sieht oft gut aus bei Login */
+        }
+        
+        .login-box input:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); 
+            background: rgba(255,255,255,0.02);
+        }
+        
+        .login-box input::placeholder {
+            color: #52525b;
+            font-size: 0.9rem;
         }
 
         /* Detail Modal Specifics */
@@ -108,39 +149,6 @@
             margin-bottom: 10px;
         }
 
-        /* --- LOGIN BOX (Fixed & Clean) --- */
-        .login-box { 
-            padding: 40px; 
-            text-align: center; 
-            max-width: 380px; 
-            border: 1px solid var(--border);
-            box-shadow: 0 0 40px rgba(0,0,0,0.5); /* Weicherer Schatten */
-        }
-        
-        .login-box input {
-            width: 100%; 
-            padding: 14px 16px; 
-            margin: 20px 0 25px 0;
-            /* TRANSPARENTER HINTERGRUND */
-            background: transparent; 
-            border: 1px solid var(--input-border); 
-            color: white; 
-            border-radius: 8px;
-            outline: none; 
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-        
-        .login-box input:focus { 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); /* Subtiler Glow bei Fokus */
-            background: rgba(255,255,255,0.02);
-        }
-        
-        .login-box input::placeholder {
-            color: #52525b;
-        }
-
         /* BUTTONS */
         .btn {
             background: var(--primary); color: white; border: none; padding: 12px 24px;
@@ -160,12 +168,10 @@
         .controls { display: flex; gap: 15px; margin-bottom: 20px; }
         .search-input {
             flex: 1; padding: 12px;
-            background: transparent; 
-            border: 1px solid var(--border); 
-            border-radius: var(--radius);
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
             color: white; font-size: 0.95rem;
         }
-        .search-input:focus { border-color: var(--primary); outline: none; background: rgba(255,255,255,0.02); }
+        .search-input:focus { border-color: var(--primary); outline: none; }
 
         /* TASK GRID */
         .task-grid {
@@ -224,12 +230,11 @@
 <body>
 
     <div id="login-modal" class="modal-overlay active">
-        <div class="modal-box login-box">
+        <div class="login-box">
             <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
             <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
-            <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">Bitte Identität bestätigen</p>
             
-            <input type="password" id="passwordInput" placeholder="Passwort eingeben...">
+            <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             <button class="btn" style="width:100%" onclick="login()">Login</button>
         </div>
     </div>
