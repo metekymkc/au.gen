@@ -6,334 +6,505 @@
     <title>Mete's Admin Konsole</title>
     <style>
         :root {
-            --bg: #09090b; --card: #18181b; --overlay: rgba(0,0,0,0.85);
-            --text: #f4f4f5; --text-muted: #a1a1aa;
-            --primary: #3b82f6; --primary-hover: #2563eb;
-            --border: #27272a; --input-bg: #27272a; --danger: #ef4444; --success: #10b981;
+            --bg: #09090b;
+            --card: #18181b;
+            --overlay: rgba(0, 0, 0, 0.85);
+            --text: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border: #27272a;
+            --input-border: #3f3f46;
+            --danger: #ef4444;
             --radius: 12px;
         }
+
         * { box-sizing: border-box; }
+
         body {
-            background-color: var(--bg); color: var(--text);
-            font-family: 'Segoe UI', Inter, sans-serif; margin: 0; padding: 20px;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Inter, sans-serif;
+            margin: 0;
+            padding: 20px;
             min-height: 100vh;
         }
+
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* HEADER & TABS */
+        /* HEADER */
         header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            background: rgba(9, 9, 11, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
+        .badge { 
+            background: rgba(59, 130, 246, 0.15); color: var(--primary); 
+            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay); z-index: 1000;
+            display: none;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.2s ease-out;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-box {
+            background: var(--card); 
+            border-radius: var(--radius); 
+            border: 1px solid var(--border); 
+            width: 90%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        /* --- LOGIN BOX (Glass Style) --- */
+        .login-box { 
+            padding: 50px 40px; 
+            text-align: center; 
+            max-width: 380px; 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px);            
+            -webkit-backdrop-filter: blur(20px);    
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     
+            border-radius: 16px;
+        }
+        
+        .login-box input {
+            width: 100%; 
+            padding: 14px 16px; 
+            margin: 25px 0 25px 0;
+            background: transparent; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            color: white; 
+            border-radius: 8px;
+            outline: none; font-size: 1rem;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .login-box input:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
+        .login-box input::placeholder { color: #52525b; font-size: 0.9rem; }
+
+        /* DETAIL MODAL */
+        .detail-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; background: var(--card); z-index: 10;
         }
-        h1 { margin: 0; font-size: 1.5rem; }
-        
-        .tabs { display: flex; gap: 10px; background: #141417; padding: 5px; border-radius: var(--radius); border: 1px solid var(--border); }
-        .tab-btn {
-            background: transparent; color: var(--text-muted); border: none;
-            padding: 10px 20px; cursor: pointer; border-radius: 8px; font-weight: 600;
-            transition: all 0.2s;
+        .detail-body { padding: 25px; }
+        .detail-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--border);
+            display: flex; gap: 10px;
+            background: #141417;
         }
-        .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
-        /* VIEWS */
-        .view-section { display: none; animation: fadeIn 0.3s ease; }
-        .view-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS & GRIDS */
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-        .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media(max-width: 900px) { .config-grid { grid-template-columns: 1fr; } }
-
-        h2 { margin-top: 0; font-size: 1.1rem; color: var(--primary); display: flex; justify-content: space-between; align-items: center; }
-
-        /* TABLES & LISTS */
-        .item-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .config-item {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
+        .data-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;
         }
-        .config-info { display: flex; flex-direction: column; gap: 2px; }
-        .config-title { font-weight: 600; font-size: 0.95rem; }
-        .config-sub { font-size: 0.8rem; color: var(--text-muted); }
-
-        /* FORMS */
-        input, select, textarea {
-            background: var(--input-bg); border: 1px solid var(--border); color: white;
-            padding: 10px; border-radius: 6px; width: 100%; outline: none; margin-bottom: 10px;
+        .data-item { display: flex; flex-direction: column; gap: 5px; }
+        .data-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-value { font-size: 0.95rem; color: var(--text); font-weight: 500; word-break: break-word; }
+        .full-row { grid-column: span 2; }
+        .section-headline {
+            grid-column: span 2; color: var(--primary); font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 5px;
+            margin-top: 15px; margin-bottom: 10px;
         }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); }
-        label { font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
 
         /* BUTTONS */
         .btn {
-            background: var(--primary); color: white; border: none; padding: 10px 16px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            background: var(--primary); color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px;
         }
-        .btn:hover { background: var(--primary-hover); }
-        .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
-        .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-        .btn-danger:hover { background: var(--danger); color: white; }
-        .btn-success { background: var(--success); }
-
-        /* LOGIN & MODALS */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--overlay); z-index: 1000; display: none;
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
-        }
-        .modal-overlay.active { display: flex; }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
         
-        .login-box { 
-            padding: 40px; text-align: center; max-width: 350px; 
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px;
-            box-shadow: 0 0 60px rgba(0,0,0,0.6);
-        }
-        .login-box input { background: transparent; text-align: center; margin: 20px 0; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; font-size: 0.85rem;}
+        .btn-outline:hover { border-color: var(--text); color: var(--text); background: rgba(255,255,255,0.05); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid transparent; }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
+        .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .btn-close:hover { color: white; }
 
-        /* JSON EDITOR STYLE */
-        .json-editor {
-            font-family: 'Courier New', monospace; font-size: 0.85rem;
-            min-height: 200px; resize: vertical; line-height: 1.4;
+        /* FILTER BAR */
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; }
+        .search-input {
+            flex: 1; padding: 12px;
+            background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+            color: white; font-size: 0.95rem;
+        }
+        .search-input:focus { border-color: var(--primary); outline: none; }
+
+        /* TASK GRID */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
         }
 
-        /* Task Cards (from previous version) */
-        .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; cursor: pointer; transition: 0.2s; }
-        .task-card:hover { border-color: #52525b; transform: translateY(-2px); }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.2s;
+            display: flex; flex-direction: column;
+            cursor: pointer; position: relative;
+        }
+        .card:hover {
+            border-color: #52525b; transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        .card:active { transform: scale(0.98); }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+        .user-name { font-weight: 700; color: var(--text); font-size: 1rem; }
+        .time-badge { font-size: 0.75rem; color: var(--text-muted); background: #27272a; padding: 2px 6px; border-radius: 4px; }
+
+        .card-body { padding: 20px; flex: 1; }
+        
+        .preview-row {
+            display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem;
+        }
+        .preview-label { color: var(--text-muted); }
+        .preview-value { color: var(--text); font-weight: 500; }
+
+        .card-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            display: flex; gap: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Mini Spinner */
+        .btn-spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid white;
+            border-radius: 50%; animation: spin 0.8s linear infinite; display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
     <div id="login-modal" class="modal-overlay active">
-        <div class="login-box">
-            <h3>🔒 Admin Access</h3>
-            <input type="password" id="passwordInput" placeholder="Passwort...">
-            <button class="btn" style="width:100%" onclick="login()">Login</button>
+        <div class="login-box" id="loginBox">
+            <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
+            
+            <input type="password" id="passwordInput" placeholder="Passwort eingeben">
+            
+            <button class="btn" style="width:100%" id="loginBtn" onclick="login()">
+                <div class="btn-spinner" id="loginSpinner"></div>
+                <span id="loginText">Login</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="detail-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="detail-header">
+                <h2 style="margin:0; font-size:1.2rem;">Auftrag Details</h2>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="detail-body" id="modal-content">
+                </div>
+            <div class="detail-footer">
+                <button class="btn" id="modal-download-btn" style="flex:1">PDF Herunterladen</button>
+                <button class="btn btn-danger" id="modal-delete-btn">Löschen</button>
+            </div>
         </div>
     </div>
 
     <div class="container">
         <header>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <h1>Mete's Konsole</h1>
-                <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('orders')">Aufträge</button>
-                    <button class="tab-btn" onclick="switchTab('config')">Datenbank & Config</button>
-                </div>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <h1>Aufträge & Tasks</h1>
+                <span class="badge" id="countBadge">0</span>
             </div>
-            <button class="btn btn-sm btn-danger" onclick="location.reload()">Logout</button>
+            <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
         </header>
 
-        <div id="view-orders" class="view-section active">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <input type="text" id="searchOrders" placeholder="Suche..." style="max-width:300px;">
-                <button class="btn btn-sm" onclick="loadOrders()">↻ Refresh</button>
-            </div>
-            <div id="orderGrid" class="task-grid">
-                <div style="text-align:center; color:gray; grid-column:1/-1;">Lade Aufträge...</div>
-            </div>
+        <div class="controls">
+            <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()">
         </div>
 
-        <div id="view-config" class="view-section">
-            <div class="config-grid">
-                
-                <div class="card">
-                    <h2>Ärzte <button class="btn btn-sm" onclick="addDoctor()">+ Neu</button></h2>
-                    <div class="item-list" id="doctorList"></div>
-                </div>
-
-                <div class="card">
-                    <h2>Versicherungen <button class="btn btn-sm" onclick="addInsurance()">+ Neu</button></h2>
-                    <div class="item-list" id="insuranceList"></div>
-                </div>
-
-                <div class="card" style="grid-column: 1 / -1;">
-                    <h2>Templates & Koordinaten</h2>
-                    <div style="display:flex; gap:10px; margin-bottom:15px;">
-                        <input type="text" id="newTemplateId" placeholder="Template ID (z.B. neu_template)">
-                        <input type="file" id="pdfUpload" accept="application/pdf">
-                        <button class="btn" onclick="uploadTemplate()">Upload PDF</button>
-                    </div>
-                    
-                    <label>Koordinaten-Konfiguration (JSON):</label>
-                    <textarea id="configJson" class="json-editor"></textarea>
-                    <button class="btn btn-success" style="width:100%; margin-top:10px;" onclick="saveConfig()">💾 Änderungen Speichern</button>
-                </div>
-            </div>
+        <div class="task-grid" id="taskGrid">
+            <div class="loader">Warte auf Login...</div>
         </div>
     </div>
 
     <script>
         const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
         let AUTH_KEY = "";
-        let DB = { doctors: [], insurances: [], templates: {} };
+        let allData = [];
 
-        // --- AUTH ---
+        // --- 1. LOGIN ---
         async function login() {
-            AUTH_KEY = document.getElementById('passwordInput').value;
-            // Test Login by fetching config
+            const input = document.getElementById('passwordInput');
+            const btn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+
+            if(!input.value) { input.focus(); return; }
+
+            AUTH_KEY = input.value;
+            input.disabled = true; btn.disabled = true; spinner.style.display = "block"; text.textContent = "Verifiziere...";
+
+            await new Promise(r => setTimeout(r, 1500));
+            await loadData(true);
+        }
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
+
+        // --- 2. DATA LOADING ---
+        async function loadData(isLogin = false) {
+            const grid = document.getElementById('taskGrid');
+            if(!isLogin) grid.innerHTML = '<div class="loader">Lade Daten...</div>';
+
             try {
-                const res = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
-                if (res.status === 401) { alert("Falsches Passwort"); return; }
-                
-                DB = await res.json();
-                document.getElementById('login-modal').style.display = 'none';
-                renderConfig();
-                loadOrders(); // Load orders in background
-            } catch (e) { alert("Fehler beim Verbinden: " + e); }
-        }
+                const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
 
-        // --- NAVIGATION ---
-        function switchTab(tab) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(`view-${tab}`).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // --- CONFIGURATION LOGIC ---
-        function renderConfig() {
-            // Doctors
-            const docList = document.getElementById('doctorList');
-            docList.innerHTML = "";
-            DB.doctors.forEach((doc, idx) => {
-                docList.innerHTML += `
-                    <div class="config-item">
-                        <div class="config-info">
-                            <span class="config-title">${doc.name}</span>
-                            <span class="config-sub">${doc.citySearch} | ${doc.templateId}</span>
-                        </div>
-                        <button class="btn btn-sm btn-danger" onclick="removeDoctor(${idx})">✕</button>
-                    </div>
-                `;
-            });
-
-            // Insurances
-            const insList = document.getElementById('insuranceList');
-            insList.innerHTML = "";
-            DB.insurances.forEach((ins, idx) => {
-                insList.innerHTML += `
-                    <div class="config-item">
-                        <div class="config-info">
-                            <span class="config-title">${ins.name}</span>
-                            <span class="config-sub">Code: ${ins.code} | Grp: ${ins.group}</span>
-                        </div>
-                        <button class="btn btn-sm btn-danger" onclick="removeInsurance(${idx})">✕</button>
-                    </div>
-                `;
-            });
-
-            // JSON Editor
-            document.getElementById('configJson').value = JSON.stringify(DB.templates, null, 2);
-        }
-
-        async function saveConfig() {
-            // Parse JSON Area for Templates
-            try {
-                const templates = JSON.parse(document.getElementById('configJson').value);
-                DB.templates = templates;
-            } catch (e) { alert("Fehler im JSON Format!"); return; }
-
-            // Save to Worker
-            const res = await fetch(`${WORKER_URL}/admin/config`, {
-                method: 'POST',
-                headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(DB)
-            });
-            if (res.ok) alert("Gespeichert!");
-            else alert("Fehler beim Speichern");
-        }
-
-        // --- EDIT FUNCTIONS ---
-        function addDoctor() {
-            const name = prompt("Name der Praxis:");
-            const details = prompt("Details (z.B. Dr. Müller):");
-            const city = prompt("Stadt (Suchbegriff klein):");
-            const tpl = prompt("Template ID (z.B. base_template):");
-            if(name && city) {
-                DB.doctors.push({ id: Date.now().toString(), name, details, citySearch: city.toLowerCase(), templateId: tpl });
-                renderConfig();
-            }
-        }
-        function removeDoctor(idx) { DB.doctors.splice(idx, 1); renderConfig(); }
-
-        function addInsurance() {
-            const name = prompt("Name der Kasse:");
-            const code = prompt("Code (z.B. 12):");
-            const group = prompt("Gruppe (AOK, Ersatzkassen...):");
-            if(name && code) {
-                DB.insurances.push({ name, code, group });
-                renderConfig();
-            }
-        }
-        function removeInsurance(idx) { DB.insurances.splice(idx, 1); renderConfig(); }
-
-        // --- UPLOAD ---
-        async function uploadTemplate() {
-            const id = document.getElementById('newTemplateId').value;
-            const file = document.getElementById('pdfUpload').files[0];
-            if(!id || !file) return alert("Bitte ID und Datei wählen");
-
-            const res = await fetch(`${WORKER_URL}/admin/template?filename=${id}.pdf`, {
-                method: 'PUT',
-                headers: { 'x-admin-auth': AUTH_KEY },
-                body: file
-            });
-
-            if(res.ok) {
-                alert("Upload erfolgreich! Füge nun die Koordinaten im JSON hinzu.");
-                // Add skeleton to JSON if not exists
-                if(!DB.templates[id]) {
-                    DB.templates[id] = { filename: `${id}.pdf`, positions: { /* Copy from base */ } };
-                    renderConfig();
+                if (listRes.status === 401) {
+                    if (isLogin) { 
+                        alert("Zugriff verweigert: Falsches Passwort!"); 
+                        const input = document.getElementById('passwordInput');
+                        const btn = document.getElementById('loginBtn');
+                        const spinner = document.getElementById('loginSpinner');
+                        const text = document.getElementById('loginText');
+                        input.disabled = false; input.value = ""; input.focus(); btn.disabled = false; spinner.style.display = "none"; text.textContent = "Login";
+                    }
+                    return;
                 }
-            } else {
-                alert("Upload failed");
+
+                document.getElementById('login-modal').classList.remove('active');
+
+                const listData = await listRes.json();
+                const jsonFiles = listData.objects
+                    .filter(obj => obj.key.endsWith('.json'))
+                    .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded));
+
+                allData = [];
+                const promises = jsonFiles.map(async (file) => {
+                    try {
+                        const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
+                        const content = await res.json();
+                        content._jsonKey = file.key;
+                        content._pdfKey = file.key.replace('.json', '.pdf');
+                        content._uploadDate = file.uploaded;
+                        return content;
+                    } catch (e) { return null; }
+                });
+
+                const results = await Promise.all(promises);
+                allData = results.filter(item => item !== null);
+                renderCards(allData);
+
+            } catch (e) {
+                console.error(e);
+                if(!isLogin) grid.innerHTML = `<div class="loader" style="color:var(--danger)">Fehler: ${e.message}</div>`;
             }
         }
 
-        // --- ORDER VIEW (Vom alten Dashboard übernommen/vereinfacht) ---
-        async function loadOrders() {
-            const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
-            const listData = await listRes.json();
-            const jsonFiles = listData.objects.filter(obj => obj.key.endsWith('.json')).sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
-            
-            const grid = document.getElementById('orderGrid');
+        // --- 3. RENDER CARDS ---
+        function renderCards(data) {
+            const grid = document.getElementById('taskGrid');
+            document.getElementById('countBadge').textContent = data.length;
             grid.innerHTML = "";
-            
-            // Einfache Darstellung der letzten 50
-            jsonFiles.slice(0, 50).forEach(file => {
-                // Wir laden hier nur den Key/Zeit, Details per Klick wäre besser (wie vorher),
-                // aber der Code wird sonst zu lang. Hier einfache Anzeige:
-                const date = new Date(file.uploaded).toLocaleString();
-                const namePart = file.key.split('_').slice(2).join(' ').replace('.json','');
-                
-                grid.innerHTML += `
-                    <div class="task-card" onclick="downloadPDF('${file.key.replace('.json','.pdf')}')">
-                        <div style="font-weight:bold;">${namePart}</div>
-                        <div style="font-size:0.8rem; color:#aaa;">${date}</div>
-                        <div style="margin-top:10px; font-size:0.8rem; color:var(--primary);">⬇ PDF Download</div>
+
+            if (data.length === 0) { grid.innerHTML = '<div class="loader">Keine Einträge gefunden.</div>'; return; }
+
+            data.forEach(item => {
+                const dateObj = new Date(item._uploadDate);
+                const dateStr = dateObj.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour:'2-digit', minute:'2-digit' });
+                const fullName = `${item.firstName} ${item.lastName}`;
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                // WICHTIG: Ganze Karte klickbar für Details
+                card.onclick = (e) => openModal(item);
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="user-name">${fullName}</div>
+                        <div class="time-badge">${dateStr}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="preview-row">
+                            <span class="preview-label">Versicherung</span>
+                            <span class="preview-value">${item.insurance}</span>
+                        </div>
+                        <div class="preview-row">
+                            <span class="preview-label">Stadt</span>
+                            <span class="preview-value">${item.city}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-outline" style="flex:1" onclick="event.stopPropagation(); openModal(allData.find(x => x._jsonKey === '${item._jsonKey}'))">
+                            👁️ Details
+                        </button>
+                        <button class="btn btn-sm btn-outline" style="flex:1" onclick="event.stopPropagation(); downloadPDF('${item._pdfKey}')">
+                            ⬇ PDF
+                        </button>
                     </div>
                 `;
+                grid.appendChild(card);
             });
         }
-        
+
+        // --- 4. MODAL ---
+        function openModal(item) {
+            const modal = document.getElementById('detail-modal');
+            const content = document.getElementById('modal-content');
+            const btnDownload = document.getElementById('modal-download-btn');
+            const btnDelete = document.getElementById('modal-delete-btn');
+
+            const created = new Date(item._uploadDate).toLocaleString('de-DE');
+            const meta = item.meta || {};
+
+            content.innerHTML = `
+                <div class="data-grid">
+                    <div class="section-headline">Person</div>
+                    <div class="data-item">
+                        <span class="data-label">Name</span>
+                        <span class="data-value">${item.firstName} ${item.lastName}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Geboren</span>
+                        <span class="data-value">${formatDate(item.birthDate)}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Versichertennr.</span>
+                        <span class="data-value">${item.insuranceNumber}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Kennnummer (10)</span>
+                        <span class="data-value">${item.insuranceCheckNum || '-'}</span>
+                    </div>
+
+                    <div class="section-headline">Adresse</div>
+                    <div class="data-item full-row">
+                        <span class="data-label">Anschrift</span>
+                        <span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span>
+                    </div>
+
+                    <div class="section-headline">Versicherung</div>
+                    <div class="data-item">
+                        <span class="data-label">Kasse</span>
+                        <span class="data-value">${item.insurance}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Kassen-Nr.</span>
+                        <span class="data-value">${item.insuranceID}</span>
+                    </div>
+
+                    <div class="section-headline">Diagnose & Daten</div>
+                    <div class="data-item">
+                        <span class="data-label">Festgestellt</span>
+                        <span class="data-value">${formatDate(item.confirmedOn)}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Zeitraum</span>
+                        <span class="data-value">${formatDate(item.auFrom)} bis ${formatDate(item.auTo)}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Typ</span>
+                        <span class="data-value">${item.certificateType === 'first' ? 'Erstbescheinigung' : 'Folgebescheinigung'}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Ausgestellt am</span>
+                        <span class="data-value">${formatDate(item.createdOn)}</span>
+                    </div>
+
+                    <div class="section-headline full-row">System Metadata</div>
+                    <div class="data-item">
+                        <span class="data-label">Erstellt am</span>
+                        <span class="data-value">${created}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">IP Adresse</span>
+                        <span class="data-value">${meta.ip || 'Unbekannt'} (${meta.country || '?'})</span>
+                    </div>
+                    <div class="data-item full-row">
+                        <span class="data-label">User Agent</span>
+                        <span class="data-value" style="font-size:0.75rem; color:var(--text-muted)">${meta.userAgent || '-'}</span>
+                    </div>
+                </div>
+            `;
+
+            btnDownload.onclick = () => downloadPDF(item._pdfKey);
+            btnDelete.onclick = () => {
+                if(confirm("Eintrag unwiderruflich löschen?")) {
+                    deleteEntry(item._jsonKey, item._pdfKey);
+                    closeModal();
+                }
+            };
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('detail-modal').classList.remove('active'); }
+        document.getElementById('detail-modal').addEventListener('click', (e) => { if(e.target.id === 'detail-modal') closeModal(); });
+
+        function filterCards() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allData.filter(item => {
+                const searchStr = `${item.firstName} ${item.lastName} ${item.insurance} ${item.city}`.toLowerCase();
+                return searchStr.includes(query);
+            });
+            renderCards(filtered);
+        }
+
         function downloadPDF(key) {
-             const url = `${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`;
-             fetch(url, { headers: { 'x-admin-auth': AUTH_KEY } })
+            const url = `${WORKER_URL}/admin/get?key=${encodeURIComponent(key)}`;
+            fetch(url, { headers: { 'x-admin-auth': AUTH_KEY } })
                 .then(res => res.blob())
                 .then(blob => {
                     const a = document.createElement('a'); a.href = window.URL.createObjectURL(blob);
                     a.download = key; document.body.appendChild(a); a.click(); a.remove();
-                });
+                })
+                .catch(err => alert("Fehler: " + err));
         }
 
-        // Enter Key Login
-        document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
+        async function deleteEntry(jsonKey, pdfKey) {
+            try {
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(jsonKey)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY } });
+                await fetch(`${WORKER_URL}/admin/delete?key=${encodeURIComponent(pdfKey)}`, { method: 'DELETE', headers: { 'x-admin-auth': AUTH_KEY } });
+                loadData();
+            } catch (e) { alert("Löschen fehlgeschlagen"); }
+        }
 
+        function formatDate(str) {
+            if(!str) return "-";
+            const parts = str.split('-');
+            if(parts.length !== 3) return str;
+            return `${parts[2]}.${parts[1]}.${parts[0]}`;
+        }
     </script>
 </body>
 </html>
