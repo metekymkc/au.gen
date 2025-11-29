@@ -5,17 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mete's AU Generator</title>
   <style>
-    /* --- FONTS --- */
     @font-face {
         font-family: 'ArcadeClassic';
-        /* Pfad zur Datei im Repo */
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
         font-weight: normal;
         font-style: normal;
     }
 
     :root {
-      /* Dark Theme Palette */
+      /* Dark Mode Palette */
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
@@ -59,30 +57,29 @@
       margin-bottom: 20px;
     }
 
-    /* --- TITEL STYLING (ARCADE) --- */
+    /* Titel (Mete's AU Generator) Fonts und Style */
     h1 {
       text-align: center;
       margin-top: 0;
       color: var(--text-main);
-      /* Neue Schriftart */
       font-family: 'ArcadeClassic', sans-serif; 
-      font-size: 2.2rem; /* Etwas größer, da Arcade Fonts oft klein wirken */
+      font-size: 2.2rem;
       margin-bottom: 5px; 
-      font-weight: normal; /* Arcade Fonts sind meist bold by default */
-      letter-spacing: 0.05em; /* Etwas Luft für den Retro-Look */
+      font-weight: normal;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
     
     .subtitle {
         text-align: center;
         color: #52525b; 
-        font-family: 'Inter', sans-serif; /* Untertitel bleibt clean */
+        font-family: 'Inter', sans-serif;
         font-size: 0.8rem;
         font-weight: 500;
         margin-bottom: 2.5rem;
     }
 
-    /* LEGAL FOOTER */
+    /* Disclaimer Unten */
     .legal-footer {
         max-width: 700px;
         text-align: center;
@@ -94,7 +91,7 @@
     }
     .legal-footer strong { color: #52525b; }
 
-    /* STEP WIZARD */
+    /* Schritte */
     .step-indicators {
         display: flex;
         justify-content: space-between;
@@ -161,11 +158,12 @@
     }
     .step-item.completed .step-text { color: var(--primary); opacity: 0.7; }
 
+    /* Content und Anims */
     .step-content { display: none; animation: fadeIn 0.4s ease-out; }
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* FORM GRID */
+    /* grid */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -203,10 +201,10 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* INPUTS & SELECTS */
+    /* Eingabefelder */
     input, select {
       width: 100%;
-      padding: 0 14px; /* Padding nur links/rechts, Höhe regelt vertikal */
+      padding: 0 14px;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       font-size: 0.95rem;
@@ -214,8 +212,8 @@
       color: var(--text-main);
       background-color: var(--input-bg);
       transition: all 0.2s ease;
-      height: 48px; /* Fixe Höhe Desktop */
-      line-height: 48px; /* Text vertikal zentriert */
+      height: 48px;
+      line-height: 48px;
     }
 
     input:focus, select:focus {
@@ -227,13 +225,11 @@
     
     input::placeholder { color: #52525b; }
 
-    /* iOS Date Input Fix */
+    /* Mobile Datum Eingabe */
     input[type="date"] {
-        /* Wichtig für iOS: */
         -webkit-appearance: none;
         appearance: none;
         display: block;
-        /* Icon Farbe invertieren */
         color-scheme: dark; 
     }
     
@@ -317,6 +313,7 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
+    /* Navigation */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
@@ -395,23 +392,26 @@
         
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
-        /* Mobile: Kompaktere Felder */
+        /* Mobile View */
         input, select {
             height: 42px; 
-            line-height: normal; /* Wichtig für iOS Date Input */
+            line-height: normal;
             padding: 10px 12px;
             font-size: 0.9rem;
-            max-height: 42px; /* Zwingt iOS in die Knie */
+            max-height: 42px; 
         }
         
-        /* Heute Button passend */
+        input[name="birthDate"] {
+            text-align: left;
+            padding-left: 12px; 
+        }
+      
+        .date-group input {
+            text-align: center;
+        }
+        
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
-        
-        /* Date Group Flex Fix */
-        .date-group {
-            width: 100%;
-            align-items: center;
-        }
+        .date-group { width: 100%; align-items: center; }
         
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
@@ -523,7 +523,7 @@
                     </div>
                 </div>
                 <div class="disclaimer-text" id="insDisclaimer">
-                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch geschätzt. Bitte vergleiche sie kurz mit deiner aktuellsten AU und korrigiere sie, falls nötig.
+                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie, falls nötig.
                 </div>
               </div>
           </div>
@@ -648,7 +648,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // --- DATEN ---
+    // Versicherungen und Codes
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -693,7 +693,7 @@
         }
     ];
 
-    // --- STEP LOGIC ---
+    // Seiten Logik 1-4
     let currentStep = 1;
     
     function showStep(step) {
@@ -734,7 +734,7 @@
         showStep(currentStep);
     }
 
-    // --- DOCTOR LOADER ---
+    // Arztfinder
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -783,7 +783,7 @@
         }
     }
 
-    // --- GLOBAL INIT ---
+    // Global
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
@@ -819,7 +819,7 @@
       initAutocomplete();
     });
 
-    // ===== Autocomplete Logic =====
+    // Adressen Autocomplete
     function initAutocomplete() {
         const searchInput = document.getElementById('address-search');
         const suggestionBox = document.getElementById('address-suggestions');
@@ -870,7 +870,7 @@
         });
     }
 
-    // ===== Submit Logic =====
+    // PDF Generation
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async e => {
       e.preventDefault();
@@ -904,7 +904,6 @@
         const a = document.createElement("a");
         a.href = url;
         
-        // DATEINAME: Direkt hier generieren
         const clean = (s) => (s || "Unbekannt").trim().replace(/ /g, "_");
         const fName = clean(data.firstName);
         const lName = clean(data.lastName);
