@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mete's AU Generator</title>
   <style>
-    /* --- Fonts --- */
+    /* --- FONTS --- */
     @font-face {
         font-family: 'ArcadeClassic';
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
@@ -13,34 +13,8 @@
         font-style: normal;
     }
 
-    html {
-        background-color: #09090b;
-        height: 100%;
-    }
-
+    /* --- VARIABLEN --- */
     :root {
-      --bg-color: #09090b; 
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      
-      background-color: var(--bg-color); 
-      
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      justify-content: center; 
-      align-items: center;
-      min-height: 100vh; 
-      margin: 0;
-      padding: 20px;
-    }
-
-    :root {
-      /* Dark Mode Palette */
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
@@ -58,18 +32,28 @@
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
+    /* --- HINTERGRUND FIX --- */
     * { box-sizing: border-box; }
+
+    html {
+        background-color: var(--bg-color);
+        height: 100%;
+        margin: 0; padding: 0;
+    }
 
     body {
       font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-main);
+      
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      
       min-height: 100vh;
-      margin: 0;
+      width: 100%;
+      margin: 0; 
       padding: 20px;
     }
 
@@ -84,7 +68,7 @@
       margin-bottom: 20px;
     }
 
-    /* --- TITEL STYLING --- */
+    /* --- TITEL STYLE --- */
     h1 {
       text-align: center;
       margin-top: 0;
@@ -189,7 +173,7 @@
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* Formular */
+    /* Grid */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -227,7 +211,7 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* Eingabe und Auswahl */
+    /* Eingabe */
     input, select {
       width: 100%;
       padding: 0 14px;
@@ -251,7 +235,7 @@
     
     input::placeholder { color: #52525b; }
 
-    /* --- DATE INPUT STYLING (CRITICAL MOBILE FIXES) --- */
+    /* --- DATUM FIX --- */
     input[type="date"] {
         -webkit-appearance: none;
         appearance: none;
@@ -344,6 +328,7 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
+    /* Navigation */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
@@ -422,7 +407,7 @@
         
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
-        /* Mobile Eingabe */
+        /* Mobile Inputs */
         input, select {
             height: 42px; 
             line-height: normal;
@@ -431,7 +416,7 @@
             max-height: 42px; 
         }
         
-        /* Mobile Fix */
+        /* Mobile View Fix */
         input[name="birthDate"] {
             text-align: left;
             padding-left: 12px;
@@ -449,7 +434,6 @@
         
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
         
-        /* Mobile Datum Fix */
         .date-group { 
             width: 100%; 
             align-items: center; 
@@ -696,7 +680,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Versicherungen und Codes
+    // --- VERSICHERUNGS DATEN ---
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -715,7 +699,7 @@
         "AOK RLP/Saarland (Saarland)": "73",
         "AOK Bremen/Bremerhaven": "03",
         "AOK Sachsen-Anhalt": "88",
-        "IKK classic": "71",
+        "IKK classic": "71", 
         "Knappschaft": "16",
         "BMW BKK": "71",
         "Audi BKK": "71",
@@ -741,7 +725,7 @@
         }
     ];
 
-    // Schritte Logik 
+    // --- SCHRITTE LOGIK ---
     let currentStep = 1;
     
     function showStep(step) {
@@ -782,7 +766,7 @@
         showStep(currentStep);
     }
 
-    // Arzt Azswahl
+    // --- ARZT AUSWAHL ---
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -831,7 +815,7 @@
         }
     }
 
-    // GLOBAL
+    // --- GLOBALE REGELN ---
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
@@ -861,12 +845,12 @@
       const createdInput = document.getElementById('dateCreated');
       if (createdInput) createdInput.value = todayStr;
 
-      // Dropdowns
+      // Dropdowns deselektieren
       document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', () => { select.blur(); });
       });
 
-      // Versicherung
+      // Versicherungen
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       const disclaimer = document.getElementById('insDisclaimer');
@@ -884,7 +868,7 @@
       initAutocomplete();
     });
 
-    // Adress Autocomplete
+    // ===== Autocomplete Logic =====
     function initAutocomplete() {
         const searchInput = document.getElementById('address-search');
         const suggestionBox = document.getElementById('address-suggestions');
@@ -935,13 +919,13 @@
         });
     }
 
-    // Generationslogik 
+    // ===== Validierung =====
     const form = document.getElementById("pdfForm");
     
     form.addEventListener("submit", async e => {
       e.preventDefault();
       
-      // 1. Pflichtfelder-Check (Manuell wegen novalidate)
+      // 1. PflichtfelderCheck
       const allInputs = form.querySelectorAll('input[required], select[required]');
       let allValid = true;
       for (let input of allInputs) {
@@ -959,7 +943,7 @@
           }
       }
 
-      // 2. Rege-Check: Datum
+      // 2. REGEL-CHECK: Datum
       const auFromInput = document.getElementById('dateFrom');
       const auToInput = document.getElementById('dateTo');
       
