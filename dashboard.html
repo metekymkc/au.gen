@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin Dashboard</title>
     <style>
-        /* --- FONTS --- */
     @font-face {
         font-family: 'ArcadeClassic';
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
@@ -41,7 +40,6 @@
 
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* HEADER */
         header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
@@ -63,16 +61,13 @@
         .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .tab-btn:hover:not(.active) { color: white; background: rgba(255,255,255,0.05); }
 
-        /* SECTIONS */
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* GRID LAYOUTS */
         .manager-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
         .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         
-        /* CARDS & LISTS */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
         h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center; }
 
@@ -82,14 +77,12 @@
         .item-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
         .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; margin-right: 5px; border: 1px solid var(--border); }
 
-        /* FORM ELEMENTS */
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
         input, select { width: 100%; padding: 10px 12px; background: transparent; border: 1px solid var(--input-border); border-radius: 8px; color: white; outline: none; transition: 0.2s; font-size: 0.95rem; }
         input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
         #uploadSection { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
 
-        /* TASK CARDS */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; }
         .task-card:hover { border-color: #52525b; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .card-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
@@ -101,7 +94,6 @@
         .preview-value { font-weight: 500; }
         .card-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: rgba(0,0,0,0.2); }
 
-        /* BUTTONS */
         .btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
         .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
@@ -112,12 +104,10 @@
         .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
         .btn-close:hover { color: white; }
 
-        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.2s; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; }
 
-        /* FROSTED LOGIN BOX */
         .login-box { 
             padding: 50px 40px; text-align: center; max-width: 380px; 
             background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -125,7 +115,6 @@
         }
         .login-box input { margin: 25px 0; text-align: center; background: transparent; }
 
-        /* DETAIL MODAL STYLES */
         .detail-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 10; }
         .detail-body { padding: 25px; }
         .detail-footer { padding: 20px 25px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: #141417; position: sticky; bottom: 0; }
@@ -143,7 +132,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
 
-        /* === MOBILE OPTIMIERUNG === */
+        /* Mobile Optimierungen*/
         @media (max-width: 900px) { 
             .manager-grid { grid-template-columns: 1fr; } 
         }
@@ -153,7 +142,6 @@
             header { flex-direction: column; align-items: flex-start; gap: 15px; }
             .header-left { flex-wrap: wrap; }
             
-            /* Modal Mobile Optimierung */
             .modal-box { width: 95%; max-height: 95vh; }
             .data-grid { grid-template-columns: 1fr; gap: 15px; } /* Einspaltig */
             .full-row { grid-column: span 1; }
@@ -264,7 +252,7 @@
         let DB = { doctors: [], insurances: [], templates: {} };
         let allOrders = [];
 
-        // --- AUTH ---
+        // Auth
         async function login() {
             const input = document.getElementById('passwordInput');
             const btn = document.getElementById('loginBtn');
@@ -272,10 +260,9 @@
 
             AUTH_KEY = input.value;
             input.disabled = true; btn.textContent = "Verifiziere...";
-            await new Promise(r => setTimeout(r, 800)); // Fake Delay
+            await new Promise(r => setTimeout(r, 800)); // fake delay hihihihi
 
             try {
-                // Config laden
                 const res = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
                 if(res.status === 401) throw new Error("Falsches Passwort");
                 
@@ -300,7 +287,7 @@
             event.target.classList.add('active');
         }
 
-        // --- MANAGER ---
+        // Upload Manager
         function initManager() {
             renderDoctors();
             renderInsurances();
@@ -402,7 +389,7 @@
             });
         }
 
-        // --- ORDERS ---
+        // Tasks
         async function loadOrders() {
             const grid = document.getElementById('orderGrid');
             grid.innerHTML = '<div class="loader">Lade...</div>';
@@ -440,7 +427,6 @@
             data.forEach(item => {
                 const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
                 
-                // Arzt Name auflösen
                 let docName = "Standard";
                 if (item.doctorTemplate) {
                     const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
@@ -479,7 +465,6 @@
             const created = item.createdOn ? fmtDate(item.createdOn) : new Date(item._uploadDate).toLocaleDateString('de-DE');
             const meta = item.meta || {};
             
-            // Arzt Name auflösen
             let docName = "Standard";
             if (item.doctorTemplate) {
                 const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
