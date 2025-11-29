@@ -43,7 +43,6 @@
       border: 1px solid var(--border-color);
       width: 100%;
       max-width: 700px;
-      /* Animation removed from container, moved to steps */
     }
 
     h1 {
@@ -67,37 +66,95 @@
         box-shadow: 0 0 10px var(--primary);
     }
 
-    /* STEP WIZARD STYLES */
+    /* --- STEP WIZARD STYLES (NEU) --- */
+    .step-indicators {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 35px;
+        position: relative;
+    }
+    
+    /* Verbindungslinie im Hintergrund (optional, wirkt aber edel) */
+    .step-indicators::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #27272a;
+        z-index: 0;
+    }
+
+    .step-item {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 80px; /* Feste Breite für Zentrierung */
+    }
+
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #27272a;
+        border: 2px solid #3f3f46;
+        color: #71717a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-bottom: 8px;
+    }
+
+    .step-text {
+        font-size: 0.75rem;
+        color: #71717a;
+        font-weight: 500;
+        transition: color 0.3s;
+    }
+
+    /* Active State */
+    .step-item.active .step-circle {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        box-shadow: 0 0 15px var(--primary-glow);
+        transform: scale(1.1);
+    }
+    .step-item.active .step-text {
+        color: var(--text-main);
+        font-weight: 600;
+    }
+
+    /* Completed State */
+    .step-item.completed .step-circle {
+        background-color: #1e1e24;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    .step-item.completed .step-text {
+        color: var(--primary);
+    }
+
+
+    /* Content Animation */
     .step-content {
-        display: none; /* Standardmäßig ausgeblendet */
+        display: none;
         animation: fadeIn 0.4s ease-out;
     }
-    .step-content.active {
-        display: block;
-    }
+    .step-content.active { display: block; }
 
     @keyframes fadeIn {
         from { opacity: 0; transform: translateX(10px); }
         to { opacity: 1; transform: translateX(0); }
     }
 
-    .step-indicators {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-        padding: 0 10px;
-    }
-    .step-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #27272a;
-        transition: all 0.3s;
-    }
-    .step-dot.active { background-color: var(--primary); box-shadow: 0 0 8px var(--primary); }
-    .step-dot.completed { background-color: var(--primary); opacity: 0.5; }
-
-
+    /* --- FORM STYLES --- */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -123,14 +180,16 @@
       margin-bottom: 8px;
     }
     
+    /* Neuer Disclaimer Style (Heller & Lesbarer) */
     .disclaimer-text {
-        font-size: 0.75rem;
-        color: #52525b; 
+        font-size: 0.8rem;
+        color: #a1a1aa; /* Helleres Grau */
         margin-top: 10px;
-        line-height: 1.4;
-        background: #27272a;
-        padding: 8px;
-        border-radius: 6px;
+        line-height: 1.5;
+        background: rgba(39, 39, 42, 0.5); /* Sehr leichter Hintergrund */
+        padding: 10px 12px;
+        border-radius: 8px;
+        border-left: 3px solid var(--primary); /* Blauer Akzentbalken links */
     }
 
     input, select {
@@ -167,17 +226,15 @@
       padding-right: 45px;
     }
 
-    /* Section Title within Steps */
     .step-title {
       font-size: 1.1rem;
       color: var(--text-main);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       font-weight: 600;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
 
-    /* Input Icons */
     .input-icon-wrapper { position: relative; width: 100%; }
     .input-icon-wrapper input { padding-right: 40px; }
     .search-icon {
@@ -189,7 +246,6 @@
       pointer-events: none;
     }
 
-    /* Suggestions */
     #address-suggestions {
       position: absolute;
       top: 105%;
@@ -231,11 +287,10 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
-    /* Navigation Buttons */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
-        margin-top: 30px;
+        margin-top: 35px;
         gap: 15px;
     }
 
@@ -279,13 +334,13 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* Doctor Selection Card Style */
+    /* --- ARZT CARD STYLES --- */
     .doctor-card {
         background: #27272a;
         border: 1px solid var(--border-color);
-        padding: 15px;
+        padding: 16px;
         border-radius: var(--radius);
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         cursor: pointer;
         transition: all 0.2s;
         display: flex;
@@ -295,12 +350,26 @@
     .doctor-card:hover { border-color: var(--primary); }
     .doctor-card.selected {
         border-color: var(--primary);
-        background: rgba(59, 130, 246, 0.1);
-        box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+        background: rgba(59, 130, 246, 0.08); /* Sehr dezentes Blau */
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
     }
-    .doctor-radio { transform: scale(1.5); accent-color: var(--primary); }
-    .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; }
-    .doctor-info p { margin: 5px 0 0; color: var(--text-muted); font-size: 0.85rem; }
+    
+    /* Fixed Radio Button Size */
+    .doctor-radio { 
+        width: 20px; 
+        height: 20px; 
+        accent-color: var(--primary); 
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    
+    .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
+    .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--card-bg); }
+    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #52525b; }
 
   </style>
 </head>
@@ -310,10 +379,22 @@
     <h1>AU Generator</h1>
     
     <div class="step-indicators">
-        <div class="step-dot active" id="dot-1"></div>
-        <div class="step-dot" id="dot-2"></div>
-        <div class="step-dot" id="dot-3"></div>
-        <div class="step-dot" id="dot-4"></div>
+        <div class="step-item active" id="step-ind-1">
+            <div class="step-circle">1</div>
+            <div class="step-text">Person</div>
+        </div>
+        <div class="step-item" id="step-ind-2">
+            <div class="step-circle">2</div>
+            <div class="step-text">Adresse</div>
+        </div>
+        <div class="step-item" id="step-ind-3">
+            <div class="step-circle">3</div>
+            <div class="step-text">Daten</div>
+        </div>
+        <div class="step-item" id="step-ind-4">
+            <div class="step-circle">4</div>
+            <div class="step-text">Arzt</div>
+        </div>
     </div>
 
     <form id="pdfForm">
@@ -366,7 +447,7 @@
                               <option value="Techniker Krankenkasse">Techniker Krankenkasse (TK)</option>
                               <option value="BARMER">BARMER</option>
                               <option value="DAK-Gesundheit">DAK-Gesundheit</option>
-                              <option value="KKH">KKH (Kaufmännische)</option>
+                              <option value="KKH">KKH</option>
                               <option value="hkk">hkk</option>
                               <option value="Knappschaft">Knappschaft</option>
                               <option value="BMW BKK">BMW BKK</option>
@@ -380,13 +461,13 @@
                     </div>
                 </div>
                 <div class="disclaimer-text">
-                    Bitte überprüfe die Kassen-Nr. auf deiner AU Karte.
+                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch basierend auf deiner Auswahl geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie hier, falls nötig.
                 </div>
               </div>
           </div>
           
           <div class="nav-buttons">
-              <button type="button" class="nav-btn" disabled style="opacity:0;">Zurück</button>
+              <button type="button" class="nav-btn" disabled style="opacity:0; cursor:default;">Zurück</button>
               <button type="button" class="nav-btn primary-btn" onclick="nextStep(1)">Weiter</button>
           </div>
       </div>
@@ -417,7 +498,8 @@
               </div>
               <div>
                 <label>Stadt</label>
-                <input id="city" name="city" required> </div>
+                <input id="city" name="city" required>
+              </div>
           </div>
 
           <div class="nav-buttons">
@@ -479,7 +561,7 @@
           <div class="step-title">4. Behandelnder Arzt auswählen</div>
           
           <div id="doctor-list-container">
-              <p style="color:var(--text-muted); text-align:center;">Lade Ärzte basierend auf deiner Stadt...</p>
+              <p style="color:var(--text-muted); text-align:center;">Lade Ärzte...</p>
           </div>
           
           <input type="hidden" name="doctorTemplate" id="selectedDoctorTemplate" value="">
@@ -500,7 +582,6 @@
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
     // --- DATENBANKEN ---
-    
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -529,9 +610,6 @@
         "hkk": "12"
     };
 
-    // --- ARZT DATENBANK ---
-    // citySearch: Nach diesem String suchen wir in der Stadt-Eingabe (kleingeschrieben)
-    // templateName: Das schicken wir an den Worker
     const DOCTORS_DB = [
         {
             citySearch: "münchen", 
@@ -544,42 +622,40 @@
             name: "Internistische Praxis München", 
             details: "M.D. Fadi Daadoush",
             templateName: "fadi_template" 
-        },
-        // Hier können weitere Städte hinzugefügt werden
+        }
     ];
-
 
     // --- STEP LOGIC ---
     let currentStep = 1;
     
     function showStep(step) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.step-dot').forEach(el => el.classList.remove('active', 'completed'));
+        // Alle Steps zurücksetzen
+        document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active', 'completed'));
         
+        // Aktiven Content zeigen
         document.getElementById(`step-${step}`).classList.add('active');
         
-        // Dots updaten
+        // Indikatoren updaten
         for(let i=1; i<=4; i++) {
-            const dot = document.getElementById(`dot-${i}`);
-            if(i < step) dot.classList.add('completed');
-            if(i === step) dot.classList.add('active');
+            const indicator = document.getElementById(`step-ind-${i}`);
+            if(i < step) indicator.classList.add('completed');
+            if(i === step) indicator.classList.add('active');
         }
         
-        // Wenn wir in Schritt 4 sind, Ärzte laden
         if(step === 4) {
             loadDoctors();
         }
     }
 
     function nextStep(current) {
-        // Validierung (sehr einfach: required Felder checken)
         const currentDiv = document.getElementById(`step-${current}`);
         const inputs = currentDiv.querySelectorAll('input[required], select[required]');
         let valid = true;
         inputs.forEach(input => {
             if (!input.value) {
                 valid = false;
-                input.style.borderColor = "red";
+                input.style.borderColor = "#ef4444"; // Rot
                 setTimeout(() => input.style.borderColor = "var(--border-color)", 2000);
             }
         });
@@ -588,7 +664,7 @@
             currentStep++;
             showStep(currentStep);
         } else {
-            alert("Bitte fülle alle Pflichtfelder aus.");
+            // Optional: Kleine Vibration oder Shake Animation
         }
     }
 
@@ -603,17 +679,15 @@
         const container = document.getElementById('doctor-list-container');
         const hiddenInput = document.getElementById('selectedDoctorTemplate');
         
-        container.innerHTML = ""; // Reset
-        hiddenInput.value = "";   // Reset selection
+        container.innerHTML = ""; 
+        hiddenInput.value = ""; 
 
-        // Filtern
         const matches = DOCTORS_DB.filter(doc => cityInput.includes(doc.citySearch));
 
         if (matches.length > 0) {
             matches.forEach((doc, index) => {
                 const card = document.createElement('div');
                 card.className = 'doctor-card';
-                // Standardmäßig den ersten auswählen
                 if (index === 0) {
                     card.classList.add('selected');
                     hiddenInput.value = doc.templateName;
@@ -627,11 +701,9 @@
                     </div>
                 `;
 
-                // Klick-Event für Auswahl
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
                     document.querySelectorAll('.doctor-radio').forEach(r => r.checked = false);
-                    
                     card.classList.add('selected');
                     card.querySelector('input').checked = true;
                     hiddenInput.value = doc.templateName;
@@ -640,18 +712,15 @@
                 container.appendChild(card);
             });
         } else {
-            // Fallback, wenn kein Arzt in der Stadt gefunden wurde
             container.innerHTML = `
                 <div style="text-align:center; color:var(--text-muted); padding:20px; border:1px dashed var(--border-color); border-radius:12px;">
                     <p>Keine Partner-Praxis in ${document.getElementById('city').value} gefunden.</p>
-                    <p style="font-size:0.8rem;">Das Standard-Formular wird verwendet.</p>
+                    <p style="font-size:0.8rem; margin-top:5px;">Das Standard-Formular wird verwendet.</p>
                 </div>
             `;
-            // Standard Template (leer lassen, Worker nutzt dann base)
             hiddenInput.value = "base_template";
         }
     }
-
 
     // --- GLOBAL INIT ---
     function setToday(elementId) {
@@ -662,25 +731,27 @@
 
     const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
-      // Date Constraints
       document.querySelectorAll('input[type="date"]').forEach(input => {
         if(input.name !== 'auTo') input.setAttribute('max', todayStr);
       });
-      // Autofill CreatedOn
       const createdInput = document.getElementById('dateCreated');
       if (createdInput) createdInput.value = todayStr;
 
-      // Insurance Logic
+      document.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', () => { select.blur(); });
+      });
+
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       insSelect.addEventListener('change', () => {
           const selected = insSelect.value;
           if (INSURANCE_CODES[selected]) {
               insInput.value = INSURANCE_CODES[selected];
+              insInput.style.borderColor = "var(--primary)";
+              setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500);
           }
       });
       
-      // Init Autocomplete
       initAutocomplete();
     });
 
