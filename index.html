@@ -6,22 +6,21 @@
   <title>AU Generator Pro</title>
   <style>
     :root {
-      /* Dark Theme Palette inspirieret vom Bild */
-      --bg-color: #09090b;       /* Sehr dunkles Schwarz */
-      --card-bg: #18181b;        /* Dunkles Grau für die Karte */
-      --input-bg: #09090b;       /* Inputs dunkler als Karte */
+      /* Dark Theme Palette */
+      --bg-color: #09090b;       
+      --card-bg: #18181b;        
+      --input-bg: #09090b;       
       
-      --primary: #3b82f6;        /* Electric Blue */
+      --primary: #3b82f6;        
       --primary-hover: #2563eb;
-      --primary-glow: rgba(59, 130, 246, 0.4); /* Glow Farbe */
+      --primary-glow: rgba(59, 130, 246, 0.4); 
       
-      --text-main: #f4f4f5;      /* Fast Weiß */
-      --text-muted: #a1a1aa;     /* Helles Grau */
+      --text-main: #f4f4f5;      
+      --text-muted: #a1a1aa;     
       
-      --border-color: #27272a;   /* Subtiler dunkler Rahmen */
-      --radius: 12px;            /* Etwas runder, moderner */
+      --border-color: #27272a;   
+      --radius: 12px;            
       
-      /* Sanfter, dunkler Schatten */
       --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     }
 
@@ -30,7 +29,6 @@
     body {
       font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
-      /* Subtiler radialer Verlauf für "Glow" im Hintergrund */
       background-image: radial-gradient(circle at 50% 0%, #1e1e24 0%, var(--bg-color) 60%);
       color: var(--text-main);
       display: flex;
@@ -41,7 +39,6 @@
       padding: 20px;
     }
 
-    /* Animation */
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -52,7 +49,7 @@
       padding: 2.5rem;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      border: 1px solid var(--border-color); /* Feine Border für High-End Look */
+      border: 1px solid var(--border-color);
       width: 100%;
       max-width: 700px;
       animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -68,7 +65,6 @@
       letter-spacing: -0.02em;
     }
     
-    /* Kleiner blauer Akzent unter der Überschrift */
     h1::after {
         content: '';
         display: block;
@@ -80,7 +76,6 @@
         box-shadow: 0 0 10px var(--primary);
     }
 
-    /* Grid Layout */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -91,7 +86,6 @@
     .three-quarter { grid-column: span 1.5; } 
     .one-quarter { grid-column: span 0.5; }   
 
-    /* Labels */
     label {
       display: block;
       font-size: 0.85rem;
@@ -100,7 +94,6 @@
       margin-bottom: 8px;
     }
 
-    /* --- INPUTS & SELECTS --- */
     input, select {
       width: 100%;
       padding: 12px 14px;
@@ -111,10 +104,9 @@
       color: var(--text-main);
       background-color: var(--input-bg);
       transition: all 0.2s ease;
-      height: 48px; /* Größere Touch-Targets */
+      height: 48px;
     }
 
-    /* Der "Sleek" Glow Effekt beim Fokus */
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
@@ -122,17 +114,13 @@
       background-color: #101012;
     }
     
-    input::placeholder {
-        color: #52525b;
-    }
+    input::placeholder { color: #52525b; }
 
-    /* --- CUSTOM DROPDOWN ARROW (White) --- */
     select {
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
       cursor: pointer;
-      /* Pfeil SVG auf Weiß geändert (%23ffffff) */
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
@@ -140,7 +128,6 @@
       padding-right: 45px;
     }
 
-    /* Section Divider */
     .section-title {
       grid-column: span 2;
       font-size: 0.9rem;
@@ -157,7 +144,6 @@
       gap: 10px;
     }
     
-    /* Kleines Icon vor Sektionstitel optional einfärben */
     .section-title::before {
         content: '';
         display: inline-block;
@@ -168,11 +154,7 @@
         box-shadow: 0 0 8px var(--primary);
     }
 
-    /* Wrapper für Icons im Input (Lupe) */
-    .input-icon-wrapper {
-      position: relative;
-      width: 100%;
-    }
+    .input-icon-wrapper { position: relative; width: 100%; }
     .input-icon-wrapper input { padding-right: 40px; }
     .search-icon {
       position: absolute;
@@ -183,13 +165,12 @@
       pointer-events: none;
     }
 
-    /* Address Suggestions (Dark Mode) */
     #address-suggestions {
       position: absolute;
       top: 105%;
       left: 0;
       right: 0;
-      background: #1e1e24; /* Etwas heller als Hintergrund */
+      background: #1e1e24;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -223,18 +204,16 @@
     .suggestion-item:hover { 
         background-color: #27272a; 
         color: var(--text-main);
-        padding-left: 20px; /* Kleiner Slide-Effekt */
+        padding-left: 20px;
     }
     .suggestion-icon { margin-right: 12px; font-size: 1.1em; color: var(--primary); }
 
-    /* Date Input Group */
     .date-group { display: flex; gap: 10px; }
     
-    /* "Heute" Button (Secondary Dark) */
     .today-btn {
       padding: 0 16px;
       font-size: 0.85rem;
-      background-color: #27272a; /* Dark Grey */
+      background-color: #27272a;
       color: var(--text-muted);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
@@ -249,7 +228,6 @@
         border-color: #52525b;
     }
 
-    /* Main Submit Button (Glowing Blue) */
     button[type="submit"] {
       background-color: var(--primary);
       color: white;
@@ -261,20 +239,17 @@
       cursor: pointer;
       margin-top: 30px;
       transition: all 0.3s;
-      /* Initial leichter Glow */
       box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
     
     button[type="submit"]:hover { 
         background-color: var(--primary-hover); 
         transform: translateY(-2px);
-        /* Starker Glow beim Hover */
         box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
     }
     
     button[type="submit"]:active { transform: translateY(0); }
 
-    /* Spinner */
     .spinner {
       display: none;
       width: 18px;
@@ -289,7 +264,6 @@
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     .btn-content { vertical-align: middle; }
     
-    /* Scrollbar Styling für Dropdowns (Chrome/Edge) */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--card-bg); }
     ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
@@ -389,6 +363,14 @@
             <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
         </div>
       </div>
+
+      <div class="full-width">
+        <label>Ausstellungsdatum (Erstellt am)</label>
+        <div class="date-group">
+            <input name="createdOn" type="date" id="dateCreated">
+            <button type="button" class="today-btn" onclick="setToday('dateCreated')">Heute</button>
+        </div>
+      </div>
       
       <div class="full-width">
          <label>Art der Bescheinigung</label>
@@ -412,16 +394,21 @@
     // Helper: Set input to today
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
-      document.getElementById(elementId).value = today;
+      const el = document.getElementById(elementId);
+      if(el) el.value = today;
     }
 
-    // Set max date for inputs to today
+    // Set max date for inputs to today & Autofill CreatedOn
     const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('input[type="date"]').forEach(input => {
         // Optional: Max Date auf heute setzen (außer "bis")
         if(input.name !== 'auTo') input.setAttribute('max', todayStr);
       });
+
+      // --- NEU: Autofill Ausstellungsdatum ---
+      const createdInput = document.getElementById('dateCreated');
+      if (createdInput) createdInput.value = todayStr;
 
       // Dropdowns direkt nach Auswahl "entfokussieren"
       document.querySelectorAll('select').forEach(select => {
@@ -499,7 +486,6 @@
       }, 300);
     });
 
-    // Close on click outside
     document.addEventListener('click', e => {
       if (!e.target.closest('.full-width')) {
         suggestionBox.classList.remove('active');
