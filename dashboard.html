@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Mete's Admin Konsole</title>
     <style>
+        /* --- FONTS (WICHTIG: Pfad muss stimmen) --- */
+        @font-face {
+            font-family: 'ArcadeClassic';
+            src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
             --bg: #09090b;
             --card: #18181b;
@@ -34,13 +42,35 @@
 
         /* HEADER */
         header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
-            background: rgba(9, 9, 11, 0.5); backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            background: rgba(9, 9, 11, 0.5);
+            backdrop-filter: blur(5px);
         }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
         
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        
+        /* TITEL JETZT ARCADE STYLE */
+        h1 { 
+            margin: 0; 
+            font-family: 'ArcadeClassic', sans-serif; 
+            font-size: 1.8rem; 
+            letter-spacing: 0.05em;
+            color: var(--text);
+            font-weight: normal;
+        }
+
+        .badge { 
+            background: rgba(59, 130, 246, 0.15); color: var(--primary); 
+            padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.3);
+            font-family: 'Segoe UI', sans-serif; /* Badge bleibt normal lesbar */
+        }
+
+        /* TABS */
         .tabs { display: flex; gap: 5px; background: #141417; padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
         .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
         .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
@@ -56,22 +86,24 @@
         .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         @media(max-width: 900px) { .manager-grid { grid-template-columns: 1fr; } }
 
-        /* CARDS & LISTS */
+        /* CARDS */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
-        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center; }
+        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center; font-family: 'Segoe UI', sans-serif; }
 
+        /* LISTS */
         .item-list { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .list-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .item-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; }
         .item-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
         .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; margin-right: 5px; border: 1px solid var(--border); }
 
-        /* FORM ELEMENTS */
+        /* FORM */
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
         input, select { width: 100%; padding: 10px 12px; background: transparent; border: 1px solid var(--input-border); border-radius: 8px; color: white; outline: none; transition: 0.2s; font-size: 0.95rem; }
         input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
         #uploadSection { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
+        .search-input { background: var(--card); margin-bottom: 20px; }
 
         /* TASK CARDS */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; }
@@ -101,42 +133,21 @@
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; }
 
-        /* FROSTED LOGIN BOX */
-        .login-box { 
-            padding: 50px 40px; text-align: center; max-width: 380px; 
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px;
-        }
+        /* LOGIN BOX */
+        .login-box { padding: 50px 40px; text-align: center; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px; }
         .login-box input { margin: 25px 0; text-align: center; background: transparent; }
 
-        /* --- DETAIL MODAL STYLES (SCREENSHOT MATCH) --- */
+        /* DETAIL MODAL STYLES */
         .detail-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 10; }
         .detail-body { padding: 25px; }
         .detail-footer { padding: 20px 25px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: #141417; position: sticky; bottom: 0; }
         
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 30px; margin-bottom: 10px; }
         .data-item { display: flex; flex-direction: column; gap: 4px; }
-        
-        /* Label Styles wie im Screenshot */
         .data-label { font-size: 0.7rem; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-        /* Value Styles wie im Screenshot */
         .data-value { font-size: 0.95rem; color: white; font-weight: 500; word-break: break-word; line-height: 1.4; }
-        
         .full-row { grid-column: span 2; }
-        
-        /* Blaue Überschriften */
-        .section-headline { 
-            grid-column: span 2; 
-            color: var(--primary); 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            /* margin-top: 25px; */
-            padding-bottom: 5px; 
-            margin-bottom: 5px;
-            margin-top: 20px;
-        }
+        .section-headline { grid-column: span 2; color: var(--primary); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(59,130,246,0.1); padding-bottom: 5px; margin-top: 20px; margin-bottom: 5px; }
         .section-headline:first-child { margin-top: 0; }
 
         .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
@@ -149,8 +160,8 @@
 
     <div id="login-modal" class="modal-overlay active">
         <div class="login-box">
-            <div style="font-size:2rem; margin-bottom:10px;"></div>
-            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Welcome back, Metehan</h3>
+            <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem; font-family:'Segoe UI', sans-serif;">Admin Access</h3>
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             <button class="btn" style="width:100%" id="loginBtn" onclick="login()">Login</button>
         </div>
@@ -174,6 +185,7 @@
         <header>
             <div class="header-left">
                 <h1>Mete's Konsole</h1>
+                <span class="badge" id="countBadge">0</span>
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('orders')">Aufträge</button>
                     <button class="tab-btn" onclick="switchTab('config')">Datenbank & Config</button>
@@ -186,9 +198,7 @@
         </header>
 
         <div id="view-orders" class="view-section active">
-            <div style="margin-bottom:20px;">
-                <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()" style="background:var(--card);">
-            </div>
+            <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()">
             <div id="orderGrid" class="task-grid">
                 <div class="loader">Warte auf Login...</div>
             </div>
@@ -200,14 +210,12 @@
                 <div class="card">
                     <h2>Aktive Ärzte</h2>
                     <div id="doctorList" class="item-list"></div>
-                    
                     <h2 style="margin-top:30px;">Versicherungen</h2>
                     <div id="insuranceList" class="item-list"></div>
                 </div>
 
                 <div class="card" style="height: fit-content;">
                     <h2>+ Arzt Hinzufügen</h2>
-                    
                     <div class="form-group"><label>Praxis Name</label><input id="newDocName" placeholder="z.B. Hausarztpraxis Berlin"></div>
                     <div class="form-group"><label>Details (Arzt Name)</label><input id="newDocDetails" placeholder="z.B. Dr. Med. Max Mustermann"></div>
                     <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin (Kleinschreibung!)"></div>
@@ -223,14 +231,10 @@
                         <label style="color:var(--primary)">Neues PDF hochladen:</label>
                         <input type="file" id="pdfFile" accept="application/pdf" style="margin-bottom:10px;">
                         <input id="newTemplateId" placeholder="Neue ID (z.B. berlin_template)">
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px;">
-                            Info: Erbt Standard-Koordinaten.
-                        </p>
+                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px;">Info: Erbt Standard-Koordinaten.</p>
                     </div>
 
-                    <button class="btn" style="width:100%; margin-top:10px;" onclick="saveNewDoctor()">
-                        Speichern & Hinzufügen
-                    </button>
+                    <button class="btn" style="width:100%; margin-top:10px;" onclick="saveNewDoctor()">Speichern & Hinzufügen</button>
                 </div>
             </div>
         </div>
@@ -253,7 +257,6 @@
             await new Promise(r => setTimeout(r, 800)); // Fake Delay
 
             try {
-                // Config laden
                 const res = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
                 if(res.status === 401) throw new Error("Falsches Passwort");
                 
@@ -269,7 +272,7 @@
         }
         document.getElementById('passwordInput').addEventListener('keypress', e => { if(e.key==='Enter') login(); });
 
-        function loadData() { loadOrders(); } // Alias
+        function loadData() { loadOrders(); } 
 
         function switchTab(tab) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -278,41 +281,24 @@
             event.target.classList.add('active');
         }
 
-        // --- MANAGER (Updated with Template ID) ---
-        function initManager() {
-            renderDoctors();
-            renderInsurances();
-            updateTemplateSelect();
-        }
+        // --- MANAGER ---
+        function initManager() { renderDoctors(); renderInsurances(); updateTemplateSelect(); }
 
         function renderDoctors() {
             const list = document.getElementById('doctorList');
             list.innerHTML = "";
             DB.doctors.forEach((doc, idx) => {
-                // HIER HABE ICH DAS TEMPLATE HINZUGEFÜGT (📄 ID)
                 list.innerHTML += `
                     <div class="list-item">
-                        <div class="item-info">
-                            <h4>${doc.name}</h4>
-                            <p>${doc.details}</p>
-                            <span class="tag">📍 ${doc.citySearch}</span>
-                            <span class="tag" style="background:#27272a; color:#a1a1aa;">📄 ${doc.templateId}</span>
-                        </div>
+                        <div class="item-info"><h4>${doc.name}</h4><p>${doc.details}</p><span class="tag">📍 ${doc.citySearch}</span><span class="tag" style="background:#27272a; color:#a1a1aa;">📄 ${doc.templateId}</span></div>
                         <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">✕</button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
-
         function renderInsurances() {
             const list = document.getElementById('insuranceList');
             list.innerHTML = "";
-            DB.insurances.slice(0, 20).forEach((ins) => { 
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info"><h4>${ins.name}</h4><p>${ins.code}</p></div>
-                    </div>`;
-            });
+            DB.insurances.slice(0, 20).forEach((ins) => { list.innerHTML += `<div class="list-item"><div class="item-info"><h4>${ins.name}</h4><p>${ins.code}</p></div></div>`; });
             if(DB.insurances.length > 20) list.innerHTML += `<div style="text-align:center; font-size:0.8rem; padding:10px;">+ ${DB.insurances.length - 20} weitere...</div>`;
         }
 
@@ -320,12 +306,9 @@
             const select = document.getElementById('newDocTemplate');
             select.innerHTML = '<option value="">Wählen...</option>';
             Object.keys(DB.templates).forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key; opt.innerText = key; select.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = key; opt.innerText = key; select.appendChild(opt);
             });
-            const upOpt = document.createElement('option');
-            upOpt.value = "UPLOAD_NEW"; upOpt.innerText = "➕ Neues Template..."; upOpt.style.color = "#3b82f6";
-            select.appendChild(upOpt);
+            const upOpt = document.createElement('option'); upOpt.value = "UPLOAD_NEW"; upOpt.innerText = "➕ Neues Template..."; upOpt.style.color = "#3b82f6"; select.appendChild(upOpt);
         }
 
         function toggleUpload() {
@@ -351,7 +334,6 @@
                     method: 'PUT', headers: { 'x-admin-auth': AUTH_KEY }, body: fileInput.files[0]
                 });
                 if(!uploadRes.ok) return alert("Upload Fehler.");
-
                 const baseCoords = DB.templates['base_template'] ? DB.templates['base_template'].positions : {};
                 DB.templates[newId] = { filename: `${newId}.pdf`, positions: JSON.parse(JSON.stringify(baseCoords)) };
                 templateId = newId;
@@ -359,26 +341,14 @@
 
             DB.doctors.push({ id: Date.now().toString(), name, details, citySearch: city, templateId });
             await pushConfig();
-            
-            document.getElementById('newDocName').value = "";
-            document.getElementById('newDocDetails').value = "";
-            document.getElementById('newDocCity').value = "";
-            renderDoctors(); updateTemplateSelect(); toggleUpload();
-            alert("Gespeichert!");
+            document.getElementById('newDocName').value = ""; document.getElementById('newDocDetails').value = ""; document.getElementById('newDocCity').value = "";
+            renderDoctors(); updateTemplateSelect(); toggleUpload(); alert("Gespeichert!");
         }
 
-        async function deleteDoctor(idx) {
-            if(!confirm("Wirklich löschen?")) return;
-            DB.doctors.splice(idx, 1);
-            await pushConfig();
-            renderDoctors();
-        }
+        async function deleteDoctor(idx) { if(!confirm("Wirklich löschen?")) return; DB.doctors.splice(idx, 1); await pushConfig(); renderDoctors(); }
 
         async function pushConfig() {
-            await fetch(`${WORKER_URL}/admin/config`, {
-                method: 'POST', headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(DB)
-            });
+            await fetch(`${WORKER_URL}/admin/config`, { method: 'POST', headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(DB) });
         }
 
         // --- ORDERS ---
@@ -389,6 +359,7 @@
             const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
             const listData = await listRes.json();
             
+            // FIX: Nur JSONs laden, System-Dateien ausschließen
             const jsonFiles = listData.objects
                 .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
                 .sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
@@ -415,12 +386,12 @@
             const grid = document.getElementById('orderGrid');
             document.getElementById('countBadge').textContent = data.length;
             grid.innerHTML = "";
-            if(data.length === 0) { grid.innerHTML = '<div style="text-align:center;color:gray;grid-column:1/-1">Keine Aufträge</div>'; return; }
+            if(data.length === 0) { grid.innerHTML = '<div style="text-align:center;color:gray;grid-column:1/-1">Keine Aufträge gefunden. (Hinweis: Alte Aufträge ohne JSON-Daten werden hier nicht angezeigt)</div>'; return; }
 
             data.forEach(item => {
                 const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
                 
-                // Arzt Name Auflösen
+                // Arzt Name auflösen
                 let docName = "Standard";
                 if (item.doctorTemplate) {
                     const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
@@ -433,10 +404,7 @@
                 card.onclick = () => openModal(item);
                 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div class="user-name">${item.firstName} ${item.lastName}</div>
-                        <div class="time-badge">${dateStr}</div>
-                    </div>
+                    <div class="card-header"><div class="user-name">${item.firstName} ${item.lastName}</div><div class="time-badge">${dateStr}</div></div>
                     <div class="card-body">
                         <div class="preview-row"><span class="preview-label">Versicherung</span><span class="preview-value">${item.insurance}</span></div>
                         <div class="preview-row"><span class="preview-label">Stadt</span><span class="preview-value">${item.city}</span></div>
@@ -458,6 +426,14 @@
             const fmtDate = (d) => d ? d.split('-').reverse().join('.') : '-';
             const created = item.createdOn ? fmtDate(item.createdOn) : new Date(item._uploadDate).toLocaleDateString('de-DE');
             const meta = item.meta || {};
+            
+            // Arzt Name auflösen
+            let docName = "Standard";
+            if (item.doctorTemplate) {
+                const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
+                if(found) docName = found.name;
+                else if(item.doctorTemplate === 'fadi_template') docName = "Fadi Daadoush";
+            }
 
             content.innerHTML = `
                 <div class="data-grid">
@@ -468,14 +444,12 @@
                     <div class="data-item"><span class="data-label">Kennnummer (10)</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
 
                     <div class="section-headline">Adresse</div>
-                    <div class="data-item full-row">
-                        <span class="data-label">Anschrift</span>
-                        <span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span>
-                    </div>
+                    <div class="data-item full-row"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span></div>
 
-                    <div class="section-headline">Versicherung</div>
+                    <div class="section-headline">Versicherung & Arzt</div>
                     <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance}</span></div>
                     <div class="data-item"><span class="data-label">Kassen-Nr.</span><span class="data-value">${item.insuranceID}</span></div>
+                    <div class="data-item full-row"><span class="data-label">Arzt / Template</span><span class="data-value" style="color:var(--primary)">${docName}</span></div>
 
                     <div class="section-headline">Diagnose & Daten</div>
                     <div class="data-item"><span class="data-label">Festgestellt</span><span class="data-value">${fmtDate(item.confirmedOn)}</span></div>
@@ -486,10 +460,7 @@
                     <div class="section-headline full-row">System Metadata</div>
                     <div class="data-item"><span class="data-label">Erstellt am (Server)</span><span class="data-value">${new Date(item._uploadDate).toLocaleString('de-DE')}</span></div>
                     <div class="data-item"><span class="data-label">IP Adresse</span><span class="data-value">${meta.ip || 'Unbekannt'} (${meta.country || '?'})</span></div>
-                    <div class="data-item full-row">
-                        <span class="data-label">User Agent</span>
-                        <span class="data-value" style="font-size:0.75rem; color:var(--text-muted); line-height:1.2">${meta.userAgent || '-'}</span>
-                    </div>
+                    <div class="data-item full-row"><span class="data-label">User Agent</span><span class="data-value" style="font-size:0.75rem; color:var(--text-muted); line-height:1.2">${meta.userAgent || '-'}</span></div>
                 </div>
             `;
             document.getElementById('modal-download-btn').onclick = () => downloadPDF(item._pdfKey);
@@ -502,7 +473,7 @@
         function filterCards() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allOrders.filter(i => (i.firstName + i.lastName + i.city).toLowerCase().includes(query));
-            renderOrders(filtered);
+            renderCards(filtered);
         }
 
         function downloadPDF(key) {
