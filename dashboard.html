@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mete's Admin Konsole</title>
+    <title>Admin Dashboard</title>
     <style>
         :root {
             --bg: #09090b;
@@ -55,7 +55,7 @@
             background: var(--overlay); z-index: 1000;
             display: none;
             justify-content: center; align-items: center;
-            backdrop-filter: blur(5px); /* Blur the background behind the modal */
+            backdrop-filter: blur(5px); 
             animation: fadeIn 0.2s ease-out;
         }
         .modal-overlay.active { display: flex; }
@@ -70,19 +70,16 @@
             position: relative;
         }
 
-        /* --- LOGIN BOX (GLASSMORPHISM STYLE) --- */
+        /* --- LOGIN BOX (Glass & Clean) --- */
         .login-box { 
             padding: 50px 40px; 
             text-align: center; 
             max-width: 380px; 
-            
-            /* Der "Glass" Effekt */
-            background: rgba(255, 255, 255, 0.03); /* Fast transparent */
-            backdrop-filter: blur(20px);            /* Starker Blur */
-            -webkit-backdrop-filter: blur(20px);    /* Safari Support */
-            
-            border: 1px solid rgba(255, 255, 255, 0.08); /* Sehr feiner Rahmen */
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     /* Tiefer Schatten */
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(20px);            
+            -webkit-backdrop-filter: blur(20px);    
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);     
             border-radius: 16px;
         }
         
@@ -90,14 +87,14 @@
             width: 100%; 
             padding: 14px 16px; 
             margin: 25px 0 25px 0;
-            background: transparent; /* Transparent */
+            background: transparent; 
             border: 1px solid rgba(255, 255, 255, 0.15); 
             color: white; 
             border-radius: 8px;
             outline: none; 
             font-size: 1rem;
             transition: all 0.2s ease;
-            text-align: center; /* Passwort zentriert sieht oft gut aus bei Login */
+            text-align: center; 
         }
         
         .login-box input:focus { 
@@ -106,10 +103,8 @@
             background: rgba(255,255,255,0.02);
         }
         
-        .login-box input::placeholder {
-            color: #52525b;
-            font-size: 0.9rem;
-        }
+        .login-box input::placeholder { color: #52525b; font-size: 0.9rem; }
+        .login-box input:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Detail Modal Specifics */
         .detail-header {
@@ -154,8 +149,11 @@
             background: var(--primary); color: white; border: none; padding: 12px 24px;
             border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
             transition: all 0.2s;
+            display: inline-flex; justify-content: center; align-items: center; gap: 8px;
         }
         .btn:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+        
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; font-size: 0.85rem;}
         .btn-outline:hover { border-color: var(--text); color: var(--text); background: rgba(255,255,255,0.05); }
         .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid transparent; }
@@ -225,6 +223,17 @@
         .loader { text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Mini Spinner for Login Button */
+        .btn-spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
@@ -235,7 +244,11 @@
             <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Welcome back, Mete</h3>
             
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
-            <button class="btn" style="width:100%" onclick="login()">Login</button>
+            
+            <button class="btn" style="width:100%" id="loginBtn" onclick="login()">
+                <div class="btn-spinner" id="loginSpinner"></div>
+                <span id="loginText">Login</span>
+            </button>
         </div>
     </div>
 
@@ -277,27 +290,68 @@
         let AUTH_KEY = "";
         let allData = [];
 
-        // --- 1. LOGIN ---
-        function login() {
-            AUTH_KEY = document.getElementById('passwordInput').value;
-            loadData(true);
+        // --- 1. LOGIN MIT FAKE DELAY ---
+        async function login() {
+            const input = document.getElementById('passwordInput');
+            const btn = document.getElementById('loginBtn');
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+
+            if(!input.value) {
+                input.focus();
+                return;
+            }
+
+            // UI Loading State
+            AUTH_KEY = input.value;
+            input.disabled = true;
+            btn.disabled = true;
+            spinner.style.display = "block";
+            text.textContent = "Verifiziere...";
+
+            // FAKE DELAY: 1.5 Sekunden warten für "Security Feeling"
+            await new Promise(r => setTimeout(r, 1500));
+
+            // Jetzt Daten laden
+            await loadData(true);
         }
+        
         document.getElementById('passwordInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') login(); });
 
         // --- 2. DATEN LADEN ---
         async function loadData(isLogin = false) {
             const grid = document.getElementById('taskGrid');
-            grid.innerHTML = '<div class="loader">Lade Daten...</div>';
+            if(!isLogin) grid.innerHTML = '<div class="loader">Lade Daten...</div>';
 
             try {
                 const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
 
                 if (listRes.status === 401) {
-                    if (isLogin) { alert("Falsches Passwort!"); grid.innerHTML = '<div class="loader">Zugriff verweigert</div>'; }
+                    if (isLogin) { 
+                        // Reset Login UI bei Fehler
+                        alert("Zugriff verweigert: Falsches Passwort!"); 
+                        const input = document.getElementById('passwordInput');
+                        const btn = document.getElementById('loginBtn');
+                        const spinner = document.getElementById('loginSpinner');
+                        const text = document.getElementById('loginText');
+                        
+                        input.disabled = false;
+                        input.value = "";
+                        input.focus();
+                        btn.disabled = false;
+                        spinner.style.display = "none";
+                        text.textContent = "Login";
+                    }
                     return;
                 }
 
-                document.getElementById('login-modal').classList.remove('active');
+                // Login erfolgreich -> Modal wegfaden
+                const modal = document.getElementById('login-modal');
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    modal.style.opacity = '1';
+                }, 300);
 
                 const listData = await listRes.json();
                 const jsonFiles = listData.objects
@@ -324,7 +378,7 @@
 
             } catch (e) {
                 console.error(e);
-                grid.innerHTML = `<div class="loader" style="color:var(--danger)">Fehler: ${e.message}</div>`;
+                if(!isLogin) grid.innerHTML = `<div class="loader" style="color:var(--danger)">Fehler: ${e.message}</div>`;
             }
         }
 
