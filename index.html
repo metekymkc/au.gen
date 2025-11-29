@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mete's AU Generator</title>
   <style>
+    /* fonts */
     @font-face {
         font-family: 'ArcadeClassic';
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
@@ -17,17 +18,13 @@
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
-      
       --primary: #3b82f6;        
       --primary-hover: #2563eb;
       --primary-glow: rgba(59, 130, 246, 0.2); 
-      
       --text-main: #f4f4f5;      
       --text-muted: #a1a1aa;     
-      
       --border-color: #27272a;   
       --radius: 12px;            
-      
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
@@ -57,7 +54,7 @@
       margin-bottom: 20px;
     }
 
-    /* Titel (Mete's AU Generator) Fonts und Style */
+    /* Titel Styling */
     h1 {
       text-align: center;
       margin-top: 0;
@@ -79,7 +76,7 @@
         margin-bottom: 2.5rem;
     }
 
-    /* Disclaimer Unten */
+    /* Footer */
     .legal-footer {
         max-width: 700px;
         text-align: center;
@@ -91,7 +88,7 @@
     }
     .legal-footer strong { color: #52525b; }
 
-    /* Schritte */
+    /* Schritte einführung */
     .step-indicators {
         display: flex;
         justify-content: space-between;
@@ -158,12 +155,11 @@
     }
     .step-item.completed .step-text { color: var(--primary); opacity: 0.7; }
 
-    /* Content und Anims */
     .step-content { display: none; animation: fadeIn 0.4s ease-out; }
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* grid */
+    /* Formular Grid (Nicht mehr nötig) */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -201,7 +197,7 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* Eingabefelder */
+    /* Eingabe */
     input, select {
       width: 100%;
       padding: 0 14px;
@@ -225,12 +221,12 @@
     
     input::placeholder { color: #52525b; }
 
-    /* Mobile Datum Eingabe */
     input[type="date"] {
         -webkit-appearance: none;
         appearance: none;
         display: block;
         color-scheme: dark; 
+        text-align: left; 
     }
     
     input[type="date"]::-webkit-calendar-picker-indicator {
@@ -239,6 +235,10 @@
         opacity: 0.6;
     }
     input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+
+    .date-group input[type="date"] {
+        text-align: center;
+    }
 
     select {
       appearance: none;
@@ -382,7 +382,6 @@
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
-    /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
         .container { padding: 1.5rem; }
@@ -392,7 +391,6 @@
         
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
-        /* Mobile View */
         input, select {
             height: 42px; 
             line-height: normal;
@@ -403,13 +401,25 @@
         
         input[name="birthDate"] {
             text-align: left;
-            padding-left: 12px; 
-        }
-      
-        .date-group input {
-            text-align: center;
+            display: flex;
+            align-items: center;
         }
         
+        .date-group input[type="date"] {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Mobile Fix Daten */
+        input[name="birthDate"]::-webkit-date-and-time-value {
+            text-align: left;
+        }
+        .date-group input[type="date"]::-webkit-date-and-time-value {
+            text-align: center;
+        }
+
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
         .date-group { width: 100%; align-items: center; }
         
@@ -471,12 +481,12 @@
               </div>
               <div>
                 <label>Versichertennummer</label>
-                <input name="insuranceNumber" placeholder="Z.B. A123456789">
+                <input name="insuranceNumber" placeholder="Z.B. A123456789" required>
               </div>
               
               <div class="full-width">
                   <label>Versicherungs-Kennnummer (10-stellig)</label>
-                  <input name="insuranceCheckNum" placeholder="Z.B. 1083..." required>
+                  <input name="insuranceCheckNum" placeholder="Z.B. 1000..." required>
               </div>
 
               <div class="full-width">
@@ -576,7 +586,7 @@
               <div class="full-width">
                 <label>Festgestellt am</label>
                 <div class="date-group">
-                    <input name="confirmedOn" type="date" id="dateConfirmed">
+                    <input name="confirmedOn" type="date" id="dateConfirmed" required>
                     <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
                 </div>
               </div>
@@ -584,14 +594,14 @@
               <div>
                 <label>Arbeitsunfähig seit</label>
                 <div class="date-group">
-                    <input name="auFrom" type="date" id="dateFrom">
+                    <input name="auFrom" type="date" id="dateFrom" required>
                     <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
                 </div>
               </div>
               <div>
                 <label>Voraussichtlich bis</label>
                 <div class="date-group">
-                    <input name="auTo" type="date" id="dateTo">
+                    <input name="auTo" type="date" id="dateTo" required>
                     <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
                 </div>
               </div>
@@ -599,14 +609,14 @@
               <div class="full-width">
                 <label>Ausstellungsdatum (Erstellt am)</label>
                 <div class="date-group">
-                    <input name="createdOn" type="date" id="dateCreated">
+                    <input name="createdOn" type="date" id="dateCreated" required>
                     <button type="button" class="today-btn" onclick="setToday('dateCreated')">Heute</button>
                 </div>
               </div>
               
               <div class="full-width">
                  <label>Art der Bescheinigung</label>
-                 <select name="certificateType">
+                 <select name="certificateType" required>
                    <option value="first">Erstbescheinigung</option>
                    <option value="followup">Folgebescheinigung</option>
                  </select>
@@ -648,7 +658,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Versicherungen und Codes
+    // Versicherungen mit Codes
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -693,7 +703,7 @@
         }
     ];
 
-    // Seiten Logik 1-4
+    // Schritte
     let currentStep = 1;
     
     function showStep(step) {
@@ -734,7 +744,7 @@
         showStep(currentStep);
     }
 
-    // Arztfinder
+    // Arzt Auswahl Menü
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -870,7 +880,7 @@
         });
     }
 
-    // PDF Generation
+    // Generation
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async e => {
       e.preventDefault();
