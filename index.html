@@ -13,6 +13,32 @@
         font-style: normal;
     }
 
+    html {
+        background-color: #09090b;
+        height: 100%;
+    }
+
+    :root {
+      --bg-color: #09090b; 
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      
+      background-color: var(--bg-color); 
+      
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      justify-content: center; 
+      align-items: center;
+      min-height: 100vh; 
+      margin: 0;
+      padding: 20px;
+    }
+
     :root {
       /* Dark Mode Palette */
       --bg-color: #09090b;       
