@@ -212,7 +212,7 @@
 
     <form id="pdfForm" novalidate>
       <div id="step-1" class="step-content active">
-          <div class="step-title">1. Patient & Versicherung</div>
+          <div class="step-title">1. Personendaten & Versicherung</div>
           <div class="form-grid">
               <div><label>Vorname</label><input name="firstName" placeholder="Max" required></div>
               <div><label>Nachname</label><input name="lastName" placeholder="Mustermann" required></div>
@@ -250,7 +250,7 @@
       </div>
 
       <div id="step-3" class="step-content">
-          <div class="step-title">3. Diagnose & Zeitraum</div>
+          <div class="step-title">3. Zeitraum</div>
           <div class="form-grid">
               <div class="full-width"><label>Festgestellt am</label><div class="date-group"><input name="confirmedOn" type="date" id="dateConfirmed" required><button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button></div></div>
               <div><label>Arbeitsunfähig seit</label><div class="date-group"><input name="auFrom" type="date" id="dateFrom" required><button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button></div></div>
@@ -270,7 +270,8 @@
     </form>
   </div>
 
-  <div class="legal-footer"><strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. Urkundenfälschung ist strafbar.</div>
+  <div class="legal-footer"><strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. <br>
+      Die erstellten Dokumente sind keine offiziellen Urkunden und dürfen nicht im Rechtsverkehr (z.B. gegenüber Arbeitgebern, Krankenkassen oder Behörden) verwendet werden. Der Autor übernimmt keine Haftung für Missbrauch. Urkundenfälschung ist strafbar.</div>
 
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
