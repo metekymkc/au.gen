@@ -2,7 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#09090b">
   <title>Mete's AU Generator</title>
   <style>
     /* --- FONTS --- */
@@ -18,52 +19,32 @@
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
-      
       --primary: #3b82f6;        
       --primary-hover: #2563eb;
-      --primary-glow: rgba(59, 130, 246, 0.2); 
-      
       --text-main: #f4f4f5;      
       --text-muted: #a1a1aa;     
-      
       --border-color: #27272a;   
       --radius: 12px;            
-      
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
-    /* --- BACKGROUND FIX (NUCLEAR OPTION) --- */
-    * { box-sizing: border-box; }
+    /* --- RESET & NUCLEAR BACKGROUND FIX --- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html {
-        background-color: #09090b !important; /* Zwingend Schwarz */
-        background-image: none !important;
-        height: 100%;
-        width: 100%;
-        margin: 0; 
-        padding: 0;
+        background-color: #09090b !important;
+        height: 100%; width: 100%;
     }
 
     body {
       font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      
-      background-color: #09090b !important; /* Zwingend Schwarz */
-      background-image: none !important;    /* Keine Verläufe! */
-      
+      background-color: #09090b !important;
+      background-image: none !important;
       color: var(--text-main);
-      
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      
-      min-height: 100vh; /* Mindestens Bildschirmhöhe */
-      width: 100%;
-      margin: 0; 
-      padding: 20px;
-      
-      /* Verhindert horizontales Scrollen */
-      overflow-x: hidden; 
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      min-height: 100vh; width: 100%;
+      margin: 0; padding: 20px;
+      overflow-x: hidden;
     }
 
     .container {
@@ -72,393 +53,133 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       border: 1px solid var(--border-color);
-      width: 100%;
-      max-width: 700px;
+      width: 100%; max-width: 700px;
       margin-bottom: 20px;
-      position: relative; /* Stellt sicher, dass es über dem BG liegt */
-      z-index: 1;
+      position: relative; z-index: 10;
     }
 
-    /* --- TITEL STYLING --- */
     h1 {
-      text-align: center;
-      margin-top: 0;
-      color: var(--text-main);
-      font-family: 'ArcadeClassic', sans-serif; 
-      font-size: 2.2rem;
-      margin-bottom: 5px; 
-      font-weight: normal;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      text-align: center; margin-top: 0; color: var(--text-main);
+      font-family: 'ArcadeClassic', sans-serif; font-size: 2.2rem;
+      margin-bottom: 5px; font-weight: normal; letter-spacing: 0.05em; text-transform: uppercase;
     }
     
     .subtitle {
-        text-align: center;
-        color: #52525b; 
-        font-family: 'Inter', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 500;
-        margin-bottom: 2.5rem;
+        text-align: center; color: #52525b; font-family: 'Inter', sans-serif;
+        font-size: 0.8rem; font-weight: 500; margin-bottom: 2.5rem;
     }
 
-    /* LOADING OVERLAY */
-    #loading-overlay {
-        position: fixed;
-        inset: 0;
-        background: #09090b; /* Hardcoded Black */
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: var(--primary);
-        font-family: 'ArcadeClassic';
-        font-size: 1.5rem;
-        transition: opacity 0.5s ease;
-    }
-
-    /* STEP WIZARD */
-    .step-indicators {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 35px;
-        position: relative;
-        padding: 0 10px;
-    }
-    
-    .step-indicators::before {
-        content: '';
-        position: absolute;
-        top: 12px;
-        left: 30px;
-        right: 30px;
-        height: 1px;
-        background: #27272a;
-        z-index: 0;
-    }
-
-    .step-item {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 60px; 
-    }
-
-    .step-circle {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background-color: var(--card-bg);
-        border: 1px solid #3f3f46;
-        color: #52525b;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 600;
-        font-size: 0.75rem;
-        transition: all 0.3s ease;
-        margin-bottom: 6px;
-    }
-
-    .step-text {
-        font-size: 0.7rem;
-        color: #52525b;
-        font-weight: 500;
-        transition: color 0.3s;
-    }
-
-    .step-item.active .step-circle {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        color: white;
-        transform: scale(1.05);
-    }
-    .step-item.active .step-text { color: var(--text-main); }
-
-    .step-item.completed .step-circle {
-        background-color: var(--card-bg);
-        border-color: var(--primary);
-        color: var(--primary);
-    }
-    .step-item.completed .step-text { color: var(--primary); opacity: 0.7; }
-
-    .step-content { display: none; animation: fadeIn 0.4s ease-out; }
-    .step-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
-
-    /* FORM GRID */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .full-width { grid-column: span 2; }
-    .three-quarter { grid-column: span 1.5; } 
-    .one-quarter { grid-column: span 0.5; }   
-    
-    .insurance-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr; 
-      gap: 15px;
-      align-items: end;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    
-    .disclaimer-text {
-        display: none;
-        font-size: 0.8rem;
-        color: #a1a1aa;
-        margin-top: 10px;
-        line-height: 1.5;
-        background: rgba(39, 39, 42, 0.5); 
-        padding: 10px 12px;
-        border-radius: 8px;
-        animation: fadeIn 0.5s ease;
-    }
-
-    /* INPUTS & SELECTS */
-    input, select {
-      width: 100%;
-      padding: 0 14px;
+    /* --- INPUT STYLING (FIXED RADIO BUG) --- */
+    /* WICHTIG: :not([type="radio"]) sorgt dafür, dass Radio Buttons NICHT wie Textfelder aussehen */
+    input:not([type="radio"]), select {
+      width: 100%; padding: 0 14px; 
       border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      font-size: 0.95rem;
+      border-radius: 12px; 
+      font-size: 0.95rem; 
       font-family: inherit;
-      color: var(--text-main);
+      color: var(--text-main); 
       background-color: var(--input-bg);
-      transition: all 0.2s ease;
-      height: 48px;
+      transition: all 0.2s ease; 
+      height: 48px; 
       line-height: 48px;
-      /* Reset for iOS styles */
-      -webkit-appearance: none;
-      appearance: none;
+      -webkit-appearance: none; appearance: none;
     }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15); 
-      background-color: #101012;
+    input:not([type="radio"]):focus, select:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15); background-color: #101012;
     }
     
     input::placeholder { color: #52525b; }
 
-    /* --- DATE INPUT STYLING (MOBILE FIX) --- */
-    input[type="date"] {
-        display: block;
-        color-scheme: dark; 
-        text-align: left; 
-        /* iOS Height Enforcement */
-        min-height: 48px;
-    }
-    
-    input[type="date"]::-webkit-calendar-picker-indicator {
-        filter: invert(1); 
-        cursor: pointer;
-        opacity: 0.6;
-    }
-    input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
-
-    /* Diagnose Daten zentrieren */
-    .date-group input[type="date"] {
-        text-align: center;
-    }
+    /* Date Input Fixes */
+    input[type="date"] { display: block; color-scheme: dark; text-align: left; }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.6; }
+    .date-group input[type="date"] { text-align: center; }
 
     select {
       cursor: pointer;
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1aa%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 16px;
-      padding-right: 45px;
+      background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; padding-right: 45px;
     }
 
-    .step-title {
-      font-size: 1.1rem;
-      color: var(--text-main);
-      margin-bottom: 25px;
-      font-weight: 600;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
+    /* Radio Button Reset (für die Arzt Auswahl) */
+    .doctor-radio {
+        width: 20px; height: 20px; 
+        accent-color: var(--primary);
+        cursor: pointer; margin: 0; 
+        /* Reset inherited styles */
+        border: none !important; background: transparent !important; box-shadow: none !important; appearance: auto !important; -webkit-appearance: auto !important;
     }
 
+    /* Layout Classes */
+    .step-indicators { display: flex; justify-content: space-between; margin-bottom: 35px; position: relative; padding: 0 10px; width: 100%; }
+    .step-indicators::before { content: ''; position: absolute; top: 12px; left: 30px; right: 30px; height: 1px; background: #27272a; z-index: 0; }
+    .step-item { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; width: 60px; }
+    .step-circle { width: 24px; height: 24px; border-radius: 50%; background-color: var(--card-bg); border: 1px solid #3f3f46; color: #52525b; display: flex; justify-content: center; align-items: center; font-weight: 600; font-size: 0.75rem; transition: all 0.3s ease; margin-bottom: 6px; }
+    .step-text { font-size: 0.7rem; color: #52525b; font-weight: 500; transition: color 0.3s; }
+    .step-item.active .step-circle { background-color: var(--primary); border-color: var(--primary); color: white; transform: scale(1.05); }
+    .step-item.active .step-text { color: var(--text-main); }
+    .step-item.completed .step-circle { background-color: var(--card-bg); border-color: var(--primary); color: var(--primary); }
+    .step-item.completed .step-text { color: var(--primary); opacity: 0.7; }
+    
+    .step-content { display: none; animation: fadeIn 0.4s ease-out; }
+    .step-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .full-width { grid-column: span 2; }
+    .three-quarter { grid-column: span 1.5; } .one-quarter { grid-column: span 0.5; }   
+    .insurance-row { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; align-items: end; }
+    label { display: block; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; }
+    .disclaimer-text { display: none; font-size: 0.8rem; color: #a1a1aa; margin-top: 10px; line-height: 1.5; background: rgba(39, 39, 42, 0.5); padding: 10px 12px; border-radius: 8px; animation: fadeIn 0.5s ease; }
+    .step-title { font-size: 1.1rem; color: var(--text-main); margin-bottom: 25px; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
+    
     .input-icon-wrapper { position: relative; width: 100%; }
     .input-icon-wrapper input { padding-right: 40px; }
-    .search-icon {
-      position: absolute;
-      right: 14px;
-      top: 50%;
-      transform: translateY(-50%); 
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    #address-suggestions {
-      position: absolute;
-      top: 105%;
-      left: 0;
-      right: 0;
-      background: #1e1e24;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      z-index: 50;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-    }
+    .search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    #address-suggestions { position: absolute; top: 105%; left: 0; right: 0; background: #1e1e24; border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow); z-index: 50; max-height: 200px; overflow-y: auto; display: none; }
     #address-suggestions.active { display: block; }
-    .suggestion-item {
-      padding: 12px 16px;
-      cursor: pointer;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      transition: all 0.1s;
-    }
+    .suggestion-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-muted); transition: all 0.1s; }
     .suggestion-item:hover { background-color: #27272a; color: var(--text-main); padding-left: 20px; }
 
     .date-group { display: flex; gap: 10px; }
-    
-    .today-btn {
-      padding: 0 16px;
-      font-size: 0.85rem;
-      background-color: #27272a;
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-      height: 48px;
-    }
+    .today-btn { padding: 0 16px; font-size: 0.85rem; background-color: #27272a; color: var(--text-muted); border: 1px solid var(--border-color); border-radius: var(--radius); cursor: pointer; white-space: nowrap; transition: all 0.2s; height: 48px; }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
-
-    /* NAV BUTTONS */
-    .nav-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 35px;
-        gap: 15px;
-    }
-
-    button.nav-btn {
-      background-color: #27272a;
-      color: var(--text-main);
-      border: 1px solid var(--border-color);
-      padding: 14px 20px;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-    }
-    button.nav-btn:hover { background-color: #3f3f46; }
     
-    button.primary-btn {
-      background-color: var(--primary);
-      border: none;
-      color: white;
-      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.1);
-    }
-    button.primary-btn:hover { 
-        background-color: var(--primary-hover); 
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-    }
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 35px; gap: 15px; }
+    button.nav-btn { background-color: #27272a; color: var(--text-main); border: 1px solid var(--border-color); padding: 14px 20px; font-size: 1rem; font-weight: 600; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; width: 100%; }
+    button.primary-btn { background-color: var(--primary); border: none; color: white; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.1); }
+    button.primary-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3); }
     button.nav-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .spinner {
-      display: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top: 2px solid #ffffff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 10px;
-      vertical-align: middle;
-    }
+    
+    .spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px; vertical-align: middle; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    .doctor-card {
-        background: #27272a;
-        border: 1px solid var(--border-color);
-        padding: 16px;
-        border-radius: var(--radius);
-        margin-bottom: 12px;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
+    .doctor-card { background: #27272a; border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); margin-bottom: 12px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 15px; }
     .doctor-card:hover { border-color: var(--primary); }
-    .doctor-card.selected {
-        border-color: var(--primary);
-        background: rgba(59, 130, 246, 0.08); 
-    }
-    .doctor-radio { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+    .doctor-card.selected { border-color: var(--primary); background: rgba(59, 130, 246, 0.08); }
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
+    
+    .legal-footer { max-width: 700px; text-align: center; font-size: 0.75rem; color: #3f3f46; line-height: 1.4; margin-top: 10px; padding: 0 10px; }
 
-    /* LEGAL FOOTER */
-    .legal-footer {
-        max-width: 700px;
-        text-align: center;
-        font-size: 0.75rem;
-        color: #3f3f46;
-        line-height: 1.4;
-        margin-top: 10px;
-        padding: 0 10px;
-    }
-    .legal-footer strong { color: #52525b; }
-
-
-    /* === MOBILE OPTIMIERUNG === */
+    /* MOBILE OPTIMIERUNG */
     @media (max-width: 768px) {
         body { padding: 10px; }
         .container { padding: 1.5rem; }
-        
         .form-grid { grid-template-columns: 1fr; gap: 15px; }
         .full-width, .three-quarter, .one-quarter { grid-column: span 1; }
-        
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
         /* Mobile Inputs */
-        input, select {
-            height: 42px; 
-            min-height: 42px;
-            line-height: normal;
-            padding: 10px 12px;
-            font-size: 0.9rem;
-        }
+        input:not([type="radio"]), select { height: 42px; line-height: normal; padding: 10px 12px; font-size: 0.9rem; max-height: 42px; }
         
-        /* FIX FÜR iOS DATUM ALIGNMENT */
-        input[name="birthDate"] {
-            text-align: left;
-            padding-left: 12px;
-        }
-        input[name="birthDate"]::-webkit-date-and-time-value {
-            text-align: left;
-        }
-
-        .date-group input[type="date"] {
-            text-align: center;
-        }
-        .date-group input[type="date"]::-webkit-date-and-time-value {
-            text-align: center;
-        }
+        /* Date Alignment Fixes */
+        input[name="birthDate"] { text-align: left; padding-left: 12px; }
+        input[name="birthDate"]::-webkit-date-and-time-value { text-align: left; }
+        .date-group input[type="date"] { text-align: center; }
+        .date-group input[type="date"]::-webkit-date-and-time-value { text-align: center; }
         
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
         .date-group { width: 100%; align-items: center; display:flex; }
@@ -466,9 +187,7 @@
         
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
-        
         h1 { font-size: 1.5rem; }
-        .subtitle { margin-bottom: 1.5rem; }
     }
 
     ::-webkit-scrollbar { width: 8px; }
@@ -480,81 +199,35 @@
 </head>
 <body>
 
-  <div id="loading-overlay">Lade Konfiguration...</div>
-
   <div class="container">
     <h1>Mete's AU Generator</h1>
     <div class="subtitle">Beta v. 12.0 (Dynamic)</div>
     
     <div class="step-indicators">
-        <div class="step-item active" id="step-ind-1">
-            <div class="step-circle">1</div>
-            <div class="step-text">Person</div>
-        </div>
-        <div class="step-item" id="step-ind-2">
-            <div class="step-circle">2</div>
-            <div class="step-text">Adresse</div>
-        </div>
-        <div class="step-item" id="step-ind-3">
-            <div class="step-circle">3</div>
-            <div class="step-text">Daten</div>
-        </div>
-        <div class="step-item" id="step-ind-4">
-            <div class="step-circle">4</div>
-            <div class="step-text">Arzt</div>
-        </div>
+        <div class="step-item active" id="step-ind-1"><div class="step-circle">1</div><div class="step-text">Person</div></div>
+        <div class="step-item" id="step-ind-2"><div class="step-circle">2</div><div class="step-text">Adresse</div></div>
+        <div class="step-item" id="step-ind-3"><div class="step-circle">3</div><div class="step-text">Daten</div></div>
+        <div class="step-item" id="step-ind-4"><div class="step-circle">4</div><div class="step-text">Arzt</div></div>
     </div>
 
     <form id="pdfForm" novalidate>
-      
       <div id="step-1" class="step-content active">
           <div class="step-title">1. Patient & Versicherung</div>
           <div class="form-grid">
-              <div>
-                <label>Vorname</label>
-                <input name="firstName" placeholder="Max" required>
-              </div>
-              <div>
-                <label>Nachname</label>
-                <input name="lastName" placeholder="Mustermann" required>
-              </div>
-              <div>
-                <label>Geburtsdatum</label>
-                <input name="birthDate" type="date" required>
-              </div>
-              <div>
-                <label>Versichertennummer</label>
-                <input name="insuranceNumber" placeholder="Z.B. A123456789" required>
-              </div>
-              
-              <div class="full-width">
-                  <label>Versicherungs-Kennnummer (10-stellig)</label>
-                  <input name="insuranceCheckNum" placeholder="Z.B. 1000..." required>
-              </div>
-
+              <div><label>Vorname</label><input name="firstName" placeholder="Max" required></div>
+              <div><label>Nachname</label><input name="lastName" placeholder="Mustermann" required></div>
+              <div><label>Geburtsdatum</label><input name="birthDate" type="date" required></div>
+              <div><label>Versichertennummer</label><input name="insuranceNumber" placeholder="Z.B. A123456789" required></div>
+              <div class="full-width"><label>Versicherungs-Kennnummer (10-stellig)</label><input name="insuranceCheckNum" placeholder="Z.B. 1000..." required></div>
               <div class="full-width">
                 <div class="insurance-row">
-                    <div>
-                        <label>Krankenkasse</label>
-                        <select name="insurance" id="insuranceSelect" required>
-                          <option value="">Lade Daten...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Kassen-Nr.</label>
-                        <input name="insuranceID" id="insuranceIDInput" placeholder="Code" required>
-                    </div>
+                    <div><label>Krankenkasse</label><select name="insurance" id="insuranceSelect" required><option value="">Lade Daten...</option></select></div>
+                    <div><label>Kassen-Nr.</label><input name="insuranceID" id="insuranceIDInput" placeholder="Code" required></div>
                 </div>
-                <div class="disclaimer-text" id="insDisclaimer">
-                    <strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie, falls nötig.
-                </div>
+                <div class="disclaimer-text" id="insDisclaimer"><strong>Hinweis:</strong> Die Kassen-Nr. wurde automatisch geschätzt. Bitte vergleiche sie kurz mit deiner Versichertenkarte und korrigiere sie, falls nötig.</div>
               </div>
           </div>
-          
-          <div class="nav-buttons">
-              <button type="button" class="nav-btn" disabled style="opacity:0; cursor:default;">Zurück</button>
-              <button type="button" class="nav-btn primary-btn" onclick="nextStep(1)">Weiter</button>
-          </div>
+          <div class="nav-buttons"><button type="button" class="nav-btn" disabled style="opacity:0; cursor:default;">Zurück</button><button type="button" class="nav-btn primary-btn" onclick="nextStep(1)">Weiter</button></div>
       </div>
 
       <div id="step-2" class="step-content">
@@ -568,103 +241,36 @@
                 </div>
                 <div id="address-suggestions"></div>
               </div>
-
-              <div class="three-quarter">
-                <label>Straße</label>
-                <input id="street" name="street" required>
-              </div>
-              <div class="one-quarter">
-                <label>Nr.</label>
-                <input id="house_number" name="house_number" required>
-              </div>
-              <div>
-                <label>PLZ</label>
-                <input id="postcode" name="postcode" required>
-              </div>
-              <div>
-                <label>Stadt</label>
-                <input id="city" name="city" required>
-              </div>
+              <div class="three-quarter"><label>Straße</label><input id="street" name="street" required></div>
+              <div class="one-quarter"><label>Nr.</label><input id="house_number" name="house_number" required></div>
+              <div><label>PLZ</label><input id="postcode" name="postcode" required></div>
+              <div><label>Stadt</label><input id="city" name="city" required></div>
           </div>
-
-          <div class="nav-buttons">
-              <button type="button" class="nav-btn" onclick="prevStep(2)">Zurück</button>
-              <button type="button" class="nav-btn primary-btn" onclick="nextStep(2)">Weiter</button>
-          </div>
+          <div class="nav-buttons"><button type="button" class="nav-btn" onclick="prevStep(2)">Zurück</button><button type="button" class="nav-btn primary-btn" onclick="nextStep(2)">Weiter</button></div>
       </div>
 
       <div id="step-3" class="step-content">
           <div class="step-title">3. Diagnose & Zeitraum</div>
           <div class="form-grid">
-              <div class="full-width">
-                <label>Festgestellt am</label>
-                <div class="date-group">
-                    <input name="confirmedOn" type="date" id="dateConfirmed" required>
-                    <button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button>
-                </div>
-              </div>
-
-              <div>
-                <label>Arbeitsunfähig seit</label>
-                <div class="date-group">
-                    <input name="auFrom" type="date" id="dateFrom" required>
-                    <button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button>
-                </div>
-              </div>
-              <div>
-                <label>Voraussichtlich bis</label>
-                <div class="date-group">
-                    <input name="auTo" type="date" id="dateTo" required>
-                    <button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button>
-                </div>
-              </div>
-
-              <div class="full-width">
-                <label>Ausstellungsdatum (Erstellt am)</label>
-                <div class="date-group">
-                    <input name="createdOn" type="date" id="dateCreated" required>
-                    <button type="button" class="today-btn" onclick="setToday('dateCreated')">Heute</button>
-                </div>
-              </div>
-              
-              <div class="full-width">
-                 <label>Art der Bescheinigung</label>
-                 <select name="certificateType" required>
-                   <option value="first">Erstbescheinigung</option>
-                   <option value="followup">Folgebescheinigung</option>
-                 </select>
-              </div>
+              <div class="full-width"><label>Festgestellt am</label><div class="date-group"><input name="confirmedOn" type="date" id="dateConfirmed" required><button type="button" class="today-btn" onclick="setToday('dateConfirmed')">Heute</button></div></div>
+              <div><label>Arbeitsunfähig seit</label><div class="date-group"><input name="auFrom" type="date" id="dateFrom" required><button type="button" class="today-btn" onclick="setToday('dateFrom')">Heute</button></div></div>
+              <div><label>Voraussichtlich bis</label><div class="date-group"><input name="auTo" type="date" id="dateTo" required><button type="button" class="today-btn" onclick="setToday('dateTo')">Heute</button></div></div>
+              <div class="full-width"><label>Ausstellungsdatum (Erstellt am)</label><div class="date-group"><input name="createdOn" type="date" id="dateCreated" required><button type="button" class="today-btn" onclick="setToday('dateCreated')">Heute</button></div></div>
+              <div class="full-width"><label>Art der Bescheinigung</label><select name="certificateType" required><option value="first">Erstbescheinigung</option><option value="followup">Folgebescheinigung</option></select></div>
           </div>
-
-          <div class="nav-buttons">
-              <button type="button" class="nav-btn" onclick="prevStep(3)">Zurück</button>
-              <button type="button" class="nav-btn primary-btn" onclick="nextStep(3)">Weiter zum Arzt</button>
-          </div>
+          <div class="nav-buttons"><button type="button" class="nav-btn" onclick="prevStep(3)">Zurück</button><button type="button" class="nav-btn primary-btn" onclick="nextStep(3)">Weiter zum Arzt</button></div>
       </div>
 
       <div id="step-4" class="step-content">
           <div class="step-title">4. Behandelnder Arzt auswählen</div>
-          <div id="doctor-list-container">
-              <p style="color:var(--text-muted); text-align:center;">Bitte erst Stadt eingeben...</p>
-          </div>
+          <div id="doctor-list-container"><p style="color:var(--text-muted); text-align:center;">Bitte erst Stadt eingeben...</p></div>
           <input type="hidden" name="doctorTemplate" id="selectedDoctorTemplate" value="">
-          
-          <div class="nav-buttons">
-              <button type="button" class="nav-btn" onclick="prevStep(4)">Zurück</button>
-              <button type="submit" class="nav-btn primary-btn" id="submitBtn">
-                <span class="spinner" id="spinner"></span>
-                <span class="btn-content">PDF Generieren & Downloaden</span>
-              </button>
-          </div>
+          <div class="nav-buttons"><button type="button" class="nav-btn" onclick="prevStep(4)">Zurück</button><button type="submit" class="nav-btn primary-btn" id="submitBtn"><span class="spinner" id="spinner"></span><span class="btn-content">PDF Generieren & Downloaden</span></button></div>
       </div>
-
     </form>
   </div>
 
-  <div class="legal-footer">
-      <strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. <br>
-      Die erstellten Dokumente sind keine offiziellen Urkunden und dürfen nicht im Rechtsverkehr verwendet werden. Urkundenfälschung ist strafbar.
-  </div>
+  <div class="legal-footer"><strong>Rechtlicher Hinweis:</strong> Mete's AU Generator dient ausschließlich Bildungs- und Demonstrationszwecken. Urkundenfälschung ist strafbar.</div>
 
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
@@ -696,12 +302,11 @@
                 });
                 select.appendChild(optgroup);
             }
-            document.getElementById('loading-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('loading-overlay').remove(), 500);
         } catch (e) { alert("Fehler beim Laden der Konfiguration: " + e); }
     }
 
-    // --- STEP LOGIC ---
+    // ... Restlicher JS Code (Logic) bleibt identisch ...
+    
     let currentStep = 1;
     function showStep(step) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
@@ -730,7 +335,6 @@
     }
     function prevStep(current) { currentStep--; showStep(currentStep); }
 
-    // --- DOCTOR LOADER ---
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -744,10 +348,7 @@
                 const card = document.createElement('div');
                 card.className = 'doctor-card';
                 if (index === 0) { card.classList.add('selected'); hiddenInput.value = doc.templateId; }
-                card.innerHTML = `
-                    <input type="radio" name="docSelection" class="doctor-radio" ${index===0 ? 'checked' : ''}>
-                    <div class="doctor-info"><h4>${doc.name}</h4><p>${doc.details}</p></div>
-                `;
+                card.innerHTML = `<input type="radio" name="docSelection" class="doctor-radio" ${index===0 ? 'checked' : ''}><div class="doctor-info"><h4>${doc.name}</h4><p>${doc.details}</p></div>`;
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
                     document.querySelectorAll('.doctor-radio').forEach(r => r.checked = false);
@@ -758,17 +359,11 @@
                 container.appendChild(card);
             });
         } else {
-            container.innerHTML = `
-                <div style="text-align:center; color:var(--text-muted); padding:20px; border:1px dashed var(--border-color); border-radius:12px;">
-                    <p>Keine Partner-Praxis in ${document.getElementById('city').value} gefunden.</p>
-                    <p style="font-size:0.8rem; margin-top:5px;">Das Standard-Formular wird verwendet.</p>
-                </div>
-            `;
+            container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:20px; border:1px dashed var(--border-color); border-radius:12px;"><p>Keine Partner-Praxis in ${document.getElementById('city').value} gefunden.</p><p style="font-size:0.8rem; margin-top:5px;">Das Standard-Formular wird verwendet.</p></div>`;
             hiddenInput.value = "base_template";
         }
     }
 
-    // --- GLOBAL INIT & REGELN ---
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
@@ -777,133 +372,30 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
-      
-      const today = new Date();
-      const todayStr = today.toISOString().split("T")[0];
-      const maxDate = new Date();
-      maxDate.setMonth(maxDate.getMonth() + 2);
-      const maxDateStr = maxDate.toISOString().split("T")[0];
-
-      document.querySelectorAll('input[type="date"]').forEach(input => {
-        input.setAttribute('max', maxDateStr);
-        if(input.name === 'birthDate') input.setAttribute('max', todayStr);
-      });
-
-      const createdInput = document.getElementById('dateCreated');
-      if (createdInput) createdInput.value = todayStr;
-
+      const today = new Date(); const todayStr = today.toISOString().split("T")[0];
+      const maxDate = new Date(); maxDate.setMonth(maxDate.getMonth() + 2); const maxDateStr = maxDate.toISOString().split("T")[0];
+      document.querySelectorAll('input[type="date"]').forEach(input => { input.setAttribute('max', maxDateStr); if(input.name === 'birthDate') input.setAttribute('max', todayStr); });
+      const createdInput = document.getElementById('dateCreated'); if (createdInput) createdInput.value = todayStr;
       document.querySelectorAll('select').forEach(select => { select.addEventListener('change', () => { select.blur(); }); });
-
-      const insSelect = document.getElementById('insuranceSelect');
-      const insInput = document.getElementById('insuranceIDInput');
-      const disclaimer = document.getElementById('insDisclaimer');
-      insSelect.addEventListener('change', () => {
-          const selected = insSelect.value;
-          if (INSURANCE_CODES[selected]) {
-              insInput.value = INSURANCE_CODES[selected];
-              insInput.style.borderColor = "var(--primary)";
-              setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500);
-              disclaimer.style.display = 'block';
-          }
-      });
+      const insSelect = document.getElementById('insuranceSelect'); const insInput = document.getElementById('insuranceIDInput'); const disclaimer = document.getElementById('insDisclaimer');
+      insSelect.addEventListener('change', () => { const selected = insSelect.value; if (INSURANCE_CODES[selected]) { insInput.value = INSURANCE_CODES[selected]; insInput.style.borderColor = "var(--primary)"; setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500); disclaimer.style.display = 'block'; } });
       initAutocomplete();
     });
 
-    // ===== Autocomplete Logic =====
     function initAutocomplete() {
-        const searchInput = document.getElementById('address-search');
-        const suggestionBox = document.getElementById('address-suggestions');
-        let timeout;
-        searchInput.addEventListener('input', () => {
-          clearTimeout(timeout);
-          const query = searchInput.value.trim();
-          if (query.length < 3) { suggestionBox.classList.remove('active'); return; }
-          timeout = setTimeout(async () => {
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
-            try {
-              const res = await fetch(url);
-              const data = await res.json();
-              suggestionBox.innerHTML = '';
-              if (data.length > 0) {
-                suggestionBox.classList.add('active');
-                data.forEach(place => {
-                  const addr = place.address;
-                  const road = addr.road || addr.pedestrian || '';
-                  const number = addr.house_number || '';
-                  const zip = addr.postcode || '';
-                  const city = addr.city || addr.town || addr.village || '';
-                  if (!road) return;
-                  const mainText = `${road} ${number}`;
-                  const subText = `${zip} ${city}`;
-                  const div = document.createElement('div');
-                  div.className = 'suggestion-item';
-                  div.innerHTML = `<span class="suggestion-icon">📍</span><div><div style="font-weight:600; color: #f4f4f5;">${mainText}</div><div style="font-size:0.8em; color: #a1a1aa;">${subText}</div></div>`;
-                  div.addEventListener('click', () => {
-                    document.getElementById('street').value = road;
-                    document.getElementById('house_number').value = number;
-                    document.getElementById('postcode').value = zip;
-                    document.getElementById('city').value = city;
-                    searchInput.value = `${mainText}, ${subText}`;
-                    suggestionBox.classList.remove('active');
-                  });
-                  suggestionBox.appendChild(div);
-                });
-              } else { suggestionBox.classList.remove('active'); }
-            } catch (e) { console.error(e); }
-          }, 300);
-        });
+        const searchInput = document.getElementById('address-search'); const suggestionBox = document.getElementById('address-suggestions'); let timeout;
+        searchInput.addEventListener('input', () => { clearTimeout(timeout); const query = searchInput.value.trim(); if (query.length < 3) { suggestionBox.classList.remove('active'); return; } timeout = setTimeout(async () => { const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`; try { const res = await fetch(url); const data = await res.json(); suggestionBox.innerHTML = ''; if (data.length > 0) { suggestionBox.classList.add('active'); data.forEach(place => { const addr = place.address; const road = addr.road || addr.pedestrian || ''; const number = addr.house_number || ''; const zip = addr.postcode || ''; const city = addr.city || addr.town || addr.village || ''; if (!road) return; const mainText = `${road} ${number}`; const subText = `${zip} ${city}`; const div = document.createElement('div'); div.className = 'suggestion-item'; div.innerHTML = `<span class="suggestion-icon">📍</span><div><div style="font-weight:600; color: #f4f4f5;">${mainText}</div><div style="font-size:0.8em; color: #a1a1aa;">${subText}</div></div>`; div.addEventListener('click', () => { document.getElementById('street').value = road; document.getElementById('house_number').value = number; document.getElementById('postcode').value = zip; document.getElementById('city').value = city; searchInput.value = `${mainText}, ${subText}`; suggestionBox.classList.remove('active'); }); suggestionBox.appendChild(div); }); } else { suggestionBox.classList.remove('active'); } } catch (e) { console.error(e); } }, 300); });
         document.addEventListener('click', e => { if (!e.target.closest('.full-width')) suggestionBox.classList.remove('active'); });
     }
 
-    // ===== Submit Logic =====
     const form = document.getElementById("pdfForm");
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      const allInputs = form.querySelectorAll('input[required], select[required]');
-      for (let input of allInputs) {
-          if (!input.value) {
-              const stepDiv = input.closest('.step-content');
-              if (stepDiv) {
-                  showStep(parseInt(stepDiv.id.replace('step-', '')));
-                  alert("Bitte fülle alle Pflichtfelder aus.");
-                  input.style.borderColor = "#ef4444";
-                  return; 
-              }
-          }
-      }
-      
-      const auFromInput = document.getElementById('dateFrom');
-      const auToInput = document.getElementById('dateTo');
-      if (auFromInput.value && auToInput.value) {
-          const start = new Date(auFromInput.value);
-          const end = new Date(auToInput.value);
-          if (end < start) { showStep(3); alert("Fehler: 'Bis' vor 'Von'."); auToInput.style.borderColor = "#ef4444"; return; }
-          const diffDays = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)); 
-          if (diffDays > 21) { showStep(3); alert(`Maximal 21 Tage erlaubt.`); auToInput.style.borderColor = "#ef4444"; return; }
-      }
-
-      const btn = document.getElementById("submitBtn");
-      const spinner = document.getElementById("spinner");
-      const btnContent = document.querySelector(".btn-content");
-      btn.disabled = true; spinner.style.display = "inline-block"; btnContent.textContent = "Generiere...";
-      const fd = new FormData(form);
-      const data = Object.fromEntries(fd.entries());
-
-      try {
-        const resp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-        if (!resp.ok) { const errText = await resp.text(); let errMsg = errText; try { errMsg = JSON.parse(errText).error; } catch {} throw new Error(errMsg); }
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        const clean = (s) => (s || "Unbekannt").trim().replace(/ /g, "_");
-        const fName = clean(data.firstName);
-        const lName = clean(data.lastName);
-        const dateStr = data.createdOn || new Date().toISOString().split('T')[0];
-        a.download = `${fName}_${lName}_AU_${dateStr}.pdf`;
-        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-      } catch (err) { alert("Fehler: " + err.message); } 
-      finally { btn.disabled = false; spinner.style.display = "none"; btnContent.textContent = "PDF Generieren & Downloaden"; }
+      const allInputs = form.querySelectorAll('input[required], select[required]'); for (let input of allInputs) { if (!input.value) { const stepDiv = input.closest('.step-content'); if (stepDiv) { showStep(parseInt(stepDiv.id.replace('step-', ''))); alert("Bitte fülle alle Pflichtfelder aus."); input.style.borderColor = "#ef4444"; return; } } }
+      const auFromInput = document.getElementById('dateFrom'); const auToInput = document.getElementById('dateTo'); if (auFromInput.value && auToInput.value) { const start = new Date(auFromInput.value); const end = new Date(auToInput.value); if (end < start) { showStep(3); alert("Fehler: 'Bis' vor 'Von'."); auToInput.style.borderColor = "#ef4444"; return; } const diffDays = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)); if (diffDays > 21) { showStep(3); alert(`Maximal 21 Tage erlaubt.`); auToInput.style.borderColor = "#ef4444"; return; } }
+      const btn = document.getElementById("submitBtn"); const spinner = document.getElementById("spinner"); const btnContent = document.querySelector(".btn-content"); btn.disabled = true; spinner.style.display = "inline-block"; btnContent.textContent = "Generiere...";
+      const fd = new FormData(form); const data = Object.fromEntries(fd.entries());
+      try { const resp = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) }); if (!resp.ok) { const errText = await resp.text(); let errMsg = errText; try { errMsg = JSON.parse(errText).error; } catch {} throw new Error(errMsg); } const blob = await resp.blob(); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; const clean = (s) => (s || "Unbekannt").trim().replace(/ /g, "_"); const fName = clean(data.firstName); const lName = clean(data.lastName); const dateStr = data.createdOn || new Date().toISOString().split('T')[0]; a.download = `${fName}_${lName}_AU_${dateStr}.pdf`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); } catch (err) { alert("Fehler: " + err.message); } finally { btn.disabled = false; spinner.style.display = "none"; btnContent.textContent = "PDF Generieren & Downloaden"; }
     });
   </script>
 </body>
