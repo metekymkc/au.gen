@@ -66,20 +66,19 @@
         box-shadow: 0 0 10px var(--primary);
     }
 
-    /* --- STEP WIZARD STYLES (SIMPLER) --- */
+    /* STEP WIZARD STYLES */
     .step-indicators {
         display: flex;
         justify-content: space-between;
         margin-bottom: 35px;
         position: relative;
-        padding: 0 20px; /* Etwas Padding damit Linie nicht übersteht */
+        padding: 0 20px;
     }
     
-    /* Zarte Verbindungslinie */
     .step-indicators::before {
         content: '';
         position: absolute;
-        top: 12px; /* Mittig zum kleineren Circle (24px/2) */
+        top: 12px;
         left: 30px;
         right: 30px;
         height: 1px;
@@ -97,17 +96,17 @@
     }
 
     .step-circle {
-        width: 24px;  /* Kleiner */
-        height: 24px; /* Kleiner */
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
-        background-color: var(--card-bg); /* Hintergrund der Karte damit Linie verdeckt wird */
-        border: 1px solid #3f3f46; /* Dünnerer Rahmen */
+        background-color: var(--card-bg);
+        border: 1px solid #3f3f46;
         color: #52525b;
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: 600;
-        font-size: 0.75rem; /* Kleinere Zahl */
+        font-size: 0.75rem;
         transition: all 0.3s ease;
         margin-bottom: 6px;
     }
@@ -119,19 +118,16 @@
         transition: color 0.3s;
     }
 
-    /* Active State (Simpel) */
     .step-item.active .step-circle {
         background-color: var(--primary);
         border-color: var(--primary);
         color: white;
-        /* Kein Glow mehr, nur Farbe */
         transform: scale(1.05);
     }
     .step-item.active .step-text {
         color: var(--text-main);
     }
 
-    /* Completed State */
     .step-item.completed .step-circle {
         background-color: var(--card-bg);
         border-color: var(--primary);
@@ -142,8 +138,6 @@
         opacity: 0.7;
     }
 
-
-    /* Content Animation */
     .step-content {
         display: none;
         animation: fadeIn 0.4s ease-out;
@@ -155,7 +149,6 @@
         to { opacity: 1; transform: translateX(0); }
     }
 
-    /* --- FORM STYLES --- */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -181,17 +174,15 @@
       margin-bottom: 8px;
     }
     
-    /* DISCLAIMER (Angepasst: Kein Balken, Hidden per Default) */
     .disclaimer-text {
-        display: none; /* Standardmäßig versteckt */
+        display: none;
         font-size: 0.8rem;
-        color: #a1a1aa; /* Helleres Grau für Lesbarkeit */
+        color: #a1a1aa;
         margin-top: 10px;
         line-height: 1.5;
         background: rgba(39, 39, 42, 0.5); 
         padding: 10px 12px;
         border-radius: 8px;
-        /* Kein Border-Left mehr */
         animation: fadeIn 0.5s ease;
     }
 
@@ -356,7 +347,6 @@
         box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
     }
     
-    /* Fixed Radio Button Size (Normal Size) */
     .doctor-radio { 
         width: 20px; 
         height: 20px; 
@@ -420,6 +410,12 @@
                 <label>Versichertennummer</label>
                 <input name="insuranceNumber" placeholder="Z.B. A123456789">
               </div>
+              
+              <div class="full-width">
+                  <label>Versicherungs-Kennnummer (10-stellig)</label>
+                  <input name="insuranceCheckNum" placeholder="Z.B. 1000..." required>
+              </div>
+
               <div class="full-width">
                 <div class="insurance-row">
                     <div>
@@ -583,7 +579,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // --- DATEN ---
+    // --- DATENBANKEN ---
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -736,7 +732,6 @@
         select.addEventListener('change', () => { select.blur(); });
       });
 
-      // Versicherungs-Logik + Disclaimer Toggle
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       const disclaimer = document.getElementById('insDisclaimer');
@@ -747,7 +742,6 @@
               insInput.value = INSURANCE_CODES[selected];
               insInput.style.borderColor = "var(--primary)";
               setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500);
-              // Disclaimer anzeigen
               disclaimer.style.display = 'block';
           }
       });
