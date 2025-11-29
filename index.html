@@ -8,12 +8,13 @@
     /* --- FONTS --- */
     @font-face {
         font-family: 'ArcadeClassic';
+        /* Pfad muss stimmen! */
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
         font-weight: normal;
         font-style: normal;
     }
 
-    /* --- VARIABLEN --- */
+    /* --- VARIABLES --- */
     :root {
       --bg-color: #09090b;       
       --card-bg: #18181b;        
@@ -32,19 +33,19 @@
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
-    /* --- HINTERGRUND FIX --- */
+    /* --- GLOBAL RESET & BACKGROUND FIX --- */
     * { box-sizing: border-box; }
 
     html {
-        background-color: #09090b;
+        background-color: var(--bg-color);
         height: 100%;
         margin: 0; padding: 0;
     }
 
     body {
       font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: #09090b;
-      background-color: none;
+      background-color: var(--bg-color); /* Solides Schwarz */
+      background-image: none;            /* Keine Verläufe */
       color: var(--text-main);
       
       display: flex;
@@ -69,7 +70,7 @@
       margin-bottom: 20px;
     }
 
-    /* --- TITEL STYLE --- */
+    /* --- TITEL STYLING --- */
     h1 {
       text-align: center;
       margin-top: 0;
@@ -91,19 +92,22 @@
         margin-bottom: 2.5rem;
     }
 
-    /* Footer */
-    .legal-footer {
-        max-width: 700px;
-        text-align: center;
-        font-size: 0.75rem;
-        color: #3f3f46;
-        line-height: 1.4;
-        margin-top: 10px;
-        padding: 0 10px;
+    /* LOADING OVERLAY */
+    #loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-color);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-family: 'ArcadeClassic';
+        font-size: 1.5rem;
+        transition: opacity 0.5s ease;
     }
-    .legal-footer strong { color: #52525b; }
 
-    /* Schritte */
+    /* STEP WIZARD */
     .step-indicators {
         display: flex;
         justify-content: space-between;
@@ -174,7 +178,7 @@
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* Grid */
+    /* FORM GRID */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -212,7 +216,7 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* Eingabe */
+    /* INPUTS & SELECTS */
     input, select {
       width: 100%;
       padding: 0 14px;
@@ -236,7 +240,7 @@
     
     input::placeholder { color: #52525b; }
 
-    /* --- DATUM FIX --- */
+    /* --- DATE INPUT FIXES --- */
     input[type="date"] {
         -webkit-appearance: none;
         appearance: none;
@@ -252,6 +256,7 @@
     }
     input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
 
+    /* Diagnose Daten zentrieren */
     .date-group input[type="date"] {
         text-align: center;
     }
@@ -329,7 +334,7 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
-    /* Navigation */
+    /* NAV BUTTONS */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
@@ -398,6 +403,17 @@
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
+    .legal-footer {
+        max-width: 700px;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #3f3f46;
+        line-height: 1.4;
+        margin-top: 10px;
+        padding: 0 10px;
+    }
+    .legal-footer strong { color: #52525b; }
+
     /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
@@ -405,10 +421,8 @@
         
         .form-grid { grid-template-columns: 1fr; gap: 15px; }
         .full-width, .three-quarter, .one-quarter { grid-column: span 1; }
-        
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
-        /* Mobile Inputs */
         input, select {
             height: 42px; 
             line-height: normal;
@@ -417,34 +431,16 @@
             max-height: 42px; 
         }
         
-        /* Mobile View Fix */
-        input[name="birthDate"] {
-            text-align: left;
-            padding-left: 12px;
-        }
-        input[name="birthDate"]::-webkit-date-and-time-value {
-            text-align: left;
-        }
+        /* FIX FÜR iOS DATUM */
+        input[name="birthDate"] { text-align: left; padding-left: 12px; }
+        input[name="birthDate"]::-webkit-date-and-time-value { text-align: left; }
 
-        .date-group input[type="date"] {
-            text-align: center;
-        }
-        .date-group input[type="date"]::-webkit-date-and-time-value {
-            text-align: center;
-        }
+        .date-group input[type="date"] { text-align: center; }
+        .date-group input[type="date"]::-webkit-date-and-time-value { text-align: center; }
         
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
-        
-        .date-group { 
-            width: 100%; 
-            align-items: center; 
-            display: flex;
-        }
-        .date-group input {
-            flex: 1; 
-            width: 0; 
-            min-width: 0;
-        }
+        .date-group { width: 100%; align-items: center; display:flex; }
+        .date-group input { flex: 1; width: 0; min-width: 0; }
         
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
@@ -462,9 +458,11 @@
 </head>
 <body>
 
+  <div id="loading-overlay">Lade Konfiguration...</div>
+
   <div class="container">
     <h1>Mete's AU Generator</h1>
-    <div class="subtitle">Beta v. 11.25</div>
+    <div class="subtitle">Beta v. 12.0 (Dynamic)</div>
     
     <div class="step-indicators">
         <div class="step-item active" id="step-ind-1">
@@ -488,7 +486,7 @@
     <form id="pdfForm" novalidate>
       
       <div id="step-1" class="step-content active">
-          <div class="step-title">1. Personendaten & Versicherung</div>
+          <div class="step-title">1. Patient & Versicherung</div>
           <div class="form-grid">
               <div>
                 <label>Vorname</label>
@@ -517,37 +515,7 @@
                     <div>
                         <label>Krankenkasse</label>
                         <select name="insurance" id="insuranceSelect" required>
-                          <option value="">Bitte wählen...</option>
-                          <optgroup label="AOK">
-                              <option value="AOK Bayern">AOK Bayern</option>
-                              <option value="AOK Baden-Württemberg">AOK Baden-Württemberg</option>
-                              <option value="AOK Hessen">AOK Hessen</option>
-                              <option value="AOK Nordost (Berlin)">AOK Nordost (Berlin)</option>
-                              <option value="AOK Nordost (Brandenburg)">AOK Nordost (Brandenburg)</option>
-                              <option value="AOK Nordost (Meck-Pomm)">AOK Nordost (Meck-Pomm)</option>
-                              <option value="AOK PLUS (Sachsen)">AOK PLUS (Sachsen)</option>
-                              <option value="AOK PLUS (Thüringen)">AOK PLUS (Thüringen)</option>
-                              <option value="AOK Rheinland/Hamburg (HH)">AOK Rheinland/Hamburg (HH)</option>
-                              <option value="AOK Rheinland/Hamburg (Nordrhein)">AOK Rheinland/Hamburg (Nordrhein)</option>
-                              <option value="AOK NordWest (Westfalen)">AOK NordWest (Westfalen)</option>
-                              <option value="AOK NordWest (Schleswig-Holst.)">AOK NordWest (Schleswig-Holst.)</option>
-                              <option value="AOK Niedersachsen">AOK Niedersachsen</option>
-                              <option value="AOK RLP/Saarland (RLP)">AOK RLP/Saarland (RLP)</option>
-                              <option value="AOK RLP/Saarland (Saarland)">AOK RLP/Saarland (Saarland)</option>
-                              <option value="AOK Bremen/Bremerhaven">AOK Bremen/Bremerhaven</option>
-                              <option value="AOK Sachsen-Anhalt">AOK Sachsen-Anhalt</option>
-                          </optgroup>
-                          <optgroup label="Andere">
-                              <option value="Techniker Krankenkasse">Techniker Krankenkasse (TK)</option>
-                              <option value="BARMER">BARMER</option>
-                              <option value="DAK-Gesundheit">DAK-Gesundheit</option>
-                              <option value="IKK classic">IKK classic</option>
-                              <option value="KKH">KKH</option>
-                              <option value="hkk">hkk</option>
-                              <option value="Knappschaft">Knappschaft</option>
-                              <option value="BMW BKK">BMW BKK</option>
-                              <option value="Audi BKK">Audi BKK</option>
-                          </optgroup>
+                          <option value="">Lade Daten...</option>
                         </select>
                     </div>
                     <div>
@@ -604,7 +572,7 @@
       </div>
 
       <div id="step-3" class="step-content">
-          <div class="step-title">3. Zeitraum</div>
+          <div class="step-title">3. Diagnose & Zeitraum</div>
           <div class="form-grid">
               <div class="full-width">
                 <label>Festgestellt am</label>
@@ -656,7 +624,7 @@
           <div class="step-title">4. Behandelnder Arzt auswählen</div>
           
           <div id="doctor-list-container">
-              <p style="color:var(--text-muted); text-align:center;">Lade Ärzte...</p>
+              <p style="color:var(--text-muted); text-align:center;">Bitte erst Stadt eingeben...</p>
           </div>
           
           <input type="hidden" name="doctorTemplate" id="selectedDoctorTemplate" value="">
@@ -681,66 +649,62 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // --- VERSICHERUNGS DATEN ---
-    const INSURANCE_CODES = {
-        "AOK Bayern": "71",
-        "AOK Baden-Württemberg": "52",
-        "AOK Hessen": "46",
-        "AOK Nordost (Berlin)": "72",
-        "AOK Nordost (Brandenburg)": "83",
-        "AOK Nordost (Meck-Pomm)": "78",
-        "AOK PLUS (Sachsen)": "98",
-        "AOK PLUS (Thüringen)": "93",
-        "AOK Rheinland/Hamburg (HH)": "02",
-        "AOK Rheinland/Hamburg (Nordrhein)": "38",
-        "AOK NordWest (Westfalen)": "20",
-        "AOK NordWest (Schleswig-Holst.)": "01",
-        "AOK Niedersachsen": "17",
-        "AOK RLP/Saarland (RLP)": "51",
-        "AOK RLP/Saarland (Saarland)": "73",
-        "AOK Bremen/Bremerhaven": "03",
-        "AOK Sachsen-Anhalt": "88",
-        "IKK classic": "71", 
-        "Knappschaft": "16",
-        "BMW BKK": "71",
-        "Audi BKK": "71",
-        "Techniker Krankenkasse": "12",
-        "BARMER": "12",
-        "DAK-Gesundheit": "12",
-        "KKH": "12",
-        "hkk": "12"
-    };
+    // Globale Daten (werden dynamisch geladen)
+    let INSURANCE_CODES = {};
+    let DOCTORS_DB = [];
 
-    const DOCTORS_DB = [
-        {
-            citySearch: "münchen", 
-            name: "Internistische Praxis München", 
-            details: "M.D. Fadi Daadoush",
-            templateName: "fadi_template" 
-        },
-        {
-            citySearch: "munich", 
-            name: "Internistische Praxis München", 
-            details: "M.D. Fadi Daadoush",
-            templateName: "fadi_template" 
+    // --- INIT APP (Daten laden) ---
+    async function initApp() {
+        try {
+            const res = await fetch(`${WORKER_URL}/public/data`);
+            const data = await res.json();
+            
+            // 1. Ärzte
+            DOCTORS_DB = data.doctors;
+            
+            // 2. Versicherungen
+            const select = document.getElementById('insuranceSelect');
+            select.innerHTML = '<option value="">Bitte wählen...</option>';
+            
+            const groups = {};
+            data.insurances.forEach(ins => {
+                if(!groups[ins.group]) groups[ins.group] = [];
+                groups[ins.group].push(ins);
+                INSURANCE_CODES[ins.name] = ins.code;
+            });
+
+            for (const [groupName, items] of Object.entries(groups)) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = groupName;
+                items.forEach(ins => {
+                    const opt = document.createElement('option');
+                    opt.value = ins.name;
+                    opt.textContent = ins.name;
+                    optgroup.appendChild(opt);
+                });
+                select.appendChild(optgroup);
+            }
+
+            // Lade-Overlay entfernen
+            document.getElementById('loading-overlay').style.opacity = '0';
+            setTimeout(() => document.getElementById('loading-overlay').remove(), 500);
+
+        } catch (e) {
+            alert("Fehler beim Laden: " + e);
         }
-    ];
+    }
 
-    // --- SCHRITTE LOGIK ---
+    // --- STEP LOGIC ---
     let currentStep = 1;
-    
     function showStep(step) {
         document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active', 'completed'));
-        
         document.getElementById(`step-${step}`).classList.add('active');
-        
         for(let i=1; i<=4; i++) {
             const indicator = document.getElementById(`step-ind-${i}`);
             if(i < step) indicator.classList.add('completed');
             if(i === step) indicator.classList.add('active');
         }
-        
         if(step === 4) loadDoctors();
     }
 
@@ -755,19 +719,11 @@
                 setTimeout(() => input.style.borderColor = "var(--border-color)", 2000);
             }
         });
-
-        if(valid) {
-            currentStep++;
-            showStep(currentStep);
-        }
+        if(valid) { currentStep++; showStep(currentStep); }
     }
+    function prevStep(current) { currentStep--; showStep(currentStep); }
 
-    function prevStep(current) {
-        currentStep--;
-        showStep(currentStep);
-    }
-
-    // --- ARZT AUSWAHL ---
+    // --- DOCTOR LOADER ---
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -784,9 +740,8 @@
                 card.className = 'doctor-card';
                 if (index === 0) {
                     card.classList.add('selected');
-                    hiddenInput.value = doc.templateName;
+                    hiddenInput.value = doc.templateId; // Achtung: templateId, nicht templateName
                 }
-
                 card.innerHTML = `
                     <input type="radio" name="docSelection" class="doctor-radio" ${index===0 ? 'checked' : ''}>
                     <div class="doctor-info">
@@ -794,15 +749,13 @@
                         <p>${doc.details}</p>
                     </div>
                 `;
-
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.doctor-card').forEach(c => c.classList.remove('selected'));
                     document.querySelectorAll('.doctor-radio').forEach(r => r.checked = false);
                     card.classList.add('selected');
                     card.querySelector('input').checked = true;
-                    hiddenInput.value = doc.templateName;
+                    hiddenInput.value = doc.templateId;
                 });
-
                 container.appendChild(card);
             });
         } else {
@@ -816,7 +769,7 @@
         }
     }
 
-    // --- GLOBALE REGELN ---
+    // --- GLOBAL INIT ---
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
@@ -824,34 +777,26 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+
       const today = new Date();
       const todayStr = today.toISOString().split("T")[0];
-
-      // REGEL 1: Maximal 2 Monate in der Zukunft
       const maxDate = new Date();
       maxDate.setMonth(maxDate.getMonth() + 2);
       const maxDateStr = maxDate.toISOString().split("T")[0];
 
       document.querySelectorAll('input[type="date"]').forEach(input => {
-        // Generelles Maximum
         input.setAttribute('max', maxDateStr);
-        
-        // Geburtsdatum: Maximal heute
-        if(input.name === 'birthDate') {
-            input.setAttribute('max', todayStr);
-        }
+        if(input.name === 'birthDate') input.setAttribute('max', todayStr);
       });
 
-      // Autofill CreatedOn
       const createdInput = document.getElementById('dateCreated');
       if (createdInput) createdInput.value = todayStr;
 
-      // Dropdowns deselektieren
       document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', () => { select.blur(); });
       });
 
-      // Versicherungen
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       const disclaimer = document.getElementById('insDisclaimer');
@@ -869,17 +814,15 @@
       initAutocomplete();
     });
 
-    // ===== Autocomplete Logic =====
+    // ===== Autocomplete =====
     function initAutocomplete() {
         const searchInput = document.getElementById('address-search');
         const suggestionBox = document.getElementById('address-suggestions');
         let timeout;
-
         searchInput.addEventListener('input', () => {
           clearTimeout(timeout);
           const query = searchInput.value.trim();
           if (query.length < 3) { suggestionBox.classList.remove('active'); return; }
-
           timeout = setTimeout(async () => {
             const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&addressdetails=1&limit=5&countrycodes=DE&accept-language=de`;
             try {
@@ -914,68 +857,46 @@
             } catch (e) { console.error(e); }
           }, 300);
         });
-
-        document.addEventListener('click', e => {
-          if (!e.target.closest('.full-width')) suggestionBox.classList.remove('active');
-        });
+        document.addEventListener('click', e => { if (!e.target.closest('.full-width')) suggestionBox.classList.remove('active'); });
     }
 
-    // ===== Validierung =====
+    // ===== Submit Logic =====
     const form = document.getElementById("pdfForm");
-    
     form.addEventListener("submit", async e => {
       e.preventDefault();
       
-      // 1. PflichtfelderCheck
       const allInputs = form.querySelectorAll('input[required], select[required]');
-      let allValid = true;
       for (let input of allInputs) {
           if (!input.value) {
-              allValid = false;
               const stepDiv = input.closest('.step-content');
               if (stepDiv) {
-                  const stepId = stepDiv.id.replace('step-', '');
-                  showStep(parseInt(stepId));
+                  showStep(parseInt(stepDiv.id.replace('step-', '')));
                   alert("Bitte fülle alle Pflichtfelder aus.");
                   input.style.borderColor = "#ef4444";
-                  setTimeout(() => input.style.borderColor = "var(--border-color)", 2000);
                   return; 
               }
           }
       }
 
-      // 2. REGEL-CHECK: Datum
       const auFromInput = document.getElementById('dateFrom');
       const auToInput = document.getElementById('dateTo');
-      
       if (auFromInput.value && auToInput.value) {
           const start = new Date(auFromInput.value);
           const end = new Date(auToInput.value);
-          
-          // Regel A: Ende vor Start?
           if (end < start) {
-              showStep(3); // Zurück zu Schritt 3
-              alert("Fehler: Das 'Bis'-Datum darf nicht vor dem 'Von'-Datum liegen.");
-              auToInput.style.borderColor = "#ef4444";
-              return;
+              showStep(3); alert("Fehler: 'Bis' vor 'Von'.");
+              auToInput.style.borderColor = "#ef4444"; return;
           }
-
-          // Regel B: Maximal 21 Tage
-          const diffTime = Math.abs(end - start);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+          const diffDays = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)); 
           if (diffDays > 21) {
-              showStep(3); 
-              alert(`Fehler: Die Arbeitsunfähigkeit darf maximal 3 Wochen dauern. Du hast ${diffDays} Tage ausgewählt.`);
-              auToInput.style.borderColor = "#ef4444";
-              return;
+              showStep(3); alert(`Maximal 21 Tage erlaubt (Du hast ${diffDays}).`);
+              auToInput.style.borderColor = "#ef4444"; return;
           }
       }
 
-      // Finaler Check
       const btn = document.getElementById("submitBtn");
       const spinner = document.getElementById("spinner");
       const btnContent = document.querySelector(".btn-content");
-      
       btn.disabled = true;
       spinner.style.display = "inline-block";
       btnContent.textContent = "Generiere...";
@@ -1001,22 +922,18 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        
         const clean = (s) => (s || "Unbekannt").trim().replace(/ /g, "_");
         const fName = clean(data.firstName);
         const lName = clean(data.lastName);
         const dateStr = data.createdOn || new Date().toISOString().split('T')[0];
-        
         a.download = `${fName}_${lName}_AU_${dateStr}.pdf`;
-        
         document.body.appendChild(a);
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
 
-      } catch (err) {
-        alert("Fehler: " + err.message);
-      } finally {
+      } catch (err) { alert("Fehler: " + err.message); } 
+      finally {
         btn.disabled = false;
         spinner.style.display = "none";
         btnContent.textContent = "PDF Generieren & Downloaden";
