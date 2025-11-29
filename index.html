@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mete's AU Generator</title>
+  <title>AU Generator Pro</title>
   <style>
     :root {
       /* Dark Theme Palette */
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
+      
       --primary: #3b82f6;        
       --primary-hover: #2563eb;
       --primary-glow: rgba(59, 130, 246, 0.4); 
+      
       --text-main: #f4f4f5;      
       --text-muted: #a1a1aa;     
+      
       --border-color: #27272a;   
       --radius: 12px;            
+      
       --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
     }
 
@@ -85,8 +89,9 @@
     /* Spezial Grid für Versicherung + Code */
     .insurance-row {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 2fr 1fr; /* 2/3 Name, 1/3 Code */
       gap: 15px;
+      align-items: end; /* Damit Inputs unten bündig sind, falls Labels unterschiedlich hoch wären */
     }
 
     label {
@@ -99,9 +104,12 @@
     
     .disclaimer-text {
         font-size: 0.75rem;
-        color: #71717a; /* Noch etwas dunkleres Grau */
-        margin-top: 6px;
-        line-height: 1.3;
+        color: #52525b; 
+        margin-top: 10px;
+        line-height: 1.4;
+        background: #27272a;
+        padding: 8px;
+        border-radius: 6px;
     }
 
     input, select {
@@ -287,9 +295,9 @@
       </div>
 
       <div class="full-width">
-        <label>Krankenkasse</label>
         <div class="insurance-row">
             <div>
+                <label>Krankenkasse</label>
                 <select name="insurance" id="insuranceSelect" required>
                   <option value="">Bitte wählen...</option>
                   
@@ -326,7 +334,8 @@
                 </select>
             </div>
             <div>
-                <input name="insuranceID" id="insuranceIDInput" placeholder="Kassen-Nr." required>
+                <label>Kassen-Nr.</label>
+                <input name="insuranceID" id="insuranceIDInput" placeholder="Code" required>
             </div>
         </div>
         <div class="disclaimer-text">
@@ -439,7 +448,6 @@
         "Knappschaft": "16",
         "BMW BKK": "71",
         "Audi BKK": "71",
-        // Default für die großen Ersatzkassen
         "Techniker Krankenkasse": "12",
         "BARMER": "12",
         "DAK-Gesundheit": "12",
@@ -471,7 +479,7 @@
         });
       });
 
-      // --- NEU: Event Listener für Versicherungs-Auswahl ---
+      // --- Versicherungs-Auswahl ---
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
 
@@ -479,11 +487,10 @@
           const selected = insSelect.value;
           if (INSURANCE_CODES[selected]) {
               insInput.value = INSURANCE_CODES[selected];
-              // Optional: Ein leichter visueller Hinweis, dass es geändert wurde (Glow)
+              // Glow Effekt
               insInput.style.borderColor = "var(--primary)";
               setTimeout(() => insInput.style.borderColor = "var(--border-color)", 500);
           } else {
-              // Wenn wir nichts finden (sollte nicht passieren), leer lassen oder alt lassen
               if(selected === "") insInput.value = "";
           }
       });
