@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mete's AU Generator</title>
   <style>
-    /* fonts */
+    /* --- Fonts --- */
     @font-face {
         font-family: 'ArcadeClassic';
         src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
@@ -18,13 +18,17 @@
       --bg-color: #09090b;       
       --card-bg: #18181b;        
       --input-bg: #09090b;       
+      
       --primary: #3b82f6;        
       --primary-hover: #2563eb;
       --primary-glow: rgba(59, 130, 246, 0.2); 
+      
       --text-main: #f4f4f5;      
       --text-muted: #a1a1aa;     
+      
       --border-color: #27272a;   
       --radius: 12px;            
+      
       --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
@@ -54,7 +58,7 @@
       margin-bottom: 20px;
     }
 
-    /* Titel Styling */
+    /* --- TITEL STYLING --- */
     h1 {
       text-align: center;
       margin-top: 0;
@@ -88,7 +92,7 @@
     }
     .legal-footer strong { color: #52525b; }
 
-    /* Schritte einführung */
+    /* Schritte */
     .step-indicators {
         display: flex;
         justify-content: space-between;
@@ -159,7 +163,7 @@
     .step-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* Formular Grid (Nicht mehr nötig) */
+    /* Formular */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -197,7 +201,7 @@
         animation: fadeIn 0.5s ease;
     }
 
-    /* Eingabe */
+    /* Eingabe und Auswahl */
     input, select {
       width: 100%;
       padding: 0 14px;
@@ -221,6 +225,7 @@
     
     input::placeholder { color: #52525b; }
 
+    /* --- DATE INPUT STYLING (CRITICAL MOBILE FIXES) --- */
     input[type="date"] {
         -webkit-appearance: none;
         appearance: none;
@@ -313,7 +318,6 @@
     }
     .today-btn:hover { background-color: #3f3f46; color: var(--text-main); border-color: #52525b; }
 
-    /* Navigation */
     .nav-buttons {
         display: flex;
         justify-content: space-between;
@@ -382,6 +386,7 @@
     .doctor-info h4 { margin: 0; color: var(--text-main); font-size: 1rem; font-weight: 600; }
     .doctor-info p { margin: 4px 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
+    /* === MOBILE OPTIMIERUNG === */
     @media (max-width: 768px) {
         body { padding: 10px; }
         .container { padding: 1.5rem; }
@@ -391,6 +396,7 @@
         
         .insurance-row { grid-template-columns: 1fr; gap: 10px; }
         
+        /* Mobile Eingabe */
         input, select {
             height: 42px; 
             line-height: normal;
@@ -399,29 +405,35 @@
             max-height: 42px; 
         }
         
+        /* Mobile Fix */
         input[name="birthDate"] {
             text-align: left;
-            display: flex;
-            align-items: center;
+            padding-left: 12px;
         }
-        
-        .date-group input[type="date"] {
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        /* Mobile Fix Daten */
         input[name="birthDate"]::-webkit-date-and-time-value {
             text-align: left;
+        }
+
+        .date-group input[type="date"] {
+            text-align: center;
         }
         .date-group input[type="date"]::-webkit-date-and-time-value {
             text-align: center;
         }
-
+        
         .today-btn { height: 42px; padding: 0 12px; font-size: 0.8rem; }
-        .date-group { width: 100%; align-items: center; }
+        
+        /* Mobile Datum Fix */
+        .date-group { 
+            width: 100%; 
+            align-items: center; 
+            display: flex;
+        }
+        .date-group input {
+            flex: 1; 
+            width: 0; 
+            min-width: 0;
+        }
         
         .step-text { font-size: 0.65rem; }
         .step-indicators { padding: 0; }
@@ -462,10 +474,10 @@
         </div>
     </div>
 
-    <form id="pdfForm">
+    <form id="pdfForm" novalidate>
       
       <div id="step-1" class="step-content active">
-          <div class="step-title">1. Personendaten & Versicherung</div>
+          <div class="step-title">1. Patient & Versicherung</div>
           <div class="form-grid">
               <div>
                 <label>Vorname</label>
@@ -486,7 +498,7 @@
               
               <div class="full-width">
                   <label>Versicherungs-Kennnummer (10-stellig)</label>
-                  <input name="insuranceCheckNum" placeholder="Z.B. 1083..." required>
+                  <input name="insuranceCheckNum" placeholder="Z.B. 1000..." required>
               </div>
 
               <div class="full-width">
@@ -581,7 +593,7 @@
       </div>
 
       <div id="step-3" class="step-content">
-          <div class="step-title">3. Zeitraum</div>
+          <div class="step-title">3. Diagnose & Zeitraum</div>
           <div class="form-grid">
               <div class="full-width">
                 <label>Festgestellt am</label>
@@ -658,7 +670,7 @@
   <script>
     const WORKER_URL = "https://pdf-worker.metekymkc.workers.dev";
     
-    // Versicherungen mit Codes
+    // Versicherungen und Codes
     const INSURANCE_CODES = {
         "AOK Bayern": "71",
         "AOK Baden-Württemberg": "52",
@@ -677,7 +689,7 @@
         "AOK RLP/Saarland (Saarland)": "73",
         "AOK Bremen/Bremerhaven": "03",
         "AOK Sachsen-Anhalt": "88",
-        "IKK classic": "71", 
+        "IKK classic": "71",
         "Knappschaft": "16",
         "BMW BKK": "71",
         "Audi BKK": "71",
@@ -703,7 +715,7 @@
         }
     ];
 
-    // Schritte
+    // Schritte Logik 
     let currentStep = 1;
     
     function showStep(step) {
@@ -744,7 +756,7 @@
         showStep(currentStep);
     }
 
-    // Arzt Auswahl Menü
+    // Arzt Azswahl
     function loadDoctors() {
         const cityInput = document.getElementById('city').value.toLowerCase().trim();
         const container = document.getElementById('doctor-list-container');
@@ -793,25 +805,42 @@
         }
     }
 
-    // Global
+    // GLOBAL
     function setToday(elementId) {
       const today = new Date().toISOString().split("T")[0];
       const el = document.getElementById(elementId);
       if(el) el.value = today;
     }
 
-    const todayStr = new Date().toISOString().split("T")[0];
     document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const todayStr = today.toISOString().split("T")[0];
+
+      // REGEL 1: Maximal 2 Monate in der Zukunft
+      const maxDate = new Date();
+      maxDate.setMonth(maxDate.getMonth() + 2);
+      const maxDateStr = maxDate.toISOString().split("T")[0];
+
       document.querySelectorAll('input[type="date"]').forEach(input => {
-        if(input.name !== 'auTo') input.setAttribute('max', todayStr);
+        // Generelles Maximum
+        input.setAttribute('max', maxDateStr);
+        
+        // Geburtsdatum: Maximal heute
+        if(input.name === 'birthDate') {
+            input.setAttribute('max', todayStr);
+        }
       });
+
+      // Autofill CreatedOn
       const createdInput = document.getElementById('dateCreated');
       if (createdInput) createdInput.value = todayStr;
 
+      // Dropdowns
       document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', () => { select.blur(); });
       });
 
+      // Versicherung
       const insSelect = document.getElementById('insuranceSelect');
       const insInput = document.getElementById('insuranceIDInput');
       const disclaimer = document.getElementById('insDisclaimer');
@@ -829,7 +858,7 @@
       initAutocomplete();
     });
 
-    // Adressen Autocomplete
+    // Adress Autocomplete
     function initAutocomplete() {
         const searchInput = document.getElementById('address-search');
         const suggestionBox = document.getElementById('address-suggestions');
@@ -880,10 +909,58 @@
         });
     }
 
-    // Generation
+    // Generationslogik 
     const form = document.getElementById("pdfForm");
+    
     form.addEventListener("submit", async e => {
       e.preventDefault();
+      
+      // 1. Pflichtfelder-Check (Manuell wegen novalidate)
+      const allInputs = form.querySelectorAll('input[required], select[required]');
+      let allValid = true;
+      for (let input of allInputs) {
+          if (!input.value) {
+              allValid = false;
+              const stepDiv = input.closest('.step-content');
+              if (stepDiv) {
+                  const stepId = stepDiv.id.replace('step-', '');
+                  showStep(parseInt(stepId));
+                  alert("Bitte fülle alle Pflichtfelder aus.");
+                  input.style.borderColor = "#ef4444";
+                  setTimeout(() => input.style.borderColor = "var(--border-color)", 2000);
+                  return; 
+              }
+          }
+      }
+
+      // 2. Rege-Check: Datum
+      const auFromInput = document.getElementById('dateFrom');
+      const auToInput = document.getElementById('dateTo');
+      
+      if (auFromInput.value && auToInput.value) {
+          const start = new Date(auFromInput.value);
+          const end = new Date(auToInput.value);
+          
+          // Regel A: Ende vor Start?
+          if (end < start) {
+              showStep(3); // Zurück zu Schritt 3
+              alert("Fehler: Das 'Bis'-Datum darf nicht vor dem 'Von'-Datum liegen.");
+              auToInput.style.borderColor = "#ef4444";
+              return;
+          }
+
+          // Regel B: Maximal 21 Tage
+          const diffTime = Math.abs(end - start);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+          if (diffDays > 21) {
+              showStep(3); 
+              alert(`Fehler: Die Arbeitsunfähigkeit darf maximal 3 Wochen dauern. Du hast ${diffDays} Tage ausgewählt.`);
+              auToInput.style.borderColor = "#ef4444";
+              return;
+          }
+      }
+
+      // Finaler Check
       const btn = document.getElementById("submitBtn");
       const spinner = document.getElementById("spinner");
       const btnContent = document.querySelector(".btn-content");
