@@ -2,74 +2,37 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mete's Admin Konsole</title>
     <style>
-    @font-face {
-        font-family: 'ArcadeClassic';
-        src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-    }
-        
         :root {
-            --bg: #09090b;
-            --card: #18181b;
-            --overlay: rgba(0, 0, 0, 0.85);
-            --text: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --border: #27272a;
-            --input-border: #3f3f46;
-            --danger: #ef4444;
-            --success: #10b981;
+            --bg: #09090b; --card: #18181b; --overlay: rgba(0,0,0,0.85);
+            --text: #f4f4f5; --text-muted: #a1a1aa;
+            --primary: #3b82f6; --primary-hover: #2563eb;
+            --border: #27272a; --input-border: #3f3f46;
+            --danger: #ef4444; --success: #10b981;
             --radius: 12px;
         }
-
         * { box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Inter, sans-serif;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', Inter, sans-serif; margin: 0; padding: 20px; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; }
 
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
-            background: rgba(9, 9, 11, 0.5); backdrop-filter: blur(5px);
-            flex-wrap: wrap; gap: 15px;
-        }
-        .header-left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-        h1 { 
-        margin: 0; 
-        font-size: 1.8rem;
-        letter-spacing: 0.05em; 
-        font-family: 'ArcadeClassic', sans-serif;
-        text-transform: uppercase;
-        font-weight: normal;
-    }
-        
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); background: rgba(9,9,11,0.5); backdrop-filter: blur(5px); }
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
         .tabs { display: flex; gap: 5px; background: #141417; padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
         .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
         .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .tab-btn:hover:not(.active) { color: white; background: rgba(255,255,255,0.05); }
-
+        
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .manager-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
         .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        
+        @media(max-width: 900px) { .manager-grid { grid-template-columns: 1fr; } }
+
         .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
-        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display:flex; justify-content:space-between; align-items:center; }
+        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 
         .item-list { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .list-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
@@ -83,6 +46,7 @@
         input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
         #uploadSection { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
 
+        /* TASK CARDS */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; }
         .task-card:hover { border-color: #52525b; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .card-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
@@ -102,17 +66,12 @@
         .btn-danger:hover { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
         .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
-        .btn-close:hover { color: white; }
 
         .modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.2s; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; }
 
-        .login-box { 
-            padding: 50px 40px; text-align: center; max-width: 380px; 
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px;
-        }
+        .login-box { padding: 50px 40px; text-align: center; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px; }
         .login-box input { margin: 25px 0; text-align: center; background: transparent; }
 
         .detail-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 10; }
@@ -131,36 +90,14 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-
-        /* Mobile Optimierungen*/
-        @media (max-width: 900px) { 
-            .manager-grid { grid-template-columns: 1fr; } 
-        }
-        
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            header { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .header-left { flex-wrap: wrap; }
-            
-            .modal-box { width: 95%; max-height: 95vh; }
-            .data-grid { grid-template-columns: 1fr; gap: 15px; } /* Einspaltig */
-            .full-row { grid-column: span 1; }
-            
-            .detail-body { padding: 15px; }
-            .detail-header { padding: 15px; }
-            .detail-footer { padding: 15px; flex-direction: column; } /* Buttons untereinander */
-            
-            .task-grid { grid-template-columns: 1fr; }
-        }
-
     </style>
 </head>
 <body>
 
     <div id="login-modal" class="modal-overlay active">
         <div class="login-box">
-            <div style="font-size:2rem; margin-bottom:10px;"></div>
-            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Welcome back, Metehan</h3>
+            <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             <button class="btn" style="width:100%" id="loginBtn" onclick="login()">Login</button>
         </div>
@@ -183,7 +120,7 @@
     <div class="container">
         <header>
             <div class="header-left">
-                <h1>Mete's Console</h1>
+                <h1>Mete's Konsole</h1>
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('orders')">Aufträge</button>
                     <button class="tab-btn" onclick="switchTab('config')">Datenbank & Config</button>
@@ -217,30 +154,22 @@
 
                 <div class="card" style="height: fit-content;">
                     <h2>+ Arzt Hinzufügen</h2>
-                    
                     <div class="form-group"><label>Praxis Name</label><input id="newDocName" placeholder="z.B. Hausarztpraxis Berlin"></div>
                     <div class="form-group"><label>Details (Arzt Name)</label><input id="newDocDetails" placeholder="z.B. Dr. Med. Max Mustermann"></div>
-                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin (Kleinschreibung!)"></div>
-
+                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin"></div>
                     <div class="form-group">
                         <label>Template (PDF)</label>
                         <select id="newDocTemplate" onchange="toggleUpload()">
                             <option value="">Lade Templates...</option>
                         </select>
                     </div>
-
                     <div id="uploadSection">
                         <label style="color:var(--primary)">Neues PDF hochladen:</label>
                         <input type="file" id="pdfFile" accept="application/pdf" style="margin-bottom:10px;">
                         <input id="newTemplateId" placeholder="Neue ID (z.B. berlin_template)">
-                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px;">
-                            Info: Erbt Standard-Koordinaten.
-                        </p>
+                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:5px;">Info: Erbt Standard-Koordinaten.</p>
                     </div>
-
-                    <button class="btn" style="width:100%; margin-top:10px;" onclick="saveNewDoctor()">
-                        Speichern & Hinzufügen
-                    </button>
+                    <button class="btn" style="width:100%; margin-top:10px;" onclick="saveNewDoctor()">Speichern & Hinzufügen</button>
                 </div>
             </div>
         </div>
@@ -252,7 +181,6 @@
         let DB = { doctors: [], insurances: [], templates: {} };
         let allOrders = [];
 
-        // Auth
         async function login() {
             const input = document.getElementById('passwordInput');
             const btn = document.getElementById('loginBtn');
@@ -260,7 +188,7 @@
 
             AUTH_KEY = input.value;
             input.disabled = true; btn.textContent = "Verifiziere...";
-            await new Promise(r => setTimeout(r, 800)); // fake delay hihihihi
+            await new Promise(r => setTimeout(r, 800)); 
 
             try {
                 const res = await fetch(`${WORKER_URL}/admin/config`, { headers: { 'x-admin-auth': AUTH_KEY } });
@@ -287,17 +215,27 @@
             event.target.classList.add('active');
         }
 
-        // Upload Manager
-        function initManager() {
-            renderDoctors();
-            renderInsurances();
-            updateTemplateSelect();
-        }
+        // --- MANAGER ---
+        function initManager() { renderDoctors(); renderInsurances(); updateTemplateSelect(); }
 
         function renderDoctors() {
             const list = document.getElementById('doctorList');
             list.innerHTML = "";
+            
             DB.doctors.forEach((doc, idx) => {
+                // BUGFIX: Fehlerhafte Einträge erkennen und rot markieren
+                if (!doc || !doc.name || !doc.citySearch) {
+                     list.innerHTML += `
+                        <div class="list-item" style="border-color:var(--danger); background:rgba(239,68,68,0.05)">
+                            <div class="item-info">
+                                <h4 style="color:var(--danger)">Defekter Eintrag</h4>
+                                <p style="font-size:0.7rem">ID: ${doc?.id || 'N/A'}</p>
+                            </div>
+                            <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">Löschen</button>
+                        </div>`;
+                    return;
+                }
+
                 list.innerHTML += `
                     <div class="list-item">
                         <div class="item-info">
@@ -316,10 +254,7 @@
             const list = document.getElementById('insuranceList');
             list.innerHTML = "";
             DB.insurances.slice(0, 20).forEach((ins) => { 
-                list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info"><h4>${ins.name}</h4><p>${ins.code}</p></div>
-                    </div>`;
+                list.innerHTML += `<div class="list-item"><div class="item-info"><h4>${ins.name}</h4><p>${ins.code}</p></div></div>`;
             });
             if(DB.insurances.length > 20) list.innerHTML += `<div style="text-align:center; font-size:0.8rem; padding:10px;">+ ${DB.insurances.length - 20} weitere...</div>`;
         }
@@ -342,9 +277,9 @@
         }
 
         async function saveNewDoctor() {
-            const name = document.getElementById('newDocName').value;
-            const details = document.getElementById('newDocDetails').value;
-            const city = document.getElementById('newDocCity').value.toLowerCase();
+            const name = document.getElementById('newDocName').value.trim();
+            const details = document.getElementById('newDocDetails').value.trim();
+            const city = document.getElementById('newDocCity').value.toLowerCase().trim();
             let templateId = document.getElementById('newDocTemplate').value;
 
             if(!name || !city || !templateId) return alert("Bitte alle Felder ausfüllen.");
@@ -389,7 +324,7 @@
             });
         }
 
-        // Tasks
+        // --- ORDERS ---
         async function loadOrders() {
             const grid = document.getElementById('orderGrid');
             grid.innerHTML = '<div class="loader">Lade...</div>';
@@ -397,6 +332,7 @@
             const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
             const listData = await listRes.json();
             
+            // Filter: Nur gültige JSONs
             const jsonFiles = listData.objects
                 .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
                 .sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
@@ -427,6 +363,7 @@
             data.forEach(item => {
                 const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
                 
+                // Name des Arztes dynamisch auflösen
                 let docName = "Standard";
                 if (item.doctorTemplate) {
                     const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
@@ -478,10 +415,10 @@
                     <div class="data-item"><span class="data-label">Name</span><span class="data-value">${item.firstName} ${item.lastName}</span></div>
                     <div class="data-item"><span class="data-label">Geboren</span><span class="data-value">${fmtDate(item.birthDate)}</span></div>
                     <div class="data-item"><span class="data-label">Versichertennr.</span><span class="data-value">${item.insuranceNumber}</span></div>
-                    <div class="data-item"><span class="data-label">Kennnummer (10)</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
+                    <div class="data-item"><span class="data-label">Kennnummer</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
 
                     <div class="section-headline">Adresse</div>
-                    <div class="data-item full-row"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number} <br> ${item.postcode} ${item.city}</span></div>
+                    <div class="data-item full-row"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number}, ${item.postcode} ${item.city}</span></div>
 
                     <div class="section-headline">Versicherung & Arzt</div>
                     <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance}</span></div>
