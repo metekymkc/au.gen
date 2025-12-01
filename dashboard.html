@@ -3,48 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mete's Admin Konsole</title>
+    <title>Mete's Console</title>
     <style>
+        /* FONTS */
+        @font-face {
+            font-family: 'ArcadeClassic';
+            src: url('assets/fonts/ARCADECLASSIC.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
         :root {
-            --bg: #09090b; --card: #18181b; --overlay: rgba(0,0,0,0.85);
+            --bg: #09090b; --card: #18181b; --overlay: rgba(0, 0, 0, 0.85);
             --text: #f4f4f5; --text-muted: #a1a1aa;
             --primary: #3b82f6; --primary-hover: #2563eb;
             --border: #27272a; --input-border: #3f3f46;
             --danger: #ef4444; --success: #10b981;
             --radius: 12px;
         }
+
         * { box-sizing: border-box; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', Inter, sans-serif; margin: 0; padding: 20px; min-height: 100vh; }
+
+        body {
+            background-color: var(--bg); color: var(--text);
+            font-family: 'Segoe UI', Inter, sans-serif; margin: 0; padding: 20px;
+            min-height: 100vh;
+        }
+
         .container { max-width: 1200px; margin: 0 auto; }
 
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); background: rgba(9,9,11,0.5); backdrop-filter: blur(5px); }
-        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.02em; }
+        /* HEADER (Refresh Button moved here) */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
+            background: rgba(9, 9, 11, 0.5); backdrop-filter: blur(5px);
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        
+        h1 { margin: 0; font-family: 'ArcadeClassic', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; font-weight: normal; }
+        
         .tabs { display: flex; gap: 5px; background: #141417; padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
         .tab-btn { background: transparent; color: var(--text-muted); border: none; padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
         .tab-btn.active { background: var(--card); color: var(--text); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        
+
+        /* SECTIONS */
         .view-section { display: none; animation: fadeIn 0.3s ease; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* GRID */
         .manager-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; }
         .task-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         @media(max-width: 900px) { .manager-grid { grid-template-columns: 1fr; } }
 
+        /* CARDS */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; overflow: hidden; }
-        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        h2 { margin: 0 0 20px 0; font-size: 1.1rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-family: 'Segoe UI', sans-serif; }
 
+        /* LISTS */
         .item-list { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .list-item { background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .item-info h4 { margin: 0 0 4px 0; font-size: 0.95rem; }
         .item-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
         .tag { display: inline-block; background: #27272a; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-top: 4px; margin-right: 5px; border: 1px solid var(--border); }
 
+        /* FORM */
         .form-group { margin-bottom: 15px; }
         label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
         input, select { width: 100%; padding: 10px 12px; background: transparent; border: 1px solid var(--input-border); border-radius: 8px; color: white; outline: none; transition: 0.2s; font-size: 0.95rem; }
         input:focus, select:focus { border-color: var(--primary); background: rgba(255,255,255,0.02); }
         #uploadSection { background: rgba(59, 130, 246, 0.05); border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-top: 10px; display: none; }
+        .search-input { background: var(--card); margin-bottom: 20px; }
 
         /* TASK CARDS */
         .task-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: all 0.2s; display: flex; flex-direction: column; cursor: pointer; }
@@ -58,6 +88,7 @@
         .preview-value { font-weight: 500; }
         .card-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: rgba(0,0,0,0.2); }
 
+        /* BUTTONS */
         .btn { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.2s; }
         .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
@@ -67,6 +98,7 @@
         .btn-sm { padding: 6px 10px; font-size: 0.8rem; }
         .btn-close { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
 
+        /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); animation: fadeIn 0.2s; }
         .modal-overlay.active { display: flex; }
         .modal-box { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); position: relative; }
@@ -74,6 +106,7 @@
         .login-box { padding: 50px 40px; text-align: center; max-width: 380px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 0 60px rgba(0,0,0,0.6); border-radius: 16px; }
         .login-box input { margin: 25px 0; text-align: center; background: transparent; }
 
+        /* DETAIL MODAL STYLES */
         .detail-header { padding: 20px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--card); z-index: 10; }
         .detail-body { padding: 25px; }
         .detail-footer { padding: 20px 25px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: #141417; position: sticky; bottom: 0; }
@@ -97,7 +130,7 @@
     <div id="login-modal" class="modal-overlay active">
         <div class="login-box">
             <div style="font-size:2rem; margin-bottom:10px;">🔒</div>
-            <h3 style="margin:0; font-weight:700; font-size:1.2rem;">Admin Access</h3>
+            <h3 style="margin:0; font-weight:700; font-size:1.2rem; font-family:'Segoe UI', sans-serif;">Admin Access</h3>
             <input type="password" id="passwordInput" placeholder="Passwort eingeben">
             <button class="btn" style="width:100%" id="loginBtn" onclick="login()">Login</button>
         </div>
@@ -126,16 +159,14 @@
                     <button class="tab-btn" onclick="switchTab('config')">Datenbank & Config</button>
                 </div>
             </div>
-            <div style="display:flex; gap:10px; align-items:center;">
+            <div class="header-right">
                 <button class="btn btn-outline btn-sm" onclick="loadData()">↻ Refresh</button>
                 <button class="btn btn-sm btn-danger" onclick="location.reload()">Logout</button>
             </div>
         </header>
 
         <div id="view-orders" class="view-section active">
-            <div style="margin-bottom:20px;">
-                <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()" style="background:var(--card);">
-            </div>
+            <input type="text" class="search-input" id="searchInput" placeholder="Suche nach Name, Versicherung oder Stadt..." onkeyup="filterCards()" style="background:var(--card);">
             <div id="orderGrid" class="task-grid">
                 <div class="loader">Warte auf Login...</div>
             </div>
@@ -147,22 +178,24 @@
                 <div class="card">
                     <h2>Aktive Ärzte</h2>
                     <div id="doctorList" class="item-list"></div>
-                    
                     <h2 style="margin-top:30px;">Versicherungen</h2>
                     <div id="insuranceList" class="item-list"></div>
                 </div>
 
                 <div class="card" style="height: fit-content;">
                     <h2>+ Arzt Hinzufügen</h2>
+                    
                     <div class="form-group"><label>Praxis Name</label><input id="newDocName" placeholder="z.B. Hausarztpraxis Berlin"></div>
                     <div class="form-group"><label>Details (Arzt Name)</label><input id="newDocDetails" placeholder="z.B. Dr. Med. Max Mustermann"></div>
-                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin"></div>
+                    <div class="form-group"><label>Stadt (Suchbegriff)</label><input id="newDocCity" placeholder="z.B. berlin (Kleinschreibung!)"></div>
+
                     <div class="form-group">
                         <label>Template (PDF)</label>
                         <select id="newDocTemplate" onchange="toggleUpload()">
                             <option value="">Lade Templates...</option>
                         </select>
                     </div>
+
                     <div id="uploadSection">
                         <label style="color:var(--primary)">Neues PDF hochladen:</label>
                         <input type="file" id="pdfFile" accept="application/pdf" style="margin-bottom:10px;">
@@ -221,32 +254,16 @@
         function renderDoctors() {
             const list = document.getElementById('doctorList');
             list.innerHTML = "";
-            
             DB.doctors.forEach((doc, idx) => {
-                // BUGFIX: Fehlerhafte Einträge erkennen und rot markieren
-                if (!doc || !doc.name || !doc.citySearch) {
-                     list.innerHTML += `
-                        <div class="list-item" style="border-color:var(--danger); background:rgba(239,68,68,0.05)">
-                            <div class="item-info">
-                                <h4 style="color:var(--danger)">Defekter Eintrag</h4>
-                                <p style="font-size:0.7rem">ID: ${doc?.id || 'N/A'}</p>
-                            </div>
-                            <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">Löschen</button>
-                        </div>`;
+                if (!doc || !doc.name) { // Clean broken entries
+                    list.innerHTML += `<div class="list-item" style="border-color:var(--danger);"><div class="item-info"><h4 style="color:var(--danger)">Fehlerhafter Eintrag</h4></div><button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">Löschen</button></div>`;
                     return;
                 }
-
                 list.innerHTML += `
                     <div class="list-item">
-                        <div class="item-info">
-                            <h4>${doc.name}</h4>
-                            <p>${doc.details}</p>
-                            <span class="tag">📍 ${doc.citySearch}</span>
-                            <span class="tag" style="background:#27272a; color:#a1a1aa;">📄 ${doc.templateId}</span>
-                        </div>
+                        <div class="item-info"><h4>${doc.name}</h4><p>${doc.details}</p><span class="tag">📍 ${doc.citySearch}</span><span class="tag" style="background:#27272a; color:#a1a1aa;">📄 ${doc.templateId}</span></div>
                         <button class="btn btn-sm btn-danger" onclick="deleteDoctor(${idx})">✕</button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
@@ -267,8 +284,7 @@
                 opt.value = key; opt.innerText = key; select.appendChild(opt);
             });
             const upOpt = document.createElement('option');
-            upOpt.value = "UPLOAD_NEW"; upOpt.innerText = "➕ Neues Template..."; upOpt.style.color = "#3b82f6";
-            select.appendChild(upOpt);
+            upOpt.value = "UPLOAD_NEW"; upOpt.innerText = "➕ Neues Template..."; upOpt.style.color = "#3b82f6"; select.appendChild(upOpt);
         }
 
         function toggleUpload() {
@@ -289,50 +305,28 @@
                 const newId = document.getElementById('newTemplateId').value.trim();
                 if(!fileInput.files[0] || !newId) return alert("Datei/ID fehlt.");
                 if(DB.templates[newId]) return alert("ID existiert schon.");
-
-                const uploadRes = await fetch(`${WORKER_URL}/admin/template?filename=${newId}.pdf`, {
-                    method: 'PUT', headers: { 'x-admin-auth': AUTH_KEY }, body: fileInput.files[0]
-                });
+                const uploadRes = await fetch(`${WORKER_URL}/admin/template?filename=${newId}.pdf`, { method: 'PUT', headers: { 'x-admin-auth': AUTH_KEY }, body: fileInput.files[0] });
                 if(!uploadRes.ok) return alert("Upload Fehler.");
-
                 const baseCoords = DB.templates['base_template'] ? DB.templates['base_template'].positions : {};
                 DB.templates[newId] = { filename: `${newId}.pdf`, positions: JSON.parse(JSON.stringify(baseCoords)) };
                 templateId = newId;
             }
-
             DB.doctors.push({ id: Date.now().toString(), name, details, citySearch: city, templateId });
             await pushConfig();
-            
-            document.getElementById('newDocName').value = "";
-            document.getElementById('newDocDetails').value = "";
-            document.getElementById('newDocCity').value = "";
-            renderDoctors(); updateTemplateSelect(); toggleUpload();
-            alert("Gespeichert!");
+            document.getElementById('newDocName').value = ""; document.getElementById('newDocDetails').value = ""; document.getElementById('newDocCity').value = "";
+            renderDoctors(); updateTemplateSelect(); toggleUpload(); alert("Gespeichert!");
         }
+        async function deleteDoctor(idx) { if(!confirm("Wirklich löschen?")) return; DB.doctors.splice(idx, 1); await pushConfig(); renderDoctors(); }
+        async function pushConfig() { await fetch(`${WORKER_URL}/admin/config`, { method: 'POST', headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(DB) }); }
 
-        async function deleteDoctor(idx) {
-            if(!confirm("Wirklich löschen?")) return;
-            DB.doctors.splice(idx, 1);
-            await pushConfig();
-            renderDoctors();
-        }
-
-        async function pushConfig() {
-            await fetch(`${WORKER_URL}/admin/config`, {
-                method: 'POST', headers: { 'x-admin-auth': AUTH_KEY, 'Content-Type': 'application/json' },
-                body: JSON.stringify(DB)
-            });
-        }
-
-        // --- ORDERS ---
+        // --- ORDERS (FIXED) ---
         async function loadOrders() {
             const grid = document.getElementById('orderGrid');
             grid.innerHTML = '<div class="loader">Lade...</div>';
-            
             const listRes = await fetch(`${WORKER_URL}/admin/list`, { headers: { 'x-admin-auth': AUTH_KEY } });
             const listData = await listRes.json();
             
-            // Filter: Nur gültige JSONs
+            // FIX: Filtert Datenbanken & undefined Tasks raus
             const jsonFiles = listData.objects
                 .filter(obj => obj.key.endsWith('.json') && !obj.key.includes('database') && !obj.key.includes('tasks'))
                 .sort((a,b) => new Date(b.uploaded) - new Date(a.uploaded));
@@ -342,7 +336,7 @@
                 try {
                     const res = await fetch(`${WORKER_URL}/admin/get?key=${encodeURIComponent(file.key)}`, { headers: { 'x-admin-auth': AUTH_KEY } });
                     const content = await res.json();
-                    if (!content || !content.firstName) return null;
+                    if (!content || !content.firstName) return null; // Filtert leere/kaputte Einträge
                     content._jsonKey = file.key;
                     content._pdfKey = file.key.replace('.json', '.pdf');
                     content._uploadDate = file.uploaded;
@@ -357,13 +351,13 @@
 
         function renderOrders(data) {
             const grid = document.getElementById('orderGrid');
-            grid.innerHTML = "";
             if(data.length === 0) { grid.innerHTML = '<div style="text-align:center;color:gray;grid-column:1/-1">Keine Aufträge gefunden.</div>'; return; }
+            grid.innerHTML = "";
 
             data.forEach(item => {
                 const dateStr = new Date(item._uploadDate).toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
                 
-                // Name des Arztes dynamisch auflösen
+                // Arzt Name dynamisch
                 let docName = "Standard";
                 if (item.doctorTemplate) {
                     const found = DB.doctors.find(d => d.templateId === item.doctorTemplate);
@@ -376,10 +370,7 @@
                 card.onclick = () => openModal(item);
                 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div class="user-name">${item.firstName} ${item.lastName}</div>
-                        <div class="time-badge">${dateStr}</div>
-                    </div>
+                    <div class="card-header"><div class="user-name">${item.firstName} ${item.lastName}</div><div class="time-badge">${dateStr}</div></div>
                     <div class="card-body">
                         <div class="preview-row"><span class="preview-label">Versicherung</span><span class="preview-value">${item.insurance}</span></div>
                         <div class="preview-row"><span class="preview-label">Stadt</span><span class="preview-value">${item.city}</span></div>
@@ -397,7 +388,6 @@
         function openModal(item) {
             const modal = document.getElementById('detail-modal');
             const content = document.getElementById('modal-content');
-            
             const fmtDate = (d) => d ? d.split('-').reverse().join('.') : '-';
             const created = item.createdOn ? fmtDate(item.createdOn) : new Date(item._uploadDate).toLocaleDateString('de-DE');
             const meta = item.meta || {};
@@ -415,22 +405,18 @@
                     <div class="data-item"><span class="data-label">Name</span><span class="data-value">${item.firstName} ${item.lastName}</span></div>
                     <div class="data-item"><span class="data-label">Geboren</span><span class="data-value">${fmtDate(item.birthDate)}</span></div>
                     <div class="data-item"><span class="data-label">Versichertennr.</span><span class="data-value">${item.insuranceNumber}</span></div>
-                    <div class="data-item"><span class="data-label">Kennnummer</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
-
+                    <div class="data-item"><span class="data-label">Kennnummer (10)</span><span class="data-value">${item.insuranceCheckNum || '-'}</span></div>
                     <div class="section-headline">Adresse</div>
                     <div class="data-item full-row"><span class="data-label">Anschrift</span><span class="data-value">${item.street} ${item.house_number}, ${item.postcode} ${item.city}</span></div>
-
                     <div class="section-headline">Versicherung & Arzt</div>
                     <div class="data-item"><span class="data-label">Kasse</span><span class="data-value">${item.insurance}</span></div>
                     <div class="data-item"><span class="data-label">Kassen-Nr.</span><span class="data-value">${item.insuranceID}</span></div>
                     <div class="data-item full-row"><span class="data-label">Arzt / Template</span><span class="data-value" style="color:var(--primary)">${docName}</span></div>
-
                     <div class="section-headline">Diagnose & Daten</div>
                     <div class="data-item"><span class="data-label">Festgestellt</span><span class="data-value">${fmtDate(item.confirmedOn)}</span></div>
                     <div class="data-item"><span class="data-label">Zeitraum</span><span class="data-value">${fmtDate(item.auFrom)} bis ${fmtDate(item.auTo)}</span></div>
                     <div class="data-item"><span class="data-label">Typ</span><span class="data-value">${item.certificateType === 'first' ? 'Erstbescheinigung' : 'Folgebescheinigung'}</span></div>
                     <div class="data-item"><span class="data-label">Ausgestellt am</span><span class="data-value">${fmtDate(item.createdOn)}</span></div>
-
                     <div class="section-headline full-row">System Metadata</div>
                     <div class="data-item"><span class="data-label">Erstellt am (Server)</span><span class="data-value">${new Date(item._uploadDate).toLocaleString('de-DE')}</span></div>
                     <div class="data-item"><span class="data-label">IP Adresse</span><span class="data-value">${meta.ip || 'Unbekannt'} (${meta.country || '?'})</span></div>
